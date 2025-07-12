@@ -1,0 +1,27 @@
+<nb-card>
+  <nb-card-header>
+    <h4>{{ id ? 'Edit' : 'Tambah' }} Pelanggan</h4>
+  </nb-card-header>
+
+  <nb-card-body>
+    <form (ngSubmit)="simpan()">
+      <nb-form-field fullWidth>
+        <input nbInput placeholder="Nama" [(ngModel)]="pelanggan.nama" name="nama" required />
+      </nb-form-field>
+
+      <nb-form-field fullWidth>
+        <input nbInput placeholder="Email" [(ngModel)]="pelanggan.email" name="email" />
+      </nb-form-field>
+
+      <nb-form-field fullWidth>
+        <input nbInput placeholder="Telepon" [(ngModel)]="pelanggan.telepon" name="telepon" />
+      </nb-form-field>
+
+      <nb-form-field fullWidth>
+        <textarea nbInput placeholder="Alamat" [(ngModel)]="pelanggan.alamat" name="alamat"></textarea>
+      </nb-form-field>
+
+      <button nbButton status="success" type="submit">Simpan</button>
+    </form>
+  </nb-card-body>
+</nb-card>

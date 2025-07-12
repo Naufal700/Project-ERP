@@ -1,0 +1,93 @@
+<div class="register-wrapper">
+  <nb-card class="register-card">
+    <nb-card-header class="text-center">
+      <div class="icon-wrapper">
+        <nb-icon icon="person-add-outline" pack="eva" status="primary" class="register-icon"></nb-icon>
+      </div>
+      <h2 class="title mt-2">Buat Akun Baru</h2>
+      <p class="subtitle">Silakan isi form untuk mendaftar ke <strong>Siakun-ERP</strong></p>
+    </nb-card-header>
+
+    <nb-card-body>
+      <form (ngSubmit)="register()" autocomplete="off">
+        <!-- Nama Lengkap -->
+        <nb-form-field fullWidth>
+          <input
+            nbInput
+            placeholder="Nama Lengkap"
+            type="text"
+            name="name"
+            [(ngModel)]="user.name"
+            required
+          />
+        </nb-form-field>
+
+        <!-- Email -->
+        <nb-form-field fullWidth class="mt-3">
+          <input
+            nbInput
+            placeholder="Email"
+            type="email"
+            name="email"
+            [(ngModel)]="user.email"
+            required
+          />
+        </nb-form-field>
+
+        <!-- Password -->
+        <nb-form-field fullWidth class="mt-3">
+          <input
+            nbInput
+            placeholder="Password"
+            type="password"
+            name="password"
+            [(ngModel)]="user.password"
+            required
+          />
+        </nb-form-field>
+
+        <!-- Ulangi Password -->
+        <nb-form-field fullWidth class="mt-3">
+          <input
+            nbInput
+            placeholder="Ulangi Password"
+            type="password"
+            name="confirmPassword"
+            [(ngModel)]="user.confirmPassword"
+            required
+          />
+        </nb-form-field>
+
+        <!-- Alert Error -->
+        <div class="mt-3" *ngIf="errors.length > 0">
+          <nb-alert status="danger" *ngFor="let error of errors">
+            {{ error }}
+          </nb-alert>
+        </div>
+
+        <!-- Alert Success -->
+        <div class="mt-3" *ngIf="messages.length > 0">
+          <nb-alert status="success" *ngFor="let msg of messages">
+            {{ msg }}
+          </nb-alert>
+        </div>
+
+        <!-- Button -->
+        <button
+          nbButton
+          status="success"
+          fullWidth
+          type="submit"
+          class="mt-4"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Memproses...' : 'Daftar Sekarang' }}
+        </button>
+      </form>
+    </nb-card-body>
+
+    <nb-card-footer class="text-center">
+      <a routerLink="/auth/login" class="text-link">Sudah punya akun? Login</a>
+    </nb-card-footer>
+  </nb-card>
+</div>

@@ -1,0 +1,72 @@
+<div class="login-container">
+  <nb-card class="login-card">
+    <nb-card-header>
+      <div class="header-content text-center">
+        <nb-icon icon="log-in-outline" pack="eva" status="primary" class="icon animated-icon"></nb-icon>
+        <h2 class="title">Selamat Datang</h2>
+        <p class="subtitle">Masuk ke <strong>Siakun-ERP</strong></p>
+      </div>
+    </nb-card-header>
+
+    <nb-card-body>
+      <form (ngSubmit)="login()" autocomplete="off">
+        <nb-form-field fullWidth class="mb-3">
+          <nb-icon nbPrefix icon="email-outline" pack="eva"></nb-icon>
+         <input
+         nbInput
+         type="text"
+         name="email"
+         [(ngModel)]="user.email"
+         placeholder="Email atau Nama"
+         required
+         />
+        </nb-form-field>
+
+        <nb-form-field fullWidth class="mb-3">
+          <nb-icon nbPrefix icon="lock-outline" pack="eva"></nb-icon>
+          <input
+            nbInput
+            type="password"
+            name="password"
+            [(ngModel)]="user.password"
+            placeholder="Password"
+            required
+          />
+        </nb-form-field>
+
+        <div *ngIf="errors.length" class="mt-2">
+          <nb-alert *ngFor="let error of errors" status="danger" outline>{{ error }}</nb-alert>
+        </div>
+
+        <div *ngIf="messages.length" class="mt-2">
+          <nb-alert *ngFor="let msg of messages" status="success" outline>{{ msg }}</nb-alert>
+        </div>
+
+        <button
+          nbButton
+          status="primary"
+          size="large"
+          fullWidth
+          type="submit"
+          [disabled]="loading"
+          [hero]="!loading"
+          [outline]="loading"
+          class="mt-3"
+        >
+          <nb-icon
+            *ngIf="loading"
+            icon="refresh-outline"
+            pack="eva"
+            animation="spin"
+            class="me-1"
+          ></nb-icon>
+          {{ loading ? 'Memuat...' : 'Masuk' }}
+        </button>
+      </form>
+    </nb-card-body>
+
+    <nb-card-footer class="text-center">
+      <span>Belum punya akun? <a routerLink="/auth/register"><strong>Daftar</strong></a></span>
+    </nb-card-footer>
+  </nb-card>
+</div>

@@ -1,0 +1,64 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // background: linear-gradient(to right, #f5f8fa, #e8f0fe);
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 1rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  .icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: #666;
+  }
+}
+
+::ng-deep nb-form-field {
+  margin-bottom: 0.5rem;
+}
+
+a {
+  text-decoration: none;
+  color: #3366ff;
+  transition: 0.2s;
+
+  &:hover {
+    text-decoration: underline;
+    color: #274bdb;
+  }
+}
+
+@media (max-width: 500px) {
+  .login-card {
+    padding: 0.5rem;
+    border-radius: 0.75rem;
+  }
+
+  .header-content .icon {
+    font-size: 2.5rem;
+  }
+}

@@ -1,0 +1,35 @@
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f5f6fa;
+  padding: 1rem;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 1rem;
+}
+
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+
+  .register-icon {
+    font-size: 2.5rem;
+  }
+}
+
+.title {
+  margin: 0;
+  font-weight: bold;
+  color: #222b45;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #8f9bb3;
+}
