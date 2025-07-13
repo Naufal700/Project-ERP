@@ -1,0 +1,112 @@
+<nb-card>
+  <nb-card-header class="header-container">
+    <h4 class="title">Master Chart of Accounts (COA)</h4>
+    <div class="action-buttons">
+      <button nbButton status="info" size="small" (click)="downloadTemplate()">
+        <nb-icon icon="cloud-download-outline"></nb-icon>
+        <span>Template</span>
+      </button>
+
+      <button nbButton status="success" size="small" (click)="triggerFileInput()">
+        <nb-icon icon="cloud-upload-outline"></nb-icon>
+        <span>Import</span>
+      </button>
+
+      <button nbButton status="primary" size="small" (click)="openForm()">
+        <nb-icon icon="plus-outline"></nb-icon>
+        <span>Tambah Akun</span>
+      </button>
+
+      <input type="file" accept=".xlsx, .xls" #fileInput hidden (change)="onFileSelected($event)" />
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- Search & Filter -->
+    <div class="d-flex mb-3 gap-2 align-items-center flex-wrap">
+      <nb-form-field fullWidth>
+        <nb-icon nbPrefix icon="search-outline"></nb-icon>
+        <input nbInput placeholder="Cari akun..." [(ngModel)]="searchTerm" (ngModelChange)="applyFilterSort()" />
+      </nb-form-field>
+
+      <!-- Dropdown Filter Kategori Akun -->
+      <nb-select placeholder="Filter Kategori Akun" [(selected)]="filterKategori" (selectedChange)="applyFilterSort()"
+        size="medium">
+        <nb-option value="">Semua Kategori</nb-option>
+        <nb-option *ngFor="let kat of kategoriList" [value]="kat">{{ kat }}</nb-option>
+      </nb-select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm table-hover">
+        <thead>
+          <tr>
+            <th (click)="sortBy('kode_akun')">Kode Akun</th>
+            <th (click)="sortBy('nama_akun')">Nama Akun</th>
+            <th>Level</th>
+            <th>Induk</th>
+            <th>Kategori Akun</th>
+            <th>Tipe</th>
+            <th>Laporan</th>
+            <th>Normal</th>
+            <th>Header</th>
+            <th>Saldo Awal</th>
+            <th class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let coa of paginatedData">
+            <td>{{ coa.kode_akun }}</td>
+            <td>{{ coa.nama_akun }}</td>
+            <td>{{ coa.level_akun }}</td>
+            <td>{{ coa.parent_kode_akun || '-' }}</td>
+            <td>{{ coa.kategori_akun || '-' }}</td>
+            <td>{{ coa.tipe_akun || '-' }}</td>
+            <td>{{ coa.kategori_laporan || '-' }}</td>
+            <td>{{ coa.saldo_normal }}</td>
+            <td>{{ coa.is_header ? 'Ya' : 'Tidak' }}</td>
+            <td>
+              {{ coa.saldo_awal !== null && coa.saldo_awal !== undefined 
+    ? (coa.saldo_awal | currency:'IDR':'symbol':'0.0-0':'id-ID') 
+    : '-' }}
+            </td>
+            <td class="text-center">
+              <button nbButton ghost size="tiny" status="info" (click)="openForm(coa.id)">
+                <nb-icon icon="edit-2-outline"></nb-icon>
+              </button>
+              <button nbButton ghost size="tiny" status="danger" (click)="delete(coa.id)">
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedData.length === 0">
+            <td colspan="10" class="text-center text-muted">Tidak ada data ditemukan.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+      <nb-select size="small" [(selected)]="itemsPerPage" (selectedChange)="changeItemsPerPage($event)">
+        <nb-option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }} baris</nb-option>
+      </nb-select>
+
+      <nav *ngIf="totalPages > 1">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="#" (click)="changePage(currentPage - 1, $event)">‹</a>
+          </li>
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+            [class.active]="currentPage === i + 1">
+            <a class="page-link" href="#" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="#" (click)="changePage(currentPage + 1, $event)">›</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </nb-card-body>
+</nb-card>

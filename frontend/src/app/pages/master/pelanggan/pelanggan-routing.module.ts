@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PelangganComponent } from './pelanggan.component';
-import { PelangganFormComponent } from './pelanggan-form.component';
+import { PelangganFormComponent } from './pelanggan-form-dialog.component';
 
 const routes: Routes = [
   { path: '', component: PelangganComponent },

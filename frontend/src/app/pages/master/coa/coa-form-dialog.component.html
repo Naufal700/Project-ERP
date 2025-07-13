@@ -1,0 +1,118 @@
+<nb-card class="coa-form-wrapper">
+  <nb-card-header>{{ id ? 'Edit' : 'Tambah' }} Akun COA</nb-card-header>
+  <nb-card-body>
+    <form (ngSubmit)="simpan()" #form="ngForm">
+      <div class="form-grid">
+
+        <!-- Kode Akun -->
+        <div class="form-item">
+          <label>Kode Akun</label>
+          <input nbInput fullWidth [(ngModel)]="akun.kode_akun" name="kode_akun" required
+            placeholder="Contoh: 1-1001" />
+        </div>
+
+        <!-- Nama Akun -->
+        <div class="form-item">
+          <label>Nama Akun</label>
+          <input nbInput fullWidth [(ngModel)]="akun.nama_akun" name="nama_akun" required
+            placeholder="Contoh: Kas Kecil" />
+        </div>
+
+        <!-- Level Akun -->
+        <div class="form-item">
+          <label>Level Akun</label>
+          <nb-select fullWidth [(selected)]="akun.level_akun" name="level_akun"
+            (selectedChange)="onLevelChange($event)">
+            <nb-option *ngFor="let lvl of [1, 2, 3, 4]" [value]="lvl">Level {{ lvl }}</nb-option>
+          </nb-select>
+        </div>
+
+        <!-- Parent Kode Akun -->
+        <div class="form-item">
+          <label>Parent Kode Akun</label>
+          <nb-select fullWidth [(selected)]="akun.parent_kode_akun" name="parent_kode_akun"
+            placeholder="-- Pilih Parent --">
+            <nb-option *ngFor="let parent of daftarParent" [value]="parent.kode_akun">
+              {{ parent.kode_akun }} - {{ parent.nama_akun }}
+            </nb-option>
+          </nb-select>
+        </div>
+
+        <!-- Kategori Akun -->
+        <div class="form-item">
+          <label>Kategori Akun</label>
+          <nb-select fullWidth [(selected)]="akun.kategori_akun" name="kategori_akun" placeholder="Pilih kategori akun">
+            <nb-option value="aset lancar">Aset Lancar</nb-option>
+            <nb-option value="aset tetap">Aset Tetap</nb-option>
+            <nb-option value="utang lancar">Utang Lancar</nb-option>
+            <nb-option value="utang jangka panjang">Utang Jangka Panjang</nb-option>
+            <nb-option value="modal">Modal</nb-option>
+            <nb-option value="pendapatan">Pendapatan</nb-option>
+            <nb-option value="beban">Beban</nb-option>
+          </nb-select>
+        </div>
+
+        <!-- Tipe Akun -->
+        <div class="form-item">
+          <label>Tipe Akun</label>
+          <nb-select fullWidth [(selected)]="akun.tipe_akun" name="tipe_akun" placeholder="Pilih tipe akun">
+            <nb-option value="kas">Kas</nb-option>
+            <nb-option value="bank">Bank</nb-option>
+            <nb-option value="piutang">Piutang</nb-option>
+            <nb-option value="utang">Utang</nb-option>
+            <nb-option value="persediaan">Persediaan</nb-option>
+            <nb-option value="modal">Modal</nb-option>
+          </nb-select>
+        </div>
+
+        <!-- Kategori Laporan -->
+        <div class="form-item">
+          <label>Kategori Laporan</label>
+          <nb-select fullWidth [(selected)]="akun.kategori_laporan" name="kategori_laporan"
+            placeholder="Pilih kategori laporan">
+            <nb-option value="neraca">Neraca</nb-option>
+            <nb-option value="laba_rugi">Laba Rugi</nb-option>
+          </nb-select>
+        </div>
+
+        <!-- Saldo Normal -->
+        <div class="form-item">
+          <label>Saldo Normal</label>
+          <nb-select fullWidth [(selected)]="akun.saldo_normal" name="saldo_normal" placeholder="Pilih saldo normal">
+            <nb-option value="debit">Debit</nb-option>
+            <nb-option value="kredit">Kredit</nb-option>
+          </nb-select>
+        </div>
+
+        <!-- Saldo Awal -->
+        <div class="form-item">
+          <label>Saldo Awal</label>
+          <input nbInput fullWidth type="text" name="saldo_awal" [value]="formatRupiah(akun.saldo_awal)"
+            (input)="onSaldoInput($event)" placeholder="Contoh: 500.000" />
+        </div>
+
+        <!-- Header Akun -->
+        <div class="form-item">
+          <label>Header Akun</label>
+          <nb-select fullWidth [(selected)]="akun.is_header" name="is_header">
+            <nb-option [value]="true">Ya</nb-option>
+            <nb-option [value]="false">Tidak</nb-option>
+          </nb-select>
+        </div>
+
+        <!-- Keterangan -->
+        <div class="form-item full">
+          <label>Keterangan</label>
+          <textarea nbInput fullWidth [(ngModel)]="akun.keterangan" name="keterangan" rows="2"
+            placeholder="Contoh: Akun ini digunakan untuk mencatat transaksi kas kecil."></textarea>
+        </div>
+      </div>
+
+      <!-- Tombol -->
+      <div class="d-flex justify-content-end mt-4" style="gap: 1rem;">
+        <button nbButton status="primary" type="submit">Simpan</button>
+        <button nbButton status="danger" type="button" (click)="batal()">Batal</button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

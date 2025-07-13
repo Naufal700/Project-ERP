@@ -1,15 +1,21 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from "@angular/forms";
+import { LOCALE_ID } from "@angular/core";
+import { registerLocaleData } from "@angular/common";
+import localeId from "@angular/common/locales/id";
+import { NbSpinnerModule, NbLayoutModule } from "@nebular/theme";
+
+registerLocaleData(localeId);
 
 // Nebular Auth & Theme
 import {
   NbAuthModule,
   NbPasswordAuthStrategy,
   NbAuthJWTToken,
-} from '@nebular/auth';
+} from "@nebular/auth";
 import {
   NbInputModule,
   NbFormFieldModule,
@@ -24,35 +30,33 @@ import {
   NbToastrModule,
   NbChatModule,
   NbIconModule,
-} from '@nebular/theme';
+} from "@nebular/theme";
 
 // Core App
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { CoreModule } from './@core/core.module';
-import { ThemeModule } from './@theme/theme.module';
+import { AppComponent } from "./app.component";
+import { AppRoutingModule } from "./app-routing.module";
+import { CoreModule } from "./@core/core.module";
+import { ThemeModule } from "./@theme/theme.module";
 
 // Custom Component
-import { CustomLoginComponent } from './auth/custom-login/custom-login.component';
-import { CustomRegisterComponent } from './auth/custom-register/custom-register.component';
+import { CustomLoginComponent } from "./auth/custom-login/custom-login.component";
+import { CustomRegisterComponent } from "./auth/custom-register/custom-register.component";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    CustomLoginComponent,
-    CustomRegisterComponent,
-  ],
+  declarations: [AppComponent, CustomLoginComponent, CustomRegisterComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule,               
+    FormsModule,
     NbInputModule,
-    NbFormFieldModule,        
+    NbFormFieldModule,
     NbButtonModule,
     NbAlertModule,
     NbCardModule,
     AppRoutingModule,
+    NbSpinnerModule,
+    NbLayoutModule,
     NbIconModule,
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
@@ -61,33 +65,33 @@ import { CustomRegisterComponent } from './auth/custom-register/custom-register.
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),
     NbChatModule.forRoot({
-      messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
+      messageGoogleMapKey: "AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY",
     }),
 
     // Auth Config
     NbAuthModule.forRoot({
       strategies: [
         NbPasswordAuthStrategy.setup({
-          name: 'email',
-          baseEndpoint: 'http://localhost:8000/api', // ganti sesuai Laravel API
+          name: "email",
+          baseEndpoint: "http://localhost:8000/api", // ganti sesuai Laravel API
           login: {
-            endpoint: '/login',
-            method: 'post',
+            endpoint: "/login",
+            method: "post",
           },
           register: {
-            endpoint: '/register',
-            method: 'post',
+            endpoint: "/register",
+            method: "post",
           },
           token: {
             class: NbAuthJWTToken,
-            key: 'token', // pastikan key sesuai response dari Laravel
+            key: "token", // pastikan key sesuai response dari Laravel
           },
         }),
       ],
       forms: {
         login: {
           redirectDelay: 0,
-          strategy: 'email',
+          strategy: "email",
           rememberMe: false,
           showMessages: {
             success: true,
@@ -96,7 +100,7 @@ import { CustomRegisterComponent } from './auth/custom-register/custom-register.
         },
         register: {
           redirectDelay: 0,
-          strategy: 'email',
+          strategy: "email",
           showMessages: {
             success: true,
             error: true,
@@ -104,9 +108,9 @@ import { CustomRegisterComponent } from './auth/custom-register/custom-register.
         },
         logout: {
           redirectDelay: 0,
-          strategy: 'email',
+          strategy: "email",
           redirect: {
-            success: '/auth/login',
+            success: "/auth/login",
             failure: null,
           },
         },
@@ -117,6 +121,7 @@ import { CustomRegisterComponent } from './auth/custom-register/custom-register.
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
   ],
+  providers: [{ provide: LOCALE_ID, useValue: "id-ID" }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

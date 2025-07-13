@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NbCardModule, NbButtonModule, NbInputModule, NbIconModule } from '@nebular/theme';
 import { PelangganRoutingModule } from './pelanggan-routing.module';
 import { PelangganComponent } from './pelanggan.component';
-import { PelangganFormComponent } from './pelanggan-form.component';
+import { PelangganFormComponent } from './pelanggan-form-dialog.component';
 
 @NgModule({
   declarations: [PelangganComponent, PelangganFormComponent],

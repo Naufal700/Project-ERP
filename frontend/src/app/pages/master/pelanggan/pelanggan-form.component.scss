@@ -1,0 +1,64 @@
+:host {
+    display: block;
+}
+
+nb-card {
+    nb-card-header.form-header {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: nb-theme(color-primary-500);
+        padding-bottom: 0.75rem;
+    }
+
+    nb-card-body {
+        form {
+            .form-group {
+                margin-bottom: 1.25rem;
+
+                label {
+                    font-weight: 600;
+                    display: block;
+                    margin-bottom: 0.5rem;
+                }
+
+                input,
+                textarea {
+                    font-size: 0.95rem;
+                }
+
+                small.text-danger {
+                    font-size: 0.75rem;
+                    margin-top: 0.25rem;
+                    display: block;
+                }
+            }
+
+            .form-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.75rem;
+
+                button {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.25rem;
+                    min-width: 130px;
+                }
+            }
+
+            .form-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 1rem; // 👉 jarak antar tombol
+                margin-top: 1.5rem;
+
+                button {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    min-width: 130px;
+                }
+            }
+        }
+    }
+}

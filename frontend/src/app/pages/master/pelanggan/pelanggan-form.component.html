@@ -1,27 +1,59 @@
 <nb-card>
-  <nb-card-header>
-    <h4>{{ id ? 'Edit' : 'Tambah' }} Pelanggan</h4>
+  <nb-card-header class="form-header">
+    {{ id ? '✏️ Edit Pelanggan' : '➕ Tambah Pelanggan' }}
   </nb-card-header>
 
   <nb-card-body>
-    <form (ngSubmit)="simpan()">
-      <nb-form-field fullWidth>
-        <input nbInput placeholder="Nama" [(ngModel)]="pelanggan.nama" name="nama" required />
-      </nb-form-field>
+    <form #form="ngForm" (ngSubmit)="simpan()" autocomplete="off">
 
-      <nb-form-field fullWidth>
-        <input nbInput placeholder="Email" [(ngModel)]="pelanggan.email" name="email" />
-      </nb-form-field>
+      <!-- Nama Pelanggan -->
+      <div class="form-group">
+        <label for="nama_pelanggan">Nama Pelanggan</label>
+        <input nbInput fullWidth id="nama_pelanggan" type="text" name="nama_pelanggan"
+          [(ngModel)]="pelanggan.nama_pelanggan" required #namaPelanggan="ngModel" />
+        <small *ngIf="namaPelanggan.invalid && namaPelanggan.touched" class="text-danger">
+          Nama pelanggan wajib diisi.
+        </small>
+      </div>
 
-      <nb-form-field fullWidth>
-        <input nbInput placeholder="Telepon" [(ngModel)]="pelanggan.telepon" name="telepon" />
-      </nb-form-field>
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input nbInput fullWidth id="email" type="email" name="email" [(ngModel)]="pelanggan.email" required email
+          #email="ngModel" />
+        <small *ngIf="email.invalid && email.touched" class="text-danger">
+          Email wajib dan harus valid.
+        </small>
+      </div>
 
-      <nb-form-field fullWidth>
-        <textarea nbInput placeholder="Alamat" [(ngModel)]="pelanggan.alamat" name="alamat"></textarea>
-      </nb-form-field>
+      <!-- Telepon -->
+      <div class="form-group">
+        <label for="telepon">Telepon</label>
+        <input nbInput fullWidth id="telepon" type="text" name="telepon" [(ngModel)]="pelanggan.telepon" required
+          #telepon="ngModel" />
+        <small *ngIf="telepon.invalid && telepon.touched" class="text-danger">
+          Telepon wajib diisi.
+        </small>
+      </div>
 
-      <button nbButton status="success" type="submit">Simpan</button>
+      <!-- Alamat -->
+      <div class="form-group">
+        <label for="alamat">Alamat</label>
+        <textarea nbInput fullWidth id="alamat" name="alamat" [(ngModel)]="pelanggan.alamat" rows="3"></textarea>
+      </div>
+
+      <!-- Tombol -->
+      <div class="form-actions">
+        <button nbButton status="primary" type="submit" [disabled]="form.invalid">
+          <nb-icon icon="save-outline"></nb-icon>
+          {{ id ? 'Simpan Perubahan' : 'Tambah' }}
+        </button>
+
+        <button nbButton status="danger" type="button" (click)="batal()">
+          <nb-icon icon="close-outline"></nb-icon>
+          Batal
+        </button>
+      </div>
     </form>
   </nb-card-body>
 </nb-card>
