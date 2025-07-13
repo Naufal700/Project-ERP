@@ -3,8 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\CoaController;
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\Api\PelangganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/me', [AuthController::class, 'me']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-Route::apiResource('pelanggans', PelangganController::class);
+Route::apiResource('pelanggan', PelangganController::class);
 Route::get('/pelanggan/template-excel', [PelangganController::class, 'downloadTemplate']);
 Route::post('/pelanggan/import-excel', [PelangganController::class, 'importExcel']);
+
+Route::apiResource('coa', CoaController::class);
+Route::get('coa/parents', [App\Http\Controllers\Api\CoaController::class, 'listParents']);
+Route::get('coa/search', [App\Http\Controllers\Api\CoaController::class, 'search']);
+Route::patch('coa/{id}/toggle-aktif', [App\Http\Controllers\Api\CoaController::class, 'toggleAktif']);

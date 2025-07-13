@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Pelanggan;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Exports\TemplatePelangganExport;
 use App\Imports\PelangganImport;
@@ -17,13 +18,18 @@ class PelangganController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'kode_pelanggan' => 'required|unique:pelanggans',
-            'nama_pelanggan' => 'required',
-        ]);
+        try {
+            $request->validate([
+                'kode_pelanggan' => 'required|unique:pelanggan_m',
+                'nama_pelanggan' => 'required',
+            ]);
 
-        return Pelanggan::create($request->all());
+            return Pelanggan::create($request->all());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
+
 
     public function show($id)
     {
@@ -36,7 +42,7 @@ class PelangganController extends Controller
 
         // Validasi kode_pelanggan jika ada perubahan
         $request->validate([
-            'kode_pelanggan' => 'required|unique:pelanggans,kode_pelanggan,' . $id,
+            'kode_pelanggan' => 'required|unique:pelanggan_m,kode_pelanggan,' . $id,
             'nama_pelanggan' => 'required',
         ]);
 
