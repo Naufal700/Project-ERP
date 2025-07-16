@@ -25,17 +25,13 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: "Akun COA",
         children: [
-          {
-            title: "Struktur Akun",
-            link: "/pages/master/coa",
-            icon: "layers-outline",
-          },
+          { title: "Struktur Akun", link: "/pages/master/coa" },
           { title: "Mapping Jurnal", link: "/pages/master/journal-mapping" },
         ],
       },
       { title: "Karyawan", link: "/pages/master/employee" },
       { title: "Gudang / Lokasi", link: "/pages/master/warehouse" },
-      { title: "Departemen / Divisi / Proyek", link: "/pages/master/project" },
+      { title: "Departemen / Proyek", link: "/pages/master/project" },
       { title: "Cabang", link: "/pages/master/branch" },
       { title: "Mata Uang", link: "/pages/master/currency" },
       { title: "Pajak", link: "/pages/master/tax" },
@@ -87,8 +83,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
     ],
   },
   {
-    title: " Produksi",
-    icon: "settings-outline",
+    title: "Produksi",
+    icon: "settings-2-outline",
     children: [
       { title: "Bill of Material", link: "/pages/production/bom" },
       { title: "Work Order", link: "/pages/production/work-order" },
@@ -98,7 +94,29 @@ export const MENU_ITEMS: NbMenuItem[] = [
     ],
   },
   {
-    title: " Kas & Bank",
+    title: "Jasa / Service",
+    icon: "briefcase-outline",
+    children: [
+      { title: "Daftar Layanan", link: "/pages/service/services" },
+      { title: "Penjadwalan", link: "/pages/service/scheduling" },
+      { title: "Invoice Layanan", link: "/pages/service/invoice" },
+      { title: "Riwayat Layanan", link: "/pages/service/history" },
+      { title: "Laporan Jasa", link: "/pages/service/report" },
+    ],
+  },
+  {
+    title: "Proyek / Kontrak",
+    icon: "layers-outline",
+    children: [
+      { title: "Kontrak Proyek", link: "/pages/project/contract" },
+      { title: "Anggaran (RAB)", link: "/pages/project/budget" },
+      { title: "Realisasi", link: "/pages/project/realization" },
+      { title: "Tagihan", link: "/pages/project/invoice" },
+      { title: "Laporan Proyek", link: "/pages/project/report" },
+    ],
+  },
+  {
+    title: "Kas & Bank",
     icon: "credit-card-outline",
     children: [
       { title: "Kas Masuk", link: "/pages/cash/in" },
@@ -116,6 +134,29 @@ export const MENU_ITEMS: NbMenuItem[] = [
       { title: "Buku Besar", link: "/pages/accounting/ledger" },
       { title: "Neraca Saldo", link: "/pages/accounting/trial-balance" },
       {
+        title: "Buku Pembantu",
+        children: [
+          { title: "Piutang", link: "/pages/accounting/subsidiary/receivable" },
+          { title: "Hutang", link: "/pages/accounting/subsidiary/payable" },
+          { title: "Bank", link: "/pages/accounting/subsidiary/bank" },
+        ],
+      },
+      {
+        title: "Pajak",
+        icon: "percent-outline",
+        children: [
+          { title: "Master Jenis Pajak", link: "/pages/tax/master" },
+          { title: "Kode Pajak", link: "/pages/tax/code" },
+          { title: "Faktur Pajak Keluaran", link: "/pages/tax/output-invoice" },
+          { title: "Faktur Pajak Masukan", link: "/pages/tax/input-invoice" },
+          { title: "PPh 21 (Karyawan)", link: "/pages/tax/pph21" },
+          { title: "PPh 23 (Jasa / Royalti)", link: "/pages/tax/pph23" },
+          { title: "e-Faktur / CSV Export", link: "/pages/tax/e-faktur" },
+          { title: "e-Bupot Export", link: "/pages/tax/e-bupot" },
+          { title: "Laporan Pajak", link: "/pages/tax/report" },
+        ],
+      },
+      {
         title: "Laporan Keuangan",
         children: [
           { title: "Neraca", link: "/pages/accounting/balance-sheet" },
@@ -124,36 +165,38 @@ export const MENU_ITEMS: NbMenuItem[] = [
           { title: "Arus Kas", link: "/pages/accounting/cashflow" },
         ],
       },
+      { title: "Jurnal Penyesuaian", link: "/pages/accounting/adjustment" },
       { title: "Posting Transaksi", link: "/pages/accounting/posting" },
       { title: "Tutup Buku", link: "/pages/accounting/closing" },
+      { title: "Audit & Pemeriksaan", link: "/pages/accounting/audit" },
     ],
   },
   {
-    title: " SDM & Payroll",
+    title: "SDM & Payroll",
     icon: "people-outline",
     children: [
       { title: "Data Karyawan", link: "/pages/hr/employee" },
-      { title: "Jadwal & Absensi", link: "/pages/hr/attendance" },
+      { title: "Absensi", link: "/pages/hr/attendance" },
       { title: "Gaji & Tunjangan", link: "/pages/hr/salary" },
       { title: "Slip Gaji", link: "/pages/hr/payroll-slip" },
+      { title: "BPJS & Potongan", link: "/pages/hr/bpjs" },
       { title: "Pajak PPh 21", link: "/pages/hr/tax" },
       { title: "Laporan Gaji", link: "/pages/hr/report" },
-      { title: "BPJS & Potongan", link: "/pages/hr/bpjs" },
     ],
   },
   {
-    title: " Aset Tetap",
-    icon: "briefcase-outline",
+    title: "Aset Tetap",
+    icon: "archive-outline",
     children: [
       { title: "Registrasi Aset", link: "/pages/asset/register" },
       { title: "Kategori Aset", link: "/pages/asset/category" },
       { title: "Penyusutan Otomatis", link: "/pages/asset/depreciation" },
-      { title: "Mutasi & Disposisi", link: "/pages/asset/mutation" },
+      { title: "Mutasi / Disposisi", link: "/pages/asset/mutation" },
       { title: "Laporan Aset", link: "/pages/asset/report" },
     ],
   },
   {
-    title: " Laporan & Analitik",
+    title: "Laporan & Analitik",
     icon: "bar-chart-outline",
     children: [
       { title: "Laporan Transaksi", link: "/pages/report/transaction" },
@@ -166,37 +209,41 @@ export const MENU_ITEMS: NbMenuItem[] = [
     ],
   },
   {
-    title: " AI Assistant",
+    title: "AI Assistant",
     icon: "bulb-outline",
     children: [
       { title: "Saran Pembelian", link: "/pages/ai/smart-purchase" },
       { title: "Saran Produksi", link: "/pages/ai/smart-production" },
-      { title: "Saran Harga", link: "/pages/ai/smart-pricing" },
       { title: "Forecast Penjualan", link: "/pages/ai/forecast-sales" },
       { title: "Forecast Stok", link: "/pages/ai/forecast-inventory" },
+      { title: "Harga Optimal", link: "/pages/ai/smart-pricing" },
       { title: "Ringkasan Laporan", link: "/pages/ai/report-summary" },
       { title: "Chat AI (ERP Bot)", link: "/pages/ai/chat" },
     ],
   },
   {
-    title: " CRM",
-    icon: "activity-outline",
+    title: "Workflow & Approval",
+    icon: "checkmark-circle-outline",
     children: [
-      { title: "Prospek & Leads", link: "/pages/crm/leads" },
-      { title: "Follow-up", link: "/pages/crm/followup" },
-      { title: "Aktivitas Sales", link: "/pages/crm/activity" },
-      { title: "Target Penjualan", link: "/pages/crm/target" },
+      { title: "Approval Center", link: "/pages/approval/center" },
+      { title: "Workflow Setup", link: "/pages/approval/setup" },
     ],
   },
   {
-    title: " Integrasi",
+    title: "Helpdesk & Support",
+    icon: "headphones-outline",
+    children: [
+      { title: "Tiket Bantuan", link: "/pages/support/ticket" },
+      { title: "Basis Pengetahuan", link: "/pages/support/knowledge" },
+      { title: "FAQ", link: "/pages/support/faq" },
+    ],
+  },
+  {
+    title: "Integrasi",
     icon: "link-outline",
     children: [
-      {
-        title: "Marketplace / E-Commerce",
-        link: "/pages/integration/marketplace",
-      },
-      { title: "POS (Point of Sale)", link: "/pages/integration/pos" },
+      { title: "Marketplace", link: "/pages/integration/marketplace" },
+      { title: "POS System", link: "/pages/integration/pos" },
       { title: "API / WhatsApp", link: "/pages/integration/api" },
     ],
   },
@@ -210,14 +257,16 @@ export const MENU_ITEMS: NbMenuItem[] = [
     ],
   },
   {
-    title: " Pengaturan",
+    title: "Pengaturan",
     icon: "settings-outline",
     children: [
       { title: "Cabang Aktif", link: "/pages/settings/branch" },
       { title: "Periode Akuntansi", link: "/pages/settings/period" },
-      { title: "Template Nomor Transaksi", link: "/pages/settings/numbering" },
-      { title: "Notifikasi", link: "/pages/settings/notification" },
+      { title: "Penomoran Transaksi", link: "/pages/settings/numbering" },
+      { title: "Notifikasi & Email", link: "/pages/settings/notification" },
       { title: "Backup & Restore", link: "/pages/settings/backup" },
+      { title: "Aktifkan Modul", link: "/pages/settings/module-mapping" },
+      { title: "Mapping Menu", link: "/pages/settings/menu-mapping" },
     ],
   },
 ];
