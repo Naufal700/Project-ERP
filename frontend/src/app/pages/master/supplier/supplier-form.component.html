@@ -1,0 +1,57 @@
+<nb-card class="supplier-form-wrapper">
+  <nb-card-header>{{ isEdit ? 'Edit' : 'Tambah' }} Supplier</nb-card-header>
+  <nb-card-body>
+    <form (ngSubmit)="save()" #f="ngForm">
+      <div class="form-grid">
+
+        <div class="form-item">
+          <label>Nama Supplier</label>
+          <input nbInput fullWidth [(ngModel)]="form.nama_supplier" name="nama_supplier" required />
+        </div>
+
+        <div class="form-item">
+          <label>Telepon</label>
+          <input nbInput fullWidth [(ngModel)]="form.no_telepon" name="no_telepon" />
+        </div>
+
+        <div class="form-item">
+          <label>Email</label>
+          <input nbInput fullWidth type="email" [(ngModel)]="form.email" name="email" />
+        </div>
+
+        <div class="form-item">
+          <label>Termin Pembayaran</label>
+          <nb-select fullWidth [(selected)]="form.termin_pembayaran" name="termin_pembayaran">
+            <nb-option *ngFor="let t of [7, 14, 30, 60, 90]" [value]="t">{{ t }} Hari</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-item">
+          <label>Kategori</label>
+          <nb-select fullWidth [(selected)]="form.kategori" name="kategori">
+            <nb-option value="Retail">Retail</nb-option>
+            <nb-option value="Grosir">Grosir</nb-option>
+            <nb-option value="Perusahaan">Perusahaan</nb-option>
+            <nb-option value="Pemerintah">Pemerintah</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-item">
+          <label>NPWP</label>
+          <input nbInput fullWidth [(ngModel)]="form.npwp" name="npwp" />
+        </div>
+
+        <div class="form-item full">
+          <label>Alamat</label>
+          <textarea nbInput fullWidth [(ngModel)]="form.alamat" name="alamat" rows="2"></textarea>
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-end mt-4" style="gap: 1rem;">
+        <button nbButton status="success" type="submit" [disabled]="f.invalid">Simpan</button>
+        <button nbButton status="basic" type="button" (click)="close()">Batal</button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

@@ -1,112 +1,54 @@
-:host {
-  display: block;
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .title {
+    color: var(--text-basic-color);
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      display: flex;
+      align-items: center;
+
+      nb-icon {
+        margin-right: 0.3rem;
+      }
+    }
+  }
 }
 
-nb-card {
-  nb-card-header {
-    padding-bottom: 1rem;
+.search-box {
+  margin-bottom: 1rem;
+  max-width: 300px;
+}
 
-    .header-container {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+.table {
 
-      @media (min-width: 768px) {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
-    }
-
-    .title {
-      margin: 0;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: nb-theme(color-primary-default);
-    }
-
-    .action-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-
-      button {
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-      }
-    }
+  th,
+  td {
+    color: var(--text-basic-color);
+    vertical-align: middle;
   }
 
-  nb-card-body {
-    padding-top: 1.25rem;
-
-    .search-box {
-      margin-bottom: 1.5rem;
-    }
-
-    .table-responsive {
-      overflow-x: auto;
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-
-        th {
-          white-space: nowrap;
-          cursor: pointer;
-        }
-
-        td,
-        th {
-          padding: 0.5rem 0.75rem;
-          vertical-align: middle;
-        }
-
-        tr:hover {
-          background-color: #f7f9fc;
-        }
-
-        .text-muted {
-          color: #8f9bb3;
-        }
-
-        .text-center {
-          text-align: center;
-        }
-      }
-    }
-
-    .pagination-wrapper {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 1rem;
-
-      nb-select {
-        min-width: 120px;
-      }
-
-      .pagination {
-        margin-bottom: 0;
-
-        .page-item {
-          .page-link {
-            cursor: pointer;
-          }
-
-          &.disabled .page-link {
-            pointer-events: none;
-            opacity: 0.6;
-          }
-
-          &.active .page-link {
-            background-color: nb-theme(color-primary-default);
-            color: white;
-          }
-        }
-      }
-    }
+  th.cursor-pointer {
+    cursor: pointer;
+    user-select: none;
   }
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }

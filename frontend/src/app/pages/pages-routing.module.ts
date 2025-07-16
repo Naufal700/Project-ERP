@@ -6,8 +6,11 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ECommerceComponent } from "./e-commerce/e-commerce.component";
 import { NotFoundComponent } from "./miscellaneous/not-found/not-found.component";
 import { PelangganComponent } from "./master/pelanggan/pelanggan.component";
-import { PelangganFormDialogComponent } from "./master/pelanggan/pelanggan-form-dialog.component";
 import { CoaComponent } from "./master/coa/coa.component";
+import { SupplierComponent } from "./master/supplier/supplier.component";
+import { SatuanComponent } from "./master/satuan/satuan.component";
+import { KategoriProdukComponent } from "./master/kategori-produk/kategori-produk.component";
+import { ProdukComponent } from "./master/produk/produk.component";
 
 const routes: Routes = [
   {
@@ -19,12 +22,9 @@ const routes: Routes = [
         component: ECommerceComponent,
       },
       {
-        path: "iot-dashboard",
-        component: DashboardComponent,
-      },
-      {
-        path: "master/pelanggan",
-        component: PelangganComponent,
+        path: "",
+        redirectTo: "dashboard",
+        pathMatch: "full",
       },
       {
         path: "master/pelanggan",
@@ -41,6 +41,42 @@ const routes: Routes = [
           {
             path: "",
             component: CoaComponent, // Daftar Coa
+          },
+        ],
+      },
+      {
+        path: "master/supplier",
+        children: [
+          {
+            path: "",
+            component: SupplierComponent, // Daftar Supplier
+          },
+        ],
+      },
+      {
+        path: "master/satuan",
+        children: [
+          {
+            path: "",
+            component: SatuanComponent, // Daftar Satuan Produk
+          },
+        ],
+      },
+      {
+        path: "master/kategori-produk",
+        children: [
+          {
+            path: "",
+            component: KategoriProdukComponent, // Daftar Kategori Produk
+          },
+        ],
+      },
+      {
+        path: "master/produk",
+        children: [
+          {
+            path: "",
+            component: ProdukComponent, // Daftar Produk
           },
         ],
       },

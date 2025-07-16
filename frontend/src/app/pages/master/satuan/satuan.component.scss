@@ -1,0 +1,35 @@
+:host ::ng-deep {
+    nb-card-header {
+        background-color: var(--header-bg, transparent);
+        border-bottom: 1px solid var(--separator);
+        color: var(--text-basic-color);
+    }
+
+    h4 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+        color: var(--text-basic-color);
+    }
+
+    table th,
+    table td {
+        color: var(--text-basic-color);
+        vertical-align: middle;
+        font-size: 0.875rem;
+    }
+
+    th {
+        white-space: nowrap;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .text-muted {
+        color: var(--text-hint-color);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+}

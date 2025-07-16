@@ -1,9 +1,6 @@
 <nb-card>
-  <!-- Header -->
   <nb-card-header class="header-container">
-    <h4 class="title">Daftar Pelanggan</h4>
-
-    <!-- Tombol Aksi -->
+    <h4 class="title">Master Supplier</h4>
     <div class="action-buttons">
       <button nbButton status="info" size="small" (click)="downloadTemplate()">
         <nb-icon icon="cloud-download-outline"></nb-icon>
@@ -15,22 +12,22 @@
         <span>Import</span>
       </button>
 
-      <button nbButton status="primary" size="small" (click)="goToForm()">
+      <button nbButton status="primary" size="small" (click)="openForm()">
         <nb-icon icon="plus-outline"></nb-icon>
         <span>Tambah</span>
       </button>
 
-      <input type="file" accept=".xlsx, .xls" #fileInput hidden (change)="onFileSelected($event)" />
+      <input type="file" #fileInput hidden accept=".xlsx, .xls" (change)="onFileSelected($event)" />
     </div>
   </nb-card-header>
 
-  <!-- Body -->
   <nb-card-body>
     <!-- Search -->
-    <div class="search-box">
+    <div class="d-flex mb-3 gap-2 align-items-center flex-wrap search-box">
       <nb-form-field fullWidth>
         <nb-icon nbPrefix icon="search-outline"></nb-icon>
-        <input nbInput placeholder="Cari pelanggan..." [(ngModel)]="searchTerm" (ngModelChange)="filterData()" />
+        <input nbInput placeholder="Cari nama / kode supplier..." [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilterSort()" />
       </nb-form-field>
     </div>
 
@@ -39,40 +36,44 @@
       <table class="table table-bordered table-sm table-hover">
         <thead>
           <tr>
-            <th (click)="sortBy('nama_pelanggan')" class="cursor-pointer">
-              Nama
+            <th (click)="sortBy('kode_supplier')" class="cursor-pointer">
+              Kode Supplier
               <nb-icon
-                [icon]="sortField === 'nama_pelanggan' ? (sortDirection === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline') : 'swap-outline'">
+                [icon]="sortField === 'kode_supplier' ? (sortDirection === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline') : 'swap-outline'">
               </nb-icon>
             </th>
-            <th (click)="sortBy('email')" class="cursor-pointer">
-              Email
+            <th (click)="sortBy('nama_supplier')" class="cursor-pointer">
+              Nama Supplier
               <nb-icon
-                [icon]="sortField === 'email' ? (sortDirection === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline') : 'swap-outline'">
+                [icon]="sortField === 'nama_supplier' ? (sortDirection === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline') : 'swap-outline'">
               </nb-icon>
             </th>
             <th>Telepon</th>
-            <th>Alamat</th>
-            <th class="text-center" style="width: 120px;">Aksi</th>
+            <th>Email</th>
+            <th>Termin</th>
+            <th>Kategori</th>
+            <th class="text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let p of paginatedData">
-            <td>{{ p.nama_pelanggan }}</td>
-            <td>{{ p.email }}</td>
-            <td>{{ p.telepon }}</td>
-            <td>{{ p.alamat }}</td>
+          <tr *ngFor="let s of paginatedSuppliers">
+            <td>{{ s.kode_supplier }}</td>
+            <td>{{ s.nama_supplier }}</td>
+            <td>{{ s.no_telepon }}</td>
+            <td>{{ s.email }}</td>
+            <td>{{ s.termin_pembayaran }} Hari</td>
+            <td>{{ s.kategori }}</td>
             <td class="text-center">
-              <button nbButton ghost size="tiny" status="info" (click)="goToForm(p.id)">
+              <button nbButton ghost size="tiny" status="info" (click)="openForm(s)">
                 <nb-icon icon="edit-2-outline"></nb-icon>
               </button>
-              <button nbButton ghost size="tiny" status="danger" (click)="delete(p.id)">
+              <button nbButton ghost size="tiny" status="danger" (click)="deleteSupplier(s.id)">
                 <nb-icon icon="trash-2-outline"></nb-icon>
               </button>
             </td>
           </tr>
-          <tr *ngIf="paginatedData.length === 0">
-            <td colspan="5" class="text-center text-muted">Tidak ada data ditemukan.</td>
+          <tr *ngIf="paginatedSuppliers.length === 0">
+            <td colspan="7" class="text-center text-muted">Tidak ada data ditemukan.</td>
           </tr>
         </tbody>
       </table>
@@ -80,11 +81,11 @@
 
     <!-- Pagination -->
     <div class="pagination-wrapper">
-      <nb-select size="small" [(selected)]="itemsPerPage" (selectedChange)="changeItemsPerPage($event)">
+      <nb-select size="small" [(selected)]="itemsPerPage" (selectedChange)="applyFilterSort()">
         <nb-option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }} baris</nb-option>
       </nb-select>
 
-      <nav *ngIf="totalPages > 1" aria-label="Navigasi halaman">
+      <nav *ngIf="totalPages > 1">
         <ul class="pagination pagination-sm mb-0">
           <li class="page-item" [class.disabled]="currentPage === 1">
             <a class="page-link" href="#" (click)="changePage(currentPage - 1, $event)">‹</a>

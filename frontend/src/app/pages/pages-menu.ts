@@ -16,9 +16,9 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: "Produk / Barang & Jasa",
         children: [
-          { title: "Daftar Produk", link: "/pages/master/product" },
-          { title: "Kategori Produk", link: "/pages/master/category" },
-          { title: "Satuan", link: "/pages/master/unit" },
+          { title: "Daftar Produk", link: "/pages/master/produk" },
+          { title: "Kategori Produk", link: "/pages/master/kategori-produk" },
+          { title: "Satuan", link: "/pages/master/satuan" },
           { title: "Harga Jual & Beli", link: "/pages/master/pricing" },
         ],
       },
@@ -163,6 +163,19 @@ export const MENU_ITEMS: NbMenuItem[] = [
       { title: "Laporan Gaji", link: "/pages/report/salary" },
       { title: "Laporan Proyek", link: "/pages/report/project" },
       { title: "KPI Dashboard", link: "/pages/report/kpi" },
+    ],
+  },
+  {
+    title: " AI Assistant",
+    icon: "bulb-outline",
+    children: [
+      { title: "Saran Pembelian", link: "/pages/ai/smart-purchase" },
+      { title: "Saran Produksi", link: "/pages/ai/smart-production" },
+      { title: "Saran Harga", link: "/pages/ai/smart-pricing" },
+      { title: "Forecast Penjualan", link: "/pages/ai/forecast-sales" },
+      { title: "Forecast Stok", link: "/pages/ai/forecast-inventory" },
+      { title: "Ringkasan Laporan", link: "/pages/ai/report-summary" },
+      { title: "Chat AI (ERP Bot)", link: "/pages/ai/chat" },
     ],
   },
   {

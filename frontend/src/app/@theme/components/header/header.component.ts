@@ -1,21 +1,21 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import {
   NbMediaBreakpointsService,
   NbMenuService,
   NbSidebarService,
   NbThemeService,
-} from '@nebular/theme';
+} from "@nebular/theme";
 
-import { AuthService } from '../../../@core/services/auth.service';
-import { LayoutService } from '../../../@core/utils';
-import { map, takeUntil, filter } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { AuthService } from "../../../@core/services/auth.service";
+import { LayoutService } from "../../../@core/utils";
+import { map, takeUntil, filter } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 @Component({
-  selector: 'ngx-header',
-  styleUrls: ['./header.component.scss'],
-  templateUrl: './header.component.html',
+  selector: "ngx-header",
+  styleUrls: ["./header.component.scss"],
+  templateUrl: "./header.component.html",
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
@@ -24,17 +24,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isLoggingOut = false;
 
   themes = [
-    { value: 'default', name: 'Light' },
-    { value: 'dark', name: 'Dark' },
-    { value: 'cosmic', name: 'Cosmic' },
-    { value: 'corporate', name: 'Corporate' },
+    { value: "default", name: "Light" },
+    { value: "dark", name: "Dark" },
+    { value: "cosmic", name: "Cosmic" },
+    { value: "corporate", name: "Corporate" },
   ];
 
-  currentTheme = 'default';
+  currentTheme = "default";
 
   userMenu = [
-    { title: 'Profile' },
-    { title: 'Log out', icon: 'log-out-outline', data: { action: 'logout' } },
+    { title: "Profile" },
+    { title: "Log out", icon: "log-out-outline", data: { action: "logout" } },
   ];
 
   constructor(
@@ -44,7 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private layoutService: LayoutService,
-    private breakpointService: NbMediaBreakpointsService,
+    private breakpointService: NbMediaBreakpointsService
   ) {}
 
   ngOnInit() {
@@ -53,52 +53,57 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     if (!this.user || !this.user.name) {
       this.user = {
-        name: 'Guest',
-        picture: 'assets/images/default-avatar.png',
+        name: "Guest",
+        picture: "assets/images/default-avatar.png",
       };
     }
 
     const { xl } = this.breakpointService.getBreakpointsMap();
-    this.themeService.onMediaQueryChange()
+    this.themeService
+      .onMediaQueryChange()
       .pipe(
         map(([, bp]) => bp.width < xl),
-        takeUntil(this.destroy$),
-      ).subscribe(v => this.userPictureOnly = v);
+        takeUntil(this.destroy$)
+      )
+      .subscribe((v) => (this.userPictureOnly = v));
 
-    this.themeService.onThemeChange()
+    this.themeService
+      .onThemeChange()
       .pipe(
         map(({ name }) => name),
-        takeUntil(this.destroy$),
-      ).subscribe(t => this.currentTheme = t);
+        takeUntil(this.destroy$)
+      )
+      .subscribe((t) => (this.currentTheme = t));
 
     // Tangkap klik menu logout
-    this.menuService.onItemClick()
+    this.menuService
+      .onItemClick()
       .pipe(
-        filter(({ item }) => item.data?.action === 'logout'),
+        filter(({ item }) => item.data?.action === "logout"),
         takeUntil(this.destroy$)
-      ).subscribe(() => this.animateLogout());
+      )
+      .subscribe(() => this.animateLogout());
   }
 
- animateLogout() {
-  this.isLoggingOut = true;
-  document.body.classList.add('logging-out'); // Tambahkan efek visual CSS
+  animateLogout() {
+    this.isLoggingOut = true;
+    document.body.classList.add("logging-out"); // Tambahkan efek visual CSS
 
-  setTimeout(() => {
-    this.authService.logout().subscribe(() => {
-      this.isLoggingOut = false;
-      document.body.classList.remove('logging-out');
-      this.router.navigate(['/auth/login']);
-    });
-  }, 60);
-}
-
+    setTimeout(() => {
+      this.authService.logout().subscribe(() => {
+        this.isLoggingOut = false;
+        document.body.classList.remove("logging-out");
+        this.router.navigate(["/auth/login"]);
+      });
+    }, 60);
+  }
 
   changeTheme(themeName: string) {
     this.themeService.changeTheme(themeName);
   }
 
   toggleSidebar(): boolean {
-    this.sidebarService.toggle(true, 'menu-sidebar');
+    this.sidebarService.toggle(true, "menu-sidebar");
     this.layoutService.changeLayoutSize();
     return false;
   }

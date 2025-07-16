@@ -7,6 +7,7 @@ import { LOCALE_ID } from "@angular/core";
 import { registerLocaleData } from "@angular/common";
 import localeId from "@angular/common/locales/id";
 import { NbSpinnerModule, NbLayoutModule } from "@nebular/theme";
+import { NbSelectModule } from "@nebular/theme"; // Tambahkan ini
 
 registerLocaleData(localeId);
 
@@ -58,6 +59,7 @@ import { CustomRegisterComponent } from "./auth/custom-register/custom-register.
     NbSpinnerModule,
     NbLayoutModule,
     NbIconModule,
+    NbSelectModule,
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),

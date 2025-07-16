@@ -1,48 +1,32 @@
+@use '@nebular/theme/styles/theming';
+@use '@nebular/theme/styles/themes/default'; // biar bisa ambil variable tema default
+
 .footer {
+  width: 100%;
+  padding: 1rem 2rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 0.75rem 1.5rem;
-  background: #f8f9fa;
-  border-top: 1px solid #dee2e6;
   font-size: 0.9rem;
-  color: #495057;
+  border-top: 1px solid theming.nb-theme(border-basic-color-3);
+  background-color: transparent; // tetap transparan
 
-  .footer-left {
-    .created-by {
-      a {
-        color: #007bff;
-        text-decoration: none;
-        font-weight: bold;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-  }
-
-  .footer-right {
-    a {
-      margin-left: 0.75rem;
-      font-size: 1.2rem;
-      color: #495057;
-      transition: color 0.3s;
-
-      &:hover {
-        color: #007bff;
-      }
-    }
-  }
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    gap: 0.5rem;
+  .footer-text {
+    color: theming.nb-theme(text-basic-color); // akan jadi putih di dark/cosmic
     text-align: center;
 
-    .footer-right a {
-      margin-left: 0.5rem;
-      margin-right: 0.5rem;
+    strong {
+      color: theming.nb-theme(text-primary-color); // adaptif juga
+      font-weight: 600;
+    }
+
+    a {
+      color: theming.nb-theme(link-text-color); // link sesuai tema
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

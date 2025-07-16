@@ -1,64 +1,89 @@
-.login-container {
-  min-height: 100vh;
+.login-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
   display: flex;
-  justify-content: center;
   align-items: center;
-  // background: linear-gradient(to right, #f5f8fa, #e8f0fe);
-  padding: 2rem;
+  justify-content: center;
+  overflow: hidden;
+  background-color: transparent;
+
+  body.nb-theme-dark & {
+    background-color: transparent;
+  }
 }
 
 .login-card {
   width: 100%;
   max-width: 420px;
   border-radius: 1rem;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
+  max-height: 90vh; // biar gak melebihi tinggi layar
+
+  body.nb-theme-dark & {
+    background-color: #2a2a2a;
+    border-color: #3f3f3f;
+  }
 }
 
-.header-content {
+.login-icon {
+  font-size: 2.4rem;
+  color: #3b82f6;
+
+  body.nb-theme-dark & {
+    color: #60a5fa;
+  }
+}
+
+.login-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  color: #1f2937;
+
+  body.nb-theme-dark & {
+    color: #f7fafc;
+  }
+}
+
+.login-subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+
+  body.nb-theme-dark & {
+    color: #cbd5e0;
+  }
+}
+
+.form-section {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-bottom: 1rem;
-
-  .icon {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .title {
-    font-weight: 700;
-    margin-bottom: 0.2rem;
-  }
-
-  .subtitle {
-    font-size: 0.95rem;
-    color: #666;
-  }
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-::ng-deep nb-form-field {
-  margin-bottom: 0.5rem;
+.alert-section {
+  margin-top: 0.75rem;
 }
 
-a {
-  text-decoration: none;
-  color: #3366ff;
-  transition: 0.2s;
+.submit-btn {
+  margin-top: 0.5rem;
+  transition: transform 0.2s ease-in-out;
 
   &:hover {
-    text-decoration: underline;
-    color: #274bdb;
+    transform: scale(1.03);
   }
 }
 
-@media (max-width: 500px) {
-  .login-card {
-    padding: 0.5rem;
-    border-radius: 0.75rem;
-  }
+.footer-text {
+  font-size: 0.85rem;
+  color: #4b5563;
 
-  .header-content .icon {
-    font-size: 2.5rem;
+  body.nb-theme-dark & {
+    color: #cbd5e0;
   }
 }

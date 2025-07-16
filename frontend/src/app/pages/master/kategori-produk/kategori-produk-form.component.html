@@ -1,0 +1,23 @@
+<nb-card>
+  <nb-card-header>
+    <strong>{{ isEdit ? 'Edit' : 'Tambah' }} Kategori Produk</strong>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form">
+      <!-- <div class="mb-3">
+        <label>Kode Kategori</label>
+        <input nbInput fullWidth formControlName="kode_kategori" readonly />
+      </div> -->
+      <div class="mb-3">
+        <label>Nama Kategori</label>
+        <input nbInput fullWidth formControlName="nama_kategori" />
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-end gap-2">
+    <button nbButton size="small" status="danger" (click)="close()">Batal</button>
+    <button nbButton size="small" status="primary" (click)="submit()" [disabled]="form.invalid">
+      Simpan
+    </button>
+  </nb-card-footer>
+</nb-card>

@@ -1,72 +1,46 @@
-<div class="login-container">
-  <nb-card class="login-card">
-    <nb-card-header>
-      <div class="header-content text-center">
-        <nb-icon icon="log-in-outline" pack="eva" status="primary" class="icon animated-icon"></nb-icon>
-        <h2 class="title">Selamat Datang</h2>
-        <p class="subtitle">Masuk ke <strong>Siakun-ERP</strong></p>
+<div class="login-wrapper">
+  <nb-card class="login-card animate__animated animate__fadeInDown">
+    <nb-card-header class="text-center">
+      <div class="header-content">
+        <nb-icon icon="log-in-outline" pack="eva" status="primary" class="login-icon animate-bounce"></nb-icon>
+        <h2 class="login-title">Selamat Datang</h2>
+        <p class="login-subtitle">Masuk ke <strong class="text-primary">Siakun-ERP</strong></p>
       </div>
     </nb-card-header>
 
     <nb-card-body>
-      <form (ngSubmit)="login()" autocomplete="off">
-        <nb-form-field fullWidth class="mb-3">
+      <form (ngSubmit)="login()" autocomplete="off" class="form-section">
+        <nb-form-field fullWidth>
           <nb-icon nbPrefix icon="email-outline" pack="eva"></nb-icon>
-         <input
-         nbInput
-         type="text"
-         name="email"
-         [(ngModel)]="user.email"
-         placeholder="Email atau Nama"
-         required
-         />
+          <input nbInput type="text" name="email" [(ngModel)]="user.email" placeholder="Email atau Nama" required />
         </nb-form-field>
 
-        <nb-form-field fullWidth class="mb-3">
+        <nb-form-field fullWidth>
           <nb-icon nbPrefix icon="lock-outline" pack="eva"></nb-icon>
-          <input
-            nbInput
-            type="password"
-            name="password"
-            [(ngModel)]="user.password"
-            placeholder="Password"
-            required
-          />
+          <input nbInput type="password" name="password" [(ngModel)]="user.password" placeholder="Password" required />
         </nb-form-field>
 
-        <div *ngIf="errors.length" class="mt-2">
+        <div *ngIf="errors.length" class="alert-section">
           <nb-alert *ngFor="let error of errors" status="danger" outline>{{ error }}</nb-alert>
         </div>
 
-        <div *ngIf="messages.length" class="mt-2">
+        <div *ngIf="messages.length" class="alert-section">
           <nb-alert *ngFor="let msg of messages" status="success" outline>{{ msg }}</nb-alert>
         </div>
 
-        <button
-          nbButton
-          status="primary"
-          size="large"
-          fullWidth
-          type="submit"
-          [disabled]="loading"
-          [hero]="!loading"
-          [outline]="loading"
-          class="mt-3"
-        >
-          <nb-icon
-            *ngIf="loading"
-            icon="refresh-outline"
-            pack="eva"
-            animation="spin"
-            class="me-1"
-          ></nb-icon>
+        <button nbButton status="primary" fullWidth type="submit" [disabled]="loading" [hero]="!loading"
+          [outline]="loading" class="submit-btn">
+          <nb-icon *ngIf="loading" icon="refresh-outline" pack="eva" animation="spin" class="me-1"></nb-icon>
           {{ loading ? 'Memuat...' : 'Masuk' }}
         </button>
       </form>
     </nb-card-body>
 
     <nb-card-footer class="text-center">
-      <span>Belum punya akun? <a routerLink="/auth/register"><strong>Daftar</strong></a></span>
+      <span class="footer-text">
+        Belum punya akun?
+        <a routerLink="/register" class="text-primary font-semibold hover:underline">Daftar</a>
+      </span>
     </nb-card-footer>
   </nb-card>
 </div>

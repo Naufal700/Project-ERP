@@ -12,17 +12,13 @@ import { SeoService } from "./@core/utils/seo.service";
 @Component({
   selector: "ngx-app",
   template: `
-    <nb-layout>
-      <nb-layout-column>
-        <div *ngIf="isLoading" class="overlay-spinner">
-          <div class="spinner-logo">
-            <div class="spinner-circle"></div>
-          </div>
-          <p class="loading-text">{{ loadingText }}</p>
-        </div>
-        <router-outlet></router-outlet>
-      </nb-layout-column>
-    </nb-layout>
+    <div *ngIf="isLoading" class="overlay-spinner">
+      <div class="spinner-logo">
+        <div class="spinner-circle"></div>
+      </div>
+      <p class="loading-text">{{ loadingText }}</p>
+    </div>
+    <router-outlet></router-outlet>
   `,
   styles: [
     `

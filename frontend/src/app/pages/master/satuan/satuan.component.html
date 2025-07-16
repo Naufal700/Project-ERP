@@ -1,0 +1,51 @@
+<nb-card>
+  <!-- Header -->
+  <nb-card-header class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <h4 class="m-0">Master Satuan Produk</h4>
+    <button nbButton status="primary" size="small" (click)="openForm()">
+      <nb-icon icon="plus-outline"></nb-icon>
+      <span class="ml-1">Tambah</span>
+    </button>
+  </nb-card-header>
+
+  <!-- Body -->
+  <nb-card-body>
+    <!-- Search Box -->
+    <div class="mb-3">
+      <nb-form-field fullWidth>
+        <nb-icon nbPrefix icon="search-outline"></nb-icon>
+        <input nbInput placeholder="Cari satuan..." [(ngModel)]="searchTerm" />
+      </nb-form-field>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm table-hover">
+        <thead>
+          <tr>
+            <th class="fw-bold">Kode</th>
+            <th class="fw-bold">Nama</th>
+            <th class="text-center fw-bold">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let s of filteredSatuanList">
+            <td>{{ s.kode_satuan }}</td>
+            <td>{{ s.nama_satuan }}</td>
+            <td class="text-center">
+              <button nbButton ghost size="tiny" status="info" (click)="openForm(s)">
+                <nb-icon icon="edit-2-outline"></nb-icon>
+              </button>
+              <button nbButton ghost size="tiny" status="danger" (click)="delete(s.id)">
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredSatuanList.length === 0">
+            <td colspan="3" class="text-center text-muted">Tidak ada data.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

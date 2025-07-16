@@ -42,14 +42,14 @@
       <table class="table table-bordered table-sm table-hover">
         <thead>
           <tr>
-            <th (click)="sortBy('kode_akun')">Kode Akun</th>
+            <th (click)="sortBy('kode_akun')">No. Akun</th>
             <th (click)="sortBy('nama_akun')">Nama Akun</th>
             <th>Level</th>
-            <th>Induk</th>
-            <th>Kategori Akun</th>
+            <th>Akun Induk</th>
+            <th>Kategori</th>
             <th>Tipe</th>
             <th>Laporan</th>
-            <th>Normal</th>
+            <th>Posisi</th>
             <th>Header</th>
             <th>Saldo Awal</th>
             <th class="text-center">Aksi</th>
@@ -59,7 +59,7 @@
           <tr *ngFor="let coa of paginatedData">
             <td>{{ coa.kode_akun }}</td>
             <td>{{ coa.nama_akun }}</td>
-            <td>{{ coa.level_akun }}</td>
+            <td>Level {{ coa.level_akun }}</td>
             <td>{{ coa.parent_kode_akun || '-' }}</td>
             <td>{{ coa.kategori_akun || '-' }}</td>
             <td>{{ coa.tipe_akun || '-' }}</td>
