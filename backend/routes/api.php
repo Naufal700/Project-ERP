@@ -7,9 +7,12 @@ use App\Http\Controllers\Api\CoaController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProdukController;
 use App\Http\Controllers\API\SatuanController;
+use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\PelangganController;
 use App\Http\Controllers\API\KategoriProdukController;
+use App\Http\Controllers\Api\HargaJualProdukController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,3 +49,14 @@ Route::get('/produk/generate-kode', [ProdukController::class, 'generateKode']);
 Route::apiResource('produk', ProdukController::class);
 Route::post('produk/import', [ProdukController::class, 'import']);
 Route::get('produk/template', [ProdukController::class, 'downloadTemplate']);
+
+Route::apiResource('harga-jual', HargaJualProdukController::class);
+
+Route::prefix('karyawan')->group(function () {
+    Route::get('/', [KaryawanController::class, 'index']);
+    Route::post('/', [KaryawanController::class, 'store']);
+    Route::put('/{id}', [KaryawanController::class, 'update']);
+    Route::delete('/{id}', [KaryawanController::class, 'destroy']);
+    Route::get('/download-template', [KaryawanController::class, 'downloadTemplate']);
+    Route::post('/import', [KaryawanController::class, 'import']);
+});
