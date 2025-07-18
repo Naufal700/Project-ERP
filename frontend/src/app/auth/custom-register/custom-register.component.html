@@ -1,29 +1,32 @@
 <div class="register-wrapper">
-  <nb-card class="register-card animate__animated animate__fadeInDown">
-    <nb-card-header class="text-center pt-6">
-      <div class="icon-wrapper">
-        <nb-icon icon="person-add-outline" pack="eva" status="primary" class="register-icon animate-bounce"></nb-icon>
-      </div>
-      <h2 class="register-title">Buat Akun Baru</h2>
-      <p class="register-subtitle">Silakan isi form untuk mendaftar ke <strong class="text-primary">Siakun-ERP</strong>
+  <nb-card class="login-card animate__animated animate__fadeInDown">
+    <nb-card-header class="text-center header-content">
+      <nb-icon icon="person-add-outline" pack="eva" status="primary" class="login-icon animate__bounceIn"></nb-icon>
+      <h2 class="login-title">Buat Akun Baru</h2>
+      <p class="login-subtitle">
+        Daftar ke <strong class="text-primary">Siakun-ERP</strong>
       </p>
     </nb-card-header>
 
-    <nb-card-body class="px-8 pb-6">
+    <nb-card-body>
       <form (ngSubmit)="register()" autocomplete="off" class="form-section">
-        <nb-form-field fullWidth>
+        <nb-form-field fullWidth class="form-field">
+          <nb-icon nbPrefix icon="person-outline" pack="eva"></nb-icon>
           <input nbInput placeholder="Nama Lengkap" type="text" name="name" [(ngModel)]="user.name" required />
         </nb-form-field>
 
-        <nb-form-field fullWidth>
+        <nb-form-field fullWidth class="form-field">
+          <nb-icon nbPrefix icon="email-outline" pack="eva"></nb-icon>
           <input nbInput placeholder="Email" type="email" name="email" [(ngModel)]="user.email" required />
         </nb-form-field>
 
-        <nb-form-field fullWidth>
+        <nb-form-field fullWidth class="form-field">
+          <nb-icon nbPrefix icon="lock-outline" pack="eva"></nb-icon>
           <input nbInput placeholder="Password" type="password" name="password" [(ngModel)]="user.password" required />
         </nb-form-field>
 
-        <nb-form-field fullWidth>
+        <nb-form-field fullWidth class="form-field">
+          <nb-icon nbPrefix icon="lock-outline" pack="eva"></nb-icon>
           <input nbInput placeholder="Ulangi Password" type="password" name="confirmPassword"
             [(ngModel)]="user.confirmPassword" required />
         </nb-form-field>
@@ -36,14 +39,17 @@
           <nb-alert *ngFor="let msg of messages" status="success" outline>{{ msg }}</nb-alert>
         </div>
 
-        <button nbButton status="success" fullWidth type="submit" [disabled]="loading" class="submit-btn mt-3">
+        <button nbButton status="primary" fullWidth type="submit" [disabled]="loading" [hero]="!loading"
+          [outline]="loading" class="submit-btn">
+          <nb-icon *ngIf="loading" icon="refresh-outline" pack="eva" animation="spin" class="me-1"></nb-icon>
           {{ loading ? 'Memproses...' : 'Daftar Sekarang' }}
         </button>
       </form>
     </nb-card-body>
 
-    <nb-card-footer class="text-center pb-4">
-      <a routerLink="/auth/login" class="text-primary font-semibold hover:underline">Sudah punya akun? Login</a>
+    <nb-card-footer class="text-center footer-text">
+      Sudah punya akun?
+      <a routerLink="/auth/login" class="text-primary font-semibold hover:underline">Login</a>
     </nb-card-footer>
   </nb-card>
 </div>

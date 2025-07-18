@@ -1,0 +1,60 @@
+<nb-card>
+  <nb-card-header>{{ data ? 'Edit Karyawan' : 'Tambah Karyawan' }}</nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form" class="form-grid">
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="nama_lengkap" placeholder="Nama Lengkap" />
+      </div>
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="nip" placeholder="Nomor Induk Pegawai" />
+      </div>
+
+      <div class="form-group">
+        <nb-select fullWidth formControlName="jenis_kelamin" placeholder="Jenis Kelamin">
+          <nb-option value="L">Laki-laki</nb-option>
+          <nb-option value="P">Perempuan</nb-option>
+        </nb-select>
+      </div>
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="tanggal_lahir" type="date" placeholder="Tanggal Lahir" />
+      </div>
+
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="tempat_lahir" placeholder="Tempat Lahir" />
+      </div>
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="alamat" placeholder="Alamat" />
+      </div>
+
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="email" placeholder="Email" />
+      </div>
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="no_hp" placeholder="No HP" />
+      </div>
+
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="jabatan" placeholder="Jabatan" />
+      </div>
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="divisi" placeholder="Divisi" />
+      </div>
+
+      <div class="form-group">
+        <input nbInput fullWidth formControlName="tanggal_masuk" type="date" placeholder="Tanggal Masuk" />
+      </div>
+
+      <div class="form-group">
+        <nb-select fullWidth formControlName="is_aktif" placeholder="Status Aktif">
+          <nb-option [value]="true">Aktif</nb-option>
+          <nb-option [value]="false">Tidak Aktif</nb-option>
+        </nb-select>
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="footer-button">
+    <button nbButton status="success" (click)="simpan()" [disabled]="form.invalid">Simpan</button>
+    <button nbButton status="danger" (click)="batal()" class="ml-2">Batal</button>
+  </nb-card-footer>
+</nb-card>

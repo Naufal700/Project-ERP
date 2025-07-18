@@ -1,0 +1,93 @@
+<nb-card>
+  <nb-card-header class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <h4 class="title">Daftar Harga Jual</h4>
+    <div class="d-flex gap-2 flex-wrap">
+      <button nbButton status="primary" size="small" (click)="openForm()">
+        <nb-icon icon="plus-outline"></nb-icon>
+        <span class="ml-1">Tambah</span>
+      </button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- Search -->
+    <div class="mb-3">
+      <nb-form-field fullWidth>
+        <nb-icon nbPrefix icon="search-outline"></nb-icon>
+        <input nbInput placeholder="Cari nama produk..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
+      </nb-form-field>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!loading; else loadingTpl" class="table-responsive">
+      <table class="table table-bordered table-hover table-sm">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nama Produk</th>
+            <th>Harga</th>
+            <th>Tanggal Mulai</th>
+            <th>Tanggal Berakhir</th>
+            <th>Status</th>
+            <th class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of filteredData; let i = index">
+            <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+            <td>{{ row.produk?.nama_produk }}</td>
+            <td>Rp {{ row.harga | number: '1.0-2' }}</td>
+            <td>{{ row.tanggal_mulai }}</td>
+            <td>{{ row.tanggal_berakhir || '-' }}</td>
+            <td>
+              <span [ngClass]="row.is_aktif ? 'text-success' : 'text-danger'">
+                {{ row.aktif ? 'Aktif' : 'Nonaktif' }}
+              </span>
+            </td>
+            <td class="text-center">
+              <button nbButton ghost size="tiny" status="info" (click)="openForm(row)">
+                <nb-icon icon="edit-2-outline"></nb-icon>
+              </button>
+              <button nbButton ghost size="tiny" status="danger" (click)="delete(row.id)">
+                <nb-icon icon="trash-2-outline"></nb-icon>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredData.length === 0">
+            <td colspan="7" class="text-center text-muted">Tidak ada data ditemukan.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Loading -->
+    <ng-template #loadingTpl>
+      <div class="text-center py-4">
+        <nb-spinner status="primary"></nb-spinner>
+      </div>
+    </ng-template>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2"
+      *ngIf="totalPages > 1">
+      <nb-select size="small" [(selected)]="itemsPerPage" (selectedChange)="changeItemsPerPage($event)">
+        <nb-option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }} baris</nb-option>
+      </nb-select>
+
+      <nav>
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="#" (click)="changePage(currentPage - 1, $event)">‹</a>
+          </li>
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+            [class.active]="currentPage === i + 1">
+            <a class="page-link" href="#" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="#" (click)="changePage(currentPage + 1, $event)">›</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { NbDialogRef } from "@nebular/theme";
+import { NbDialogRef, NbToastrService } from "@nebular/theme";
 import { CoaService } from "./coa.service";
 import { Coa } from "./coa.model";
 
@@ -30,7 +30,8 @@ export class CoaFormDialogComponent implements OnInit {
 
   constructor(
     private coaService: CoaService,
-    protected dialogRef: NbDialogRef<CoaFormDialogComponent>
+    protected dialogRef: NbDialogRef<CoaFormDialogComponent>,
+    private toastr: NbToastrService
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +81,7 @@ export class CoaFormDialogComponent implements OnInit {
 
   simpan() {
     if (!this.akun.kode_akun || !this.akun.nama_akun) {
-      alert("⚠️ Kode akun dan nama akun wajib diisi.");
+      this.toastr.danger("Data COA wajib diisi");
       return;
     }
 
@@ -90,12 +91,14 @@ export class CoaFormDialogComponent implements OnInit {
 
     request.subscribe({
       next: () => {
-        alert(`✅ Akun COA berhasil ${this.id ? "diperbarui" : "ditambahkan"}`);
+        this.toastr.success(
+          `COA berhasil ${this.id ? "diperbarui" : "ditambahkan"}`
+        );
         this.dialogRef.close(true);
       },
       error: (err) => {
         console.error(err);
-        alert("❌ Gagal menyimpan akun. Cek konsol untuk detail.");
+        this.toastr.danger("Gagal mengambil data");
       },
     });
   }

@@ -1,33 +1,38 @@
+// 1. Font
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
 
-// themes - our custom or/and out of the box themes
-@import 'themes';
+// 2. Theme files (Nebular)
+@import 'themes'; // custom themes kamu di /src
 
-// framework component themes (styles tied to theme variables)
+// 3. Nebular Core & Auth
 @import '@nebular/theme/styles/globals';
 @import '@nebular/auth/styles/globals';
 
+// 4. Bootstrap Grid (optional)
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/grid';
 
-// loading progress bar theme
+// 5. Loading progress bar theme (ngx-pace)
 @import './pace.theme';
 
+// 6. Custom layout & overrides
 @import './layout';
 @import './overrides';
 
-// install the framework and custom global styles
+// 7. Install Nebular & custom styles
 @include nb-install() {
-
-  // framework global styles
+  // Core global styles
   @include nb-theme-global();
   @include nb-auth-global();
 
+  // Layout helpers (FlexBox, etc)
   @include ngx-layout();
-  // loading progress bar
+
+  // Loading progress bar style
   @include ngx-pace-theme();
 
+  // Custom overrides
   @include nb-overrides();
-};
+}

@@ -1,89 +1,142 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
 .login-wrapper {
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 100vw;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  background-color: transparent;
-
-  body.nb-theme-dark & {
-    background-color: transparent;
-  }
 }
 
+/* Background video style */
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(0.7) blur(2px);
+}
+
+/* Card style */
 .login-card {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 420px;
-  border-radius: 1rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-  background-color: #ffffff;
-  max-height: 90vh; // biar gak melebihi tinggi layar
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 0.8s ease both;
 
-  body.nb-theme-dark & {
-    background-color: #2a2a2a;
-    border-color: #3f3f3f;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
   }
 }
 
-.login-icon {
-  font-size: 2.4rem;
-  color: #3b82f6;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 
-  body.nb-theme-dark & {
-    color: #60a5fa;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.login-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-top: 0.25rem;
-  color: #1f2937;
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 
-  body.nb-theme-dark & {
-    color: #f7fafc;
+  .login-icon {
+    font-size: 3rem;
+    color: #3366ff;
   }
-}
 
-.login-subtitle {
-  font-size: 0.9rem;
-  color: #6b7280;
+  .login-title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
 
-  body.nb-theme-dark & {
-    color: #cbd5e0;
+  .login-subtitle {
+    font-size: 0.95rem;
+    color: #475569;
   }
 }
 
 .form-section {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
   margin-top: 1rem;
-}
 
-.alert-section {
-  margin-top: 0.75rem;
-}
+  input[nbInput] {
+    padding: 0.75rem 1rem;
+    padding-left: 2.5rem;
+    font-size: 0.95rem;
+    border-radius: 0.5rem;
+    background: #f8fafc;
+    border: none;
 
-.submit-btn {
-  margin-top: 0.5rem;
-  transition: transform 0.2s ease-in-out;
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(51, 102, 255, 0.3);
+    }
+  }
 
-  &:hover {
-    transform: scale(1.03);
+
+  .submit-btn {
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: all 0.3s;
+
+    &:hover {
+      box-shadow: 0 6px 16px rgba(51, 102, 255, 0.3);
+    }
+  }
+
+  .alert-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
 
 .footer-text {
-  font-size: 0.85rem;
-  color: #4b5563;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #64748b;
 
-  body.nb-theme-dark & {
-    color: #cbd5e0;
+  a {
+    margin-left: 0.25rem;
+    font-weight: 600;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #1d4ed8;
+    }
   }
 }

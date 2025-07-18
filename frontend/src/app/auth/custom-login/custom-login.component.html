@@ -1,21 +1,21 @@
 <div class="login-wrapper">
   <nb-card class="login-card animate__animated animate__fadeInDown">
-    <nb-card-header class="text-center">
-      <div class="header-content">
-        <nb-icon icon="log-in-outline" pack="eva" status="primary" class="login-icon animate-bounce"></nb-icon>
-        <h2 class="login-title">Selamat Datang</h2>
-        <p class="login-subtitle">Masuk ke <strong class="text-primary">Siakun-ERP</strong></p>
-      </div>
+    <nb-card-header class="text-center header-content">
+      <nb-icon icon="log-in-outline" pack="eva" status="primary" class="login-icon animate__bounceIn"></nb-icon>
+      <h2 class="login-title">Selamat Datang</h2>
+      <p class="login-subtitle">
+        Masuk ke <strong class="text-primary">Siakun-ERP</strong>
+      </p>
     </nb-card-header>
 
     <nb-card-body>
       <form (ngSubmit)="login()" autocomplete="off" class="form-section">
-        <nb-form-field fullWidth>
+        <nb-form-field fullWidth class="form-field">
           <nb-icon nbPrefix icon="email-outline" pack="eva"></nb-icon>
           <input nbInput type="text" name="email" [(ngModel)]="user.email" placeholder="Email atau Nama" required />
         </nb-form-field>
 
-        <nb-form-field fullWidth>
+        <nb-form-field fullWidth class="form-field">
           <nb-icon nbPrefix icon="lock-outline" pack="eva"></nb-icon>
           <input nbInput type="password" name="password" [(ngModel)]="user.password" placeholder="Password" required />
         </nb-form-field>
@@ -36,11 +36,9 @@
       </form>
     </nb-card-body>
 
-    <nb-card-footer class="text-center">
-      <span class="footer-text">
-        Belum punya akun?
-        <a routerLink="/register" class="text-primary font-semibold hover:underline">Daftar</a>
-      </span>
+    <nb-card-footer class="text-center footer-text">
+      Belum punya akun?
+      <a routerLink="/register" class="text-primary font-semibold hover:underline">Daftar</a>
     </nb-card-footer>
   </nb-card>
 </div>

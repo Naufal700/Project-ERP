@@ -1,13 +1,14 @@
-import { NgModule } from "@angular/core";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { HttpClientModule } from "@angular/common/http";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { LOCALE_ID } from "@angular/core";
 import { registerLocaleData } from "@angular/common";
 import localeId from "@angular/common/locales/id";
 import { NbSpinnerModule, NbLayoutModule } from "@nebular/theme";
-import { NbSelectModule } from "@nebular/theme"; // Tambahkan ini
+import { NbSelectModule } from "@nebular/theme";
+import { AuthLayoutComponent } from "./auth/auth-layout.component";
 
 registerLocaleData(localeId);
 
@@ -44,7 +45,12 @@ import { CustomLoginComponent } from "./auth/custom-login/custom-login.component
 import { CustomRegisterComponent } from "./auth/custom-register/custom-register.component";
 
 @NgModule({
-  declarations: [AppComponent, CustomLoginComponent, CustomRegisterComponent],
+  declarations: [
+    AppComponent,
+    CustomLoginComponent,
+    CustomRegisterComponent,
+    AuthLayoutComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -60,6 +66,7 @@ import { CustomRegisterComponent } from "./auth/custom-register/custom-register.
     NbLayoutModule,
     NbIconModule,
     NbSelectModule,
+    ReactiveFormsModule,
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),
@@ -125,5 +132,6 @@ import { CustomRegisterComponent } from "./auth/custom-register/custom-register.
   ],
   providers: [{ provide: LOCALE_ID, useValue: "id-ID" }],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}

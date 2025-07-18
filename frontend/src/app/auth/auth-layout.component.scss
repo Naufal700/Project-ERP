@@ -1,0 +1,10 @@
+:host ::ng-deep nb-layout {
+    background-color: #f4f7fa; // atau sesuai tema login
+    height: 100vh;
+}
+
+:host ::ng-deep nb-layout-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,93 @@
+:host ::ng-deep {
+    nb-card {
+        nb-card-header {
+            font-weight: 600;
+            color: var(--text-basic-color);
+        }
+
+        nb-card-body {
+            color: var(--text-basic-color);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            nb-form-field,
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                max-width: 100%;
+
+                label {
+                    color: var(--text-basic-color);
+                    font-weight: 500;
+                    margin-bottom: 0.25rem;
+                }
+
+                input,
+                select,
+                textarea {
+                    color: var(--text-basic-color);
+                    background-color: transparent;
+                    border: 1px solid var(--border-basic-color);
+                }
+
+                ::placeholder {
+                    color: var(--text-hint-color);
+                }
+            }
+        }
+
+        .table {
+            th {
+                background-color: var(--header-bg);
+                color: var(--text-basic-color);
+                font-weight: 600;
+            }
+
+            td {
+                vertical-align: middle;
+                color: var(--text-basic-color);
+            }
+
+            .text-success {
+                color: #4caf50;
+            }
+
+            .text-danger {
+                color: #f44336;
+            }
+        }
+
+        .nb-form-field {
+            max-width: 300px;
+        }
+
+        .d-flex {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+
+        .ml-1 {
+            margin-left: 0.25rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        button[nbButton] {
+            font-weight: 500;
+        }
+    }
+}

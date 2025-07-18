@@ -1,0 +1,44 @@
+<nb-card>
+  <nb-card-header>{{ data ? 'Edit Harga Jual' : 'Tambah Harga Jual' }}</nb-card-header>
+
+  <nb-card-body [formGroup]="form">
+    <div class="form-grid">
+      <div class="form-item">
+        <label>Produk</label>
+        <nb-select formControlName="id_produk" fullWidth placeholder="Pilih produk">
+          <nb-option *ngFor="let item of produkList" [value]="item.id">
+            {{ item.nama_produk }}
+          </nb-option>
+        </nb-select>
+      </div>
+
+      <div class="form-item">
+        <label>Harga</label>
+        <input nbInput formControlName="harga" type="number" fullWidth />
+      </div>
+
+      <div class="form-item">
+        <label>Tanggal Mulai</label>
+        <input nbInput formControlName="tanggal_mulai" type="date" fullWidth />
+      </div>
+
+      <div class="form-item">
+        <label>Tanggal Berakhir</label>
+        <input nbInput formControlName="tanggal_berakhir" type="date" fullWidth />
+      </div>
+
+      <div class="form-item">
+        <label>Status</label>
+        <nb-select formControlName="aktif" fullWidth placeholder="Pilih status">
+          <nb-option [value]="true">Aktif</nb-option>
+          <nb-option [value]="false">Tidak Aktif</nb-option>
+        </nb-select>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="text-right">
+    <button nbButton status="primary" class="mr-2" (click)="save()">Simpan</button>
+    <button nbButton status="danger" (click)="close()">Batal</button>
+  </nb-card-footer>
+
+</nb-card>

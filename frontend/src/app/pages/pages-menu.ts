@@ -19,7 +19,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
           { title: "Daftar Produk", link: "/pages/master/produk" },
           { title: "Kategori Produk", link: "/pages/master/kategori-produk" },
           { title: "Satuan", link: "/pages/master/satuan" },
-          { title: "Harga Jual & Beli", link: "/pages/master/pricing" },
+          { title: "Harga Jual & Beli", link: "/pages/master/harga-jual" },
         ],
       },
       {
@@ -29,7 +29,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
           { title: "Mapping Jurnal", link: "/pages/master/journal-mapping" },
         ],
       },
-      { title: "Karyawan", link: "/pages/master/employee" },
+      { title: "Karyawan", link: "/pages/master/karyawan" },
       { title: "Gudang / Lokasi", link: "/pages/master/warehouse" },
       { title: "Departemen / Proyek", link: "/pages/master/project" },
       { title: "Cabang", link: "/pages/master/branch" },
@@ -142,21 +142,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
         ],
       },
       {
-        title: "Pajak",
-        icon: "percent-outline",
-        children: [
-          { title: "Master Jenis Pajak", link: "/pages/tax/master" },
-          { title: "Kode Pajak", link: "/pages/tax/code" },
-          { title: "Faktur Pajak Keluaran", link: "/pages/tax/output-invoice" },
-          { title: "Faktur Pajak Masukan", link: "/pages/tax/input-invoice" },
-          { title: "PPh 21 (Karyawan)", link: "/pages/tax/pph21" },
-          { title: "PPh 23 (Jasa / Royalti)", link: "/pages/tax/pph23" },
-          { title: "e-Faktur / CSV Export", link: "/pages/tax/e-faktur" },
-          { title: "e-Bupot Export", link: "/pages/tax/e-bupot" },
-          { title: "Laporan Pajak", link: "/pages/tax/report" },
-        ],
-      },
-      {
         title: "Laporan Keuangan",
         children: [
           { title: "Neraca", link: "/pages/accounting/balance-sheet" },
@@ -169,6 +154,21 @@ export const MENU_ITEMS: NbMenuItem[] = [
       { title: "Posting Transaksi", link: "/pages/accounting/posting" },
       { title: "Tutup Buku", link: "/pages/accounting/closing" },
       { title: "Audit & Pemeriksaan", link: "/pages/accounting/audit" },
+    ],
+  },
+  {
+    title: "Pajak",
+    icon: "percent-outline",
+    children: [
+      { title: "Master Jenis Pajak", link: "/pages/tax/master" },
+      { title: "Kode Pajak", link: "/pages/tax/code" },
+      { title: "Faktur Pajak Keluaran", link: "/pages/tax/output-invoice" },
+      { title: "Faktur Pajak Masukan", link: "/pages/tax/input-invoice" },
+      { title: "PPh 21 (Karyawan)", link: "/pages/tax/pph21" },
+      { title: "PPh 23 (Jasa / Royalti)", link: "/pages/tax/pph23" },
+      { title: "e-Faktur / CSV Export", link: "/pages/tax/e-faktur" },
+      { title: "e-Bupot Export", link: "/pages/tax/e-bupot" },
+      { title: "Laporan Pajak", link: "/pages/tax/report" },
     ],
   },
   {

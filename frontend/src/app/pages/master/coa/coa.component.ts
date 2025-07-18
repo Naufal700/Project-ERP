@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { CoaService } from "./coa.service";
-import { NbDialogService } from "@nebular/theme";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { CoaFormDialogComponent } from "./coa-form-dialog.component";
 
 @Component({
@@ -29,7 +29,8 @@ export class CoaComponent implements OnInit {
 
   constructor(
     private coaService: CoaService,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
+    private toastr: NbToastrService
   ) {}
 
   ngOnInit(): void {
@@ -62,7 +63,10 @@ export class CoaComponent implements OnInit {
 
   delete(id: number) {
     if (confirm("Yakin ingin menghapus akun ini?")) {
-      this.coaService.delete(id).subscribe(() => this.loadData());
+      this.coaService.delete(id).subscribe(() => {
+        this.toastr.success("Data berhasil dihapus");
+        this.loadData();
+      });
     }
   }
 

@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgxPaginationModule } from "ngx-pagination";
@@ -12,6 +12,7 @@ import {
   NbFormFieldModule,
   NbSelectModule,
   NbDialogModule,
+  NbDatepickerModule,
 } from "@nebular/theme";
 
 import { ThemeModule } from "../@theme/theme.module";
@@ -40,6 +41,8 @@ import { KategoriProdukFormComponent } from "./master/kategori-produk/kategori-p
 import { ProdukComponent } from "./master/produk/produk.component";
 import { ProdukFormComponent } from "./master/produk/produk-form..component";
 
+import { KaryawanComponent } from "./karyawan/karyawan.component";
+import { KaryawanFormComponent } from "./karyawan/karyawan-form.component";
 @NgModule({
   imports: [
     CommonModule,
@@ -54,6 +57,7 @@ import { ProdukFormComponent } from "./master/produk/produk-form..component";
     NbIconModule,
     NbFormFieldModule,
     NbSelectModule,
+    NbDatepickerModule,
     NbDialogModule.forChild(),
     DashboardModule,
     ECommerceModule,
@@ -74,7 +78,10 @@ import { ProdukFormComponent } from "./master/produk/produk-form..component";
     KategoriProdukFormComponent,
     ProdukComponent,
     ProdukFormComponent,
+    KaryawanComponent,
+    KaryawanFormComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [{ provide: LOCALE_ID, useValue: "id" }],
 })
 export class PagesModule {}

@@ -5,4 +5,5 @@
  */
 export const environment = {
   production: true,
+  apiUrl: "https://siakun-erp.com/api", // domain backend produksi
 };

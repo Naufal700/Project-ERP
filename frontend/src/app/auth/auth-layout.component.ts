@@ -9,5 +9,6 @@ import { Component } from "@angular/core";
       </nb-layout-column>
     </nb-layout>
   `,
+  styleUrls: ["./auth-layout.component.scss"],
 })
 export class AuthLayoutComponent {}

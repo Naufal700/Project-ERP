@@ -11,6 +11,8 @@ import { SupplierComponent } from "./master/supplier/supplier.component";
 import { SatuanComponent } from "./master/satuan/satuan.component";
 import { KategoriProdukComponent } from "./master/kategori-produk/kategori-produk.component";
 import { ProdukComponent } from "./master/produk/produk.component";
+import { HargaJualComponent } from "./harga-jual/harga-jual.component";
+import { KaryawanComponent } from "./karyawan/karyawan.component";
 
 const routes: Routes = [
   {
@@ -31,7 +33,7 @@ const routes: Routes = [
         children: [
           {
             path: "",
-            component: PelangganComponent, // Daftar pelanggan
+            component: PelangganComponent,
           },
         ],
       },
@@ -77,6 +79,24 @@ const routes: Routes = [
           {
             path: "",
             component: ProdukComponent, // Daftar Produk
+          },
+        ],
+      },
+      {
+        path: "master/harga-jual",
+        children: [
+          {
+            path: "",
+            component: HargaJualComponent, // Daftar Harga Produk
+          },
+        ],
+      },
+      {
+        path: "master/karyawan",
+        children: [
+          {
+            path: "",
+            component: KaryawanComponent, // Daftar Karyawan
           },
         ],
       },
@@ -148,6 +168,11 @@ const routes: Routes = [
         component: NotFoundComponent,
       },
     ],
+  },
+  {
+    path: "harga-jual",
+    loadChildren: () =>
+      import("./harga-jual/harga-jual.module").then((m) => m.HargaJualModule),
   },
 ];
 
