@@ -13,6 +13,8 @@ import { KategoriProdukComponent } from "./master/kategori-produk/kategori-produ
 import { ProdukComponent } from "./master/produk/produk.component";
 import { HargaJualComponent } from "./harga-jual/harga-jual.component";
 import { KaryawanComponent } from "./karyawan/karyawan.component";
+import { GudangComponent } from "./gudang/gudang.component";
+import { DivisiProyekComponent } from "./master/divisi-proyek/divisi-proyek.component";
 
 const routes: Routes = [
   {
@@ -97,6 +99,24 @@ const routes: Routes = [
           {
             path: "",
             component: KaryawanComponent, // Daftar Karyawan
+          },
+        ],
+      },
+      {
+        path: "master/gudang",
+        children: [
+          {
+            path: "",
+            component: GudangComponent, // Daftar Gudang
+          },
+        ],
+      },
+      {
+        path: "master/divisi-proyek",
+        children: [
+          {
+            path: "",
+            component: DivisiProyekComponent, // Daftar divisi dan proyek
           },
         ],
       },

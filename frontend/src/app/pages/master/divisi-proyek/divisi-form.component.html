@@ -1,0 +1,19 @@
+<nb-card>
+  <nb-card-header>Tambah Divisi</nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label>Kode</label>
+        <input nbInput fullWidth formControlName="kode" />
+      </div>
+      <div class="form-group">
+        <label>Nama</label>
+        <input nbInput fullWidth formControlName="nama" />
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="success" (click)="submit()">Simpan</button>
+    <button nbButton status="danger" (click)="cancel()">Batal</button>
+  </nb-card-footer>
+</nb-card>

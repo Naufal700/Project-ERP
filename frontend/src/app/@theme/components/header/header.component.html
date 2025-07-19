@@ -1,11 +1,11 @@
 <div class="header-container">
   <div class="logo-container">
-    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
+    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle" aria-label="Toggle Sidebar">
       <nb-icon icon="menu-2-outline"></nb-icon>
     </a>
-    <a class="logo" href="#" (click)="navigateHome()" style="font-size: 22px; font-weight: bold; color: #3366ff;">
-      <span style="color: #222">SIA</span><span style="color: #00d68f">KUN</span>
-      <span style="font-weight: 300;">ERP</span>
+    <a class="logo" href="#" (click)="navigateHome()">
+      <span class="logo-part1">SIA</span><span class="logo-part2">KUN</span>
+      <span class="logo-part3">ERP</span>
     </a>
   </div>
 
@@ -16,11 +16,8 @@
 
 <div class="header-container">
   <nb-actions size="small">
-    <nb-action class="control-item">
-      <nb-search type="rotate-layout"></nb-search>
-    </nb-action>
-    <nb-action class="control-item" icon="email-outline"></nb-action>
-    <nb-action class="control-item" icon="bell-outline"></nb-action>
+    <nb-action class="control-item" icon="email-outline" aria-label="Email"></nb-action>
+    <nb-action class="control-item" icon="bell-outline" aria-label="Notifications"></nb-action>
 
     <nb-action class="user-action">
       <nb-user [nbContextMenu]="userMenu" [onlyPicture]="userPictureOnly" [name]="user?.name"
@@ -29,6 +26,7 @@
     </nb-action>
   </nb-actions>
 </div>
+
 <div class="logout-overlay" *ngIf="isLoggingOut">
   <div class="logout-content">
     <nb-icon icon="power-outline" pack="eva" class="spinner"></nb-icon>

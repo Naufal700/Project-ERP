@@ -1,0 +1,46 @@
+<nb-card>
+  <nb-card-header>Tambah Proyek</nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form">
+      <div class="form-group">
+        <label>Kode</label>
+        <input nbInput fullWidth formControlName="kode" />
+      </div>
+      <div class="form-group">
+        <label>Nama Proyek</label>
+        <input nbInput fullWidth formControlName="nama" />
+      </div>
+      <div class="form-group">
+        <label>Tanggal Mulai</label>
+        <input nbInput fullWidth type="date" formControlName="tanggal_mulai" />
+      </div>
+      <div class="form-group">
+        <label>Tanggal Selesai</label>
+        <input nbInput fullWidth type="date" formControlName="tanggal_selesai" />
+      </div>
+      <div class="form-group">
+        <label>Jenis Penanggung Jawab</label><br />
+        <nb-radio-group formControlName="jenis_penanggung" (valueChange)="changeJenis($event)">
+          <nb-radio value="karyawan">Karyawan</nb-radio>
+          <nb-radio value="opsional">Input Manual</nb-radio>
+        </nb-radio-group>
+      </div>
+      <div class="form-group">
+        <label>Penanggung Jawab</label>
+        <ng-container *ngIf="jenisPenanggung === 'karyawan'; else manualInput">
+          <select nbInput fullWidth formControlName="penanggung_jawab">
+            <option value="1">Andi</option>
+            <option value="2">Budi</option>
+          </select>
+        </ng-container>
+        <ng-template #manualInput>
+          <input nbInput fullWidth formControlName="penanggung_jawab" />
+        </ng-template>
+      </div>
+    </form>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="success" (click)="submit()">Simpan</button>
+    <button nbButton status="danger" (click)="cancel()">Batal</button>
+  </nb-card-footer>
+</nb-card>

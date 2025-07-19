@@ -1,0 +1,45 @@
+<nb-card>
+  <nb-card-header>{{ title }}</nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form" class="horizontal-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Kode Gudang</label>
+          <input nbInput fullWidth formControlName="kode_gudang" />
+        </div>
+        <div class="form-group">
+          <label>Nama Gudang</label>
+          <input nbInput fullWidth formControlName="nama_gudang" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Alamat</label>
+          <input nbInput fullWidth formControlName="alamat" />
+        </div>
+        <div class="form-group">
+          <label>Penanggung Jawab</label>
+          <input nbInput fullWidth formControlName="penanggung_jawab" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <nb-select fullWidth formControlName="status">
+            <nb-option value="aktif">Aktif</nb-option>
+            <nb-option value="nonaktif">Nonaktif</nb-option>
+          </nb-select>
+        </div>
+        <div class="form-group empty"></div> <!-- Kosong agar sejajar -->
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="footer-actions">
+    <button nbButton status="primary" (click)="simpan()" [disabled]="form.invalid">Simpan</button>
+    <button nbButton status="danger" (click)="dialogRef.close()">Batal</button>
+  </nb-card-footer>
+
+</nb-card>

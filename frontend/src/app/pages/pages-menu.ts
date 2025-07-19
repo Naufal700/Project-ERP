@@ -2,13 +2,13 @@ import { NbMenuItem } from "@nebular/theme";
 
 export const MENU_ITEMS: NbMenuItem[] = [
   {
-    title: " Dashboard",
+    title: "Dashboard",
     icon: "home-outline",
     link: "/pages/dashboard",
     home: true,
   },
   {
-    title: " Master Data",
+    title: "Master Data",
     icon: "folder-outline",
     children: [
       { title: "Pelanggan", link: "/pages/master/pelanggan" },
@@ -19,7 +19,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
           { title: "Daftar Produk", link: "/pages/master/produk" },
           { title: "Kategori Produk", link: "/pages/master/kategori-produk" },
           { title: "Satuan", link: "/pages/master/satuan" },
-          { title: "Harga Jual & Beli", link: "/pages/master/harga-jual" },
+          { title: "Harga Jual Produk", link: "/pages/master/harga-jual" },
         ],
       },
       {
@@ -30,15 +30,15 @@ export const MENU_ITEMS: NbMenuItem[] = [
         ],
       },
       { title: "Karyawan", link: "/pages/master/karyawan" },
-      { title: "Gudang / Lokasi", link: "/pages/master/warehouse" },
-      { title: "Departemen / Proyek", link: "/pages/master/project" },
+      { title: "Gudang / Lokasi", link: "/pages/master/gudang" },
+      { title: "Divisi / Proyek", link: "/pages/master/divisi-proyek" },
       { title: "Cabang", link: "/pages/master/branch" },
       { title: "Mata Uang", link: "/pages/master/currency" },
       { title: "Pajak", link: "/pages/master/tax" },
     ],
   },
   {
-    title: " Penjualan",
+    title: "Penjualan",
     icon: "shopping-cart-outline",
     children: [
       { title: "Penawaran", link: "/pages/sales/quotation" },
@@ -52,7 +52,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
     ],
   },
   {
-    title: " Pembelian",
+    title: "Pembelian",
     icon: "car-outline",
     children: [
       { title: "Permintaan Pembelian", link: "/pages/purchase/pr" },

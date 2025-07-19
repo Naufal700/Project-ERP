@@ -43,6 +43,13 @@ import { ProdukFormComponent } from "./master/produk/produk-form..component";
 
 import { KaryawanComponent } from "./karyawan/karyawan.component";
 import { KaryawanFormComponent } from "./karyawan/karyawan-form.component";
+
+import { GudangComponent } from "./gudang/gudang.component";
+import { GudangFormComponent } from "./gudang/gudang-form.component";
+import { DivisiProyekComponent } from "./master/divisi-proyek/divisi-proyek.component";
+import { DivisiFormComponent } from "./master/divisi-proyek/divisi-form.component";
+import { ProyekFormComponent } from "./master/divisi-proyek/proyek-form.component";
+
 @NgModule({
   imports: [
     CommonModule,
@@ -80,6 +87,11 @@ import { KaryawanFormComponent } from "./karyawan/karyawan-form.component";
     ProdukFormComponent,
     KaryawanComponent,
     KaryawanFormComponent,
+    GudangComponent,
+    GudangFormComponent,
+    DivisiProyekComponent,
+    DivisiFormComponent,
+    ProyekFormComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: LOCALE_ID, useValue: "id" }],
