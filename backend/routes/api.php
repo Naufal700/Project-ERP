@@ -5,7 +5,10 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\CoaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DivisiController;
+use App\Http\Controllers\Api\GudangController;
 use App\Http\Controllers\Api\ProdukController;
+use App\Http\Controllers\Api\ProyekController;
 use App\Http\Controllers\API\SatuanController;
 use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\SupplierController;
@@ -60,3 +63,17 @@ Route::prefix('karyawan')->group(function () {
     Route::get('/download-template', [KaryawanController::class, 'downloadTemplate']);
     Route::post('/import', [KaryawanController::class, 'import']);
 });
+
+Route::prefix('gudang')->group(function () {
+    Route::get('kode-otomatis', [GudangController::class, 'kodeOtomatis']);
+    Route::get('/', [GudangController::class, 'index']);
+    Route::post('/', [GudangController::class, 'store']);
+    Route::get('/{id}', [GudangController::class, 'show']);
+    Route::put('/{id}', [GudangController::class, 'update']);
+    Route::delete('/{id}', [GudangController::class, 'destroy']);
+    Route::get('/template', [GudangController::class, 'downloadTemplate']);
+    Route::post('/import', [GudangController::class, 'import']);
+});
+
+Route::apiResource('divisi', DivisiController::class);
+Route::apiResource('proyek', ProyekController::class);
