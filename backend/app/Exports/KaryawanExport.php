@@ -2,14 +2,15 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromArray;
+use App\Models\Karyawan;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class KaryawanTemplateExport implements FromArray, WithHeadings
+class KaryawanExport implements FromCollection, WithHeadings
 {
-    public function headings(): array
+    public function collection()
     {
-        return [
+        return Karyawan::select(
             'nama_lengkap',
             'nip',
             'jenis_kelamin',
@@ -22,14 +23,24 @@ class KaryawanTemplateExport implements FromArray, WithHeadings
             'divisi',
             'tanggal_masuk',
             'is_aktif'
-        ];
+        )->get();
     }
 
-    public function array(): array
+    public function headings(): array
     {
         return [
-            // contoh baris kosong untuk panduan
-            ['John Doe', '123456', 'Laki-laki', '1990-01-01', 'Jakarta', 'Jl. Mawar 1', 'john@example.com', '08123456789', 'Staff', 'IT', '2020-01-01', true],
+            'Nama Lengkap',
+            'NIP',
+            'Jenis Kelamin',
+            'Tanggal Lahir',
+            'Tempat Lahir',
+            'Alamat',
+            'Email',
+            'No HP',
+            'Jabatan',
+            'Divisi',
+            'Tanggal Masuk',
+            'Aktif'
         ];
     }
 }

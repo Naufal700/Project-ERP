@@ -3,7 +3,8 @@
 namespace App\Imports;
 
 use App\Models\Produk;
-use Illuminate\Support\Facades\Validator;
+use App\Models\KategoriProduk;
+use App\Models\Satuan;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -11,19 +12,44 @@ class ProdukImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        // Validasi setiap baris (opsional)
-        Validator::make($row, [
-            'kode_produk' => 'required',
-            'nama_produk' => 'required',
-        ])->validate();
+        if (!isset($row['kode_produk']) || !isset($row['nama_produk'])) {
+            return null;
+        }
+
+        // Cari kategori, jika tidak ada maka buat baru beserta kode_kategori
+        $kategori = KategoriProduk::firstOrCreate(
+            ['nama_kategori' => $row['kategori'] ?? 'Lainnya'],
+            ['kode_kategori' => $this->generateKodeKategori($row['kategori'] ?? 'Lainnya')]
+        );
+
+        // Cari satuan, jika tidak ada maka buat baru beserta kode_satuan
+        $satuan = Satuan::firstOrCreate(
+            ['nama_satuan' => $row['satuan'] ?? 'PCS'],
+            ['kode_satuan' => $this->generateKodeSatuan($row['satuan'] ?? 'PCS')]
+        );
 
         return new Produk([
             'kode_produk' => $row['kode_produk'],
             'nama_produk' => $row['nama_produk'],
-            'id_kategori' => $row['id_kategori'] ?? null,
-            'id_satuan' => $row['id_satuan'] ?? null,
-            'deskripsi' => $row['deskripsi'] ?? null,
-            'is_aktif' => $row['is_aktif'] ?? true,
+            'id_kategori' => $kategori->id,
+            'id_satuan'   => $satuan->id,
+            'harga_beli'  => $row['harga_beli'] ?? 0,
+            'harga_jual'  => $row['harga_jual'] ?? 0,
+            'is_aktif'    => strtolower($row['status'] ?? 'aktif') === 'aktif',
         ]);
+    }
+
+    private function generateKodeKategori($nama)
+    {
+        $prefix = strtoupper(substr($nama, 0, 3)); // 3 huruf pertama
+        $count = KategoriProduk::where('kode_kategori', 'like', $prefix . '%')->count() + 1;
+        return $prefix . str_pad($count, 3, '0', STR_PAD_LEFT);
+    }
+
+    private function generateKodeSatuan($nama)
+    {
+        $prefix = strtoupper(substr($nama, 0, 3));
+        $count = Satuan::where('kode_satuan', 'like', $prefix . '%')->count() + 1;
+        return $prefix . str_pad($count, 3, '0', STR_PAD_LEFT);
     }
 }

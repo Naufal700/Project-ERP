@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
-use App\Exports\KaryawanTemplateExport;
+use App\Exports\KaryawanExport;
 use App\Imports\KaryawanImport;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -14,7 +16,10 @@ class KaryawanController extends Controller
     public function index()
     {
         $data = Karyawan::orderBy('nama_lengkap')->get();
-        return response()->json(['status' => true, 'data' => $data]);
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
     }
 
     public function store(Request $request)
@@ -35,15 +40,25 @@ class KaryawanController extends Controller
         ]);
 
         $karyawan = Karyawan::create($data);
-        return response()->json(['status' => true, 'message' => 'Data disimpan', 'data' => $karyawan]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data karyawan berhasil disimpan',
+            'data' => $karyawan
+        ]);
     }
 
     public function update(Request $request, $id)
     {
         $karyawan = Karyawan::findOrFail($id);
+
         $data = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
-            'nip' => "required|string|unique:karyawan_m,nip,$id",
+            'nip' => [
+                'required',
+                'string',
+                Rule::unique('karyawan_m', 'nip')->ignore($id),
+            ],
             'jenis_kelamin' => 'required',
             'tanggal_lahir' => 'required|date',
             'tempat_lahir' => 'required',
@@ -57,24 +72,49 @@ class KaryawanController extends Controller
         ]);
 
         $karyawan->update($data);
-        return response()->json(['status' => true, 'message' => 'Data diperbarui']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data karyawan berhasil diperbarui',
+            'data' => $karyawan
+        ]);
     }
 
     public function destroy($id)
     {
-        Karyawan::destroy($id);
-        return response()->json(['status' => true, 'message' => 'Data dihapus']);
+        $karyawan = Karyawan::findOrFail($id);
+        $karyawan->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data karyawan berhasil dihapus'
+        ]);
     }
 
     public function downloadTemplate()
     {
-        return Excel::download(new KaryawanTemplateExport, 'template_karyawan.xlsx');
+        return Excel::download(new KaryawanExport, 'template_karyawan.xlsx');
     }
 
     public function import(Request $request)
     {
-        $request->validate(['file' => 'required|file|mimes:xlsx,csv']);
-        Excel::import(new KaryawanImport, $request->file('file'));
-        return response()->json(['status' => true, 'message' => 'Import berhasil']);
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,csv'
+        ]);
+
+        try {
+            Excel::import(new KaryawanImport, $request->file('file'));
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Import data karyawan berhasil'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal mengimport data karyawan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

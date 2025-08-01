@@ -32,4 +32,13 @@ class Coa extends Model
     {
         return $this->hasMany(Coa::class, 'parent_kode_akun', 'kode_akun');
     }
+    public function mappingDebit()
+    {
+        return $this->hasMany(MappingJurnal::class, 'kode_akun_debit', 'kode_akun');
+    }
+
+    public function mappingKredit()
+    {
+        return $this->hasMany(MappingJurnal::class, 'kode_akun_kredit', 'kode_akun');
+    }
 }

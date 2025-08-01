@@ -14,14 +14,23 @@ class CreateProdukTable extends Migration
             $table->string('nama_produk');
             $table->unsignedBigInteger('id_kategori')->nullable();
             $table->unsignedBigInteger('id_satuan')->nullable();
-            $table->text('deskripsi')->nullable();
+            $table->decimal('harga_beli', 15, 2)->default(0);
+            $table->decimal('harga_jual', 15, 2)->default(0);
             $table->boolean('is_aktif')->default(true);
             $table->timestamps();
 
-            $table->foreign('id_kategori')->references('id')->on('kategori_produk')->nullOnDelete();
-            $table->foreign('id_satuan')->references('id')->on('satuan_m')->nullOnDelete();
+            $table->foreign('id_kategori')
+                ->references('id')
+                ->on('kategori_produk')
+                ->nullOnDelete();
+
+            $table->foreign('id_satuan')
+                ->references('id')
+                ->on('satuan_m')
+                ->nullOnDelete();
         });
     }
+
 
     public function down(): void
     {
