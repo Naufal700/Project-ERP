@@ -1,7 +1,9 @@
-.form-container {
+.form-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    /* 2 kolom saja */
+    gap: 1rem 2rem;
+    /* jarak antar field */
 }
 
 .form-item {
@@ -9,12 +11,20 @@
     flex-direction: column;
 }
 
-.form-item.full {
-    grid-column: span 2;
+.form-item label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
 }
 
 .d-flex {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        /* Mobile jadi 1 kolom */
+    }
 }

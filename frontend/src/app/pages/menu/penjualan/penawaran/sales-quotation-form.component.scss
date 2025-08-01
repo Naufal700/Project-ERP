@@ -1,0 +1,101 @@
+:host {
+    display: block;
+}
+
+nb-card {
+    border-radius: 10px;
+    overflow: hidden;
+
+    nb-card-header {
+        background: #f7f9fc;
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #e4e9f2;
+    }
+
+    nb-card-body {
+        padding: 1rem 1.25rem;
+    }
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        nb-select,
+        input,
+        textarea {
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.detail-section {
+    h6 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .table {
+        margin-bottom: 0.5rem;
+
+        th {
+            font-size: 0.8rem;
+            text-align: center;
+            background: #f1f3f8;
+        }
+
+        td {
+            vertical-align: middle;
+
+            input {
+                text-align: right;
+            }
+        }
+
+        tr:hover {
+            background: #f9fafc;
+        }
+    }
+
+    button[nbButton] {
+        margin-top: 0.5rem;
+    }
+}
+
+.total-section {
+    font-size: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    align-items: center;
+
+    strong {
+        font-size: 1.2rem;
+        color: #3366ff;
+    }
+}
+
+/* Footer Actions - DIPISAH agar jarak tombol lebih rapi */
+.footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem; // jarak antar tombol pas
+    padding-top: 0.75rem;
+    border-top: 1px solid #e4e9f2;
+
+    button[nbButton] {
+        min-width: 100px; // agar tombol seragam
+    }
+}

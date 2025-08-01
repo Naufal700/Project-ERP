@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { Router } from "@angular/router";
 import { PelangganService } from "./pelanggan.service";
-import { NbDialogService } from "@nebular/theme";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { PelangganFormDialogComponent } from "./pelanggan-form-dialog.component";
 
 @Component({
@@ -30,7 +30,8 @@ export class PelangganComponent implements OnInit {
   constructor(
     private pelangganService: PelangganService,
     private dialogService: NbDialogService,
-    private router: Router
+    private router: Router,
+    private toastrService: NbToastrService // ✅ Tambahkan toaster
   ) {}
 
   ngOnInit(): void {
@@ -48,7 +49,7 @@ export class PelangganComponent implements OnInit {
       },
       error: () => {
         this.isLoading = false;
-        alert("❌ Gagal memuat data pelanggan");
+        this.toastrService.danger("Gagal memuat data pelanggan", "Error");
       },
     });
   }
@@ -74,7 +75,18 @@ export class PelangganComponent implements OnInit {
   // Hapus data
   delete(id: number) {
     if (confirm("Yakin ingin menghapus data ini?")) {
-      this.pelangganService.delete(id).subscribe(() => this.loadData());
+      this.pelangganService.delete(id).subscribe({
+        next: () => {
+          this.toastrService.success(
+            "Data pelanggan berhasil dihapus",
+            "Sukses"
+          );
+          this.loadData();
+        },
+        error: () => {
+          this.toastrService.danger("Gagal menghapus data pelanggan", "Error");
+        },
+      });
     }
   }
 
@@ -166,10 +178,25 @@ export class PelangganComponent implements OnInit {
 
       this.pelangganService.importExcel(formData).subscribe({
         next: () => {
-          alert("✅ Import berhasil!");
+          this.toastrService.success(
+            "Data pelanggan berhasil diimport!",
+            "Sukses"
+          );
           this.loadData();
         },
-        error: () => alert("❌ Gagal mengimpor. Pastikan format file valid."),
+        error: (err) => {
+          if (err.status === 422 && err.error.errors) {
+            this.toastrService.danger(
+              "Beberapa data gagal diimport. Periksa format Excel.",
+              "Validasi Gagal"
+            );
+          } else {
+            this.toastrService.danger(
+              "Gagal mengimpor. Pastikan format file valid.",
+              "Error"
+            );
+          }
+        },
       });
     }
   }
@@ -181,6 +208,39 @@ export class PelangganComponent implements OnInit {
       link.href = window.URL.createObjectURL(blob);
       link.download = "template_pelanggan.xlsx";
       link.click();
+      this.toastrService.success("Template berhasil diunduh", "Sukses");
+    });
+  }
+  isRefreshing: boolean = false;
+
+  refreshData() {
+    this.isRefreshing = true;
+
+    this.pelangganService.getAll().subscribe({
+      next: (data) => {
+        this.pelanggans = data;
+
+        // ✅ Reset filter, sort, dan pagination
+        this.searchTerm = "";
+        this.sortField = "";
+        this.sortDirection = "asc";
+        this.currentPage = 1;
+
+        // ✅ Terapkan filter & pagination ulang agar tabel langsung ter-update
+        this.applyFilterAndSort();
+
+        this.isRefreshing = false;
+
+        // ✅ Tampilkan toaster sukses
+        this.toastrService.success(
+          "Data pelanggan berhasil diperbarui",
+          "Refresh Berhasil"
+        );
+      },
+      error: () => {
+        this.isRefreshing = false;
+        this.toastrService.danger("Gagal memuat data pelanggan", "Error");
+      },
     });
   }
 }

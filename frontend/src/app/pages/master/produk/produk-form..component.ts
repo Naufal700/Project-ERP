@@ -27,17 +27,24 @@ export class ProdukFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Inisialisasi form
+    // Inisialisasi form sesuai field terbaru
     this.form = this.fb.group({
       kode_produk: [{ value: "", disabled: true }, Validators.required],
       nama_produk: [this.data.nama_produk || "", Validators.required],
       id_kategori: [this.data.id_kategori || null],
       id_satuan: [this.data.id_satuan || null],
-      deskripsi: [this.data.deskripsi || ""],
+      harga_beli: [
+        this.data.harga_beli || 0,
+        [Validators.required, Validators.min(0)],
+      ],
+      harga_jual: [
+        this.data.harga_jual || 0,
+        [Validators.required, Validators.min(0)],
+      ],
       is_aktif: [this.data.is_aktif ?? true],
     });
 
-    // Ambil master data
+    // Ambil master data kategori & satuan
     this.kategoriService.getAll().subscribe((res) => (this.kategoriList = res));
     this.satuanService.getAll().subscribe((res) => (this.satuanList = res));
 
@@ -59,7 +66,7 @@ export class ProdukFormComponent implements OnInit {
   simpan(): void {
     if (this.form.invalid) return;
 
-    const raw = this.form.getRawValue(); // untuk ambil `kode_produk` walaupun disabled
+    const raw = this.form.getRawValue(); // ambil semua nilai termasuk kode_produk
     const payload = { ...raw };
 
     const request = this.isEdit

@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { NbDialogService } from "@nebular/theme";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { ProdukService } from "./produk.service";
 import { ProdukFormComponent } from "./produk-form..component";
 
@@ -16,26 +16,55 @@ export class ProdukComponent implements OnInit {
   itemsPerPage: number = 10;
   totalPages: number = 1;
 
+  // Refresh indicator
+  isRefreshing: boolean = false;
+
   constructor(
     private produkService: ProdukService,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
+    private toastr: NbToastrService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
   }
 
+  // 🔄 Ambil data produk
   loadData(): void {
+    this.isRefreshing = true;
     this.produkService.getAll().subscribe({
       next: (data) => {
         this.produkList = data;
-        this.currentPage = 1; // reset page ketika data berubah
+        this.currentPage = 1;
         this.calculateTotalPages();
+        this.isRefreshing = false;
       },
-      error: (err) => console.error("❌ Gagal mengambil data produk:", err),
+      error: () => {
+        this.isRefreshing = false;
+        this.toastr.danger("Gagal memuat data produk", "Error");
+      },
     });
   }
 
+  // 🔄 Refresh data manual
+  refreshData(): void {
+    this.isRefreshing = true;
+    this.produkService.getAll().subscribe({
+      next: (data) => {
+        this.produkList = data;
+        this.currentPage = 1;
+        this.calculateTotalPages();
+        this.isRefreshing = false;
+        this.toastr.success("Data produk berhasil diperbarui", "Sukses");
+      },
+      error: () => {
+        this.isRefreshing = false;
+        this.toastr.danger("Gagal memuat data produk", "Error");
+      },
+    });
+  }
+
+  // Filter produk
   get filteredProdukList(): any[] {
     const term = this.searchTerm.toLowerCase();
 
@@ -45,6 +74,7 @@ export class ProdukComponent implements OnInit {
         p.kode_produk?.toLowerCase().includes(term)
     );
 
+    // Urutkan berdasarkan kode produk
     filtered.sort((a, b) => {
       const numA = parseInt(a.kode_produk?.split("-")[1] || "0", 10);
       const numB = parseInt(b.kode_produk?.split("-")[1] || "0", 10);
@@ -78,27 +108,36 @@ export class ProdukComponent implements OnInit {
     this.calculateTotalPages();
   }
 
+  // ➕ Buka form tambah/edit
   openForm(data: any = null): void {
     this.dialogService
       .open(ProdukFormComponent, {
-        context: {
-          data: data || {},
-          isEdit: !!data,
-        },
+        context: { data: data || {}, isEdit: !!data },
         dialogClass: "wide-dialog",
         closeOnBackdropClick: false,
       })
       .onClose.subscribe((result) => {
-        if (result === "success") this.loadData();
+        if (result === "success") {
+          this.toastr.success("Produk berhasil disimpan", "Sukses");
+          this.loadData();
+        }
       });
   }
 
+  // 🗑️ Hapus produk
   delete(id: number): void {
     if (confirm("Yakin ingin menghapus produk ini?")) {
-      this.produkService.delete(id).subscribe(() => this.loadData());
+      this.produkService.delete(id).subscribe({
+        next: () => {
+          this.toastr.success("Produk berhasil dihapus", "Sukses");
+          this.loadData();
+        },
+        error: () => this.toastr.danger("Gagal menghapus produk", "Error"),
+      });
     }
   }
 
+  // 📥 Import Excel
   triggerFileInput(): void {
     const input = document.querySelector<HTMLInputElement>("input[type=file]");
     input?.click();
@@ -111,26 +150,29 @@ export class ProdukComponent implements OnInit {
     const formData = new FormData();
     formData.append("file", file);
 
-    this.produkService.import(formData).subscribe({
+    this.produkService.importExcel(formData).subscribe({
       next: () => {
-        alert("✅ Berhasil import!");
+        this.toastr.success("Berhasil import produk!", "Sukses");
         this.loadData();
       },
-      error: (err) => {
-        console.error("❌ Gagal import:", err);
-        alert("Gagal import file");
-      },
+      error: () => this.toastr.danger("Gagal import file produk", "Error"),
     });
   }
 
+  // 📤 Download Template
   downloadTemplate(): void {
-    this.produkService.downloadTemplate().subscribe((blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "template_produk.xlsx";
-      a.click();
-      window.URL.revokeObjectURL(url);
+    this.produkService.downloadTemplate().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template_produk.xlsx";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.toastr.success("Template produk berhasil diunduh", "Sukses");
+      },
+      error: () =>
+        this.toastr.danger("Gagal mengunduh template produk", "Error"),
     });
   }
 }

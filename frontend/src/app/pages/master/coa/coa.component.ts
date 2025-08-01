@@ -24,6 +24,8 @@ export class CoaComponent implements OnInit {
   currentPage = 1;
   totalPages = 1;
 
+  isRefreshing: boolean = false;
+
   @ViewChild("fileInput", { static: false })
   fileInput!: ElementRef<HTMLInputElement>;
 
@@ -37,16 +39,43 @@ export class CoaComponent implements OnInit {
     this.loadData();
   }
 
+  // 🔄 Load awal
   loadData() {
-    this.coaService.getAll().subscribe((res) => {
-      this.data = res;
+    this.isRefreshing = true;
+    this.coaService.getAll().subscribe({
+      next: (res) => {
+        this.data = [...res];
+        this.kategoriList = Array.from(
+          new Set(res.map((d) => d.kategori_akun).filter(Boolean))
+        );
+        this.applyFilterSort();
+        this.isRefreshing = false;
+      },
+      error: () => {
+        this.isRefreshing = false;
+        this.toastr.danger("Gagal memuat data COA", "Error");
+      },
+    });
+  }
 
-      // Ambil daftar unik kategori_akun untuk filter dropdown
-      this.kategoriList = Array.from(
-        new Set(res.map((d) => d.kategori_akun).filter(Boolean))
-      );
-
-      this.applyFilterSort();
+  // 🔄 Refresh data manual
+  refreshData() {
+    this.isRefreshing = true;
+    this.coaService.getAll().subscribe({
+      next: (res) => {
+        this.data = [...res];
+        this.kategoriList = Array.from(
+          new Set(res.map((d) => d.kategori_akun).filter(Boolean))
+        );
+        this.currentPage = 1;
+        this.applyFilterSort();
+        this.isRefreshing = false;
+        this.toastr.success("Data COA berhasil diperbarui", "Sukses");
+      },
+      error: () => {
+        this.isRefreshing = false;
+        this.toastr.danger("Gagal memuat data COA", "Error");
+      },
     });
   }
 
@@ -57,20 +86,25 @@ export class CoaComponent implements OnInit {
         dialogClass: "wide-dialog",
       })
       .onClose.subscribe((result) => {
-        if (result) this.loadData();
+        if (result) {
+          this.toastr.success("Data COA berhasil disimpan", "Sukses");
+          this.loadData();
+        }
       });
   }
 
   delete(id: number) {
     if (confirm("Yakin ingin menghapus akun ini?")) {
-      this.coaService.delete(id).subscribe(() => {
-        this.toastr.success("Data berhasil dihapus");
-        this.loadData();
+      this.coaService.delete(id).subscribe({
+        next: () => {
+          this.toastr.success("Data COA berhasil dihapus", "Sukses");
+          this.loadData();
+        },
+        error: () => this.toastr.danger("Gagal menghapus data COA", "Error"),
       });
     }
   }
 
-  // 🔍 Filter + 🔃 Sort
   applyFilterSort() {
     let result = [...this.data];
     const term = this.searchTerm.toLowerCase();
@@ -92,8 +126,8 @@ export class CoaComponent implements OnInit {
 
     if (this.sortField) {
       result.sort((a, b) => {
-        const valA = a[this.sortField]?.toLowerCase() || "";
-        const valB = b[this.sortField]?.toLowerCase() || "";
+        const valA = a[this.sortField]?.toString().toLowerCase() || "";
+        const valB = b[this.sortField]?.toString().toLowerCase() || "";
         return this.sortDirection === "asc"
           ? valA.localeCompare(valB)
           : valB.localeCompare(valA);
@@ -102,7 +136,7 @@ export class CoaComponent implements OnInit {
 
     this.filteredData = result;
     this.totalPages = Math.ceil(this.filteredData.length / this.itemsPerPage);
-    this.changePage(this.currentPage);
+    this.changePage(1);
   }
 
   sortBy(field: string) {
@@ -129,7 +163,6 @@ export class CoaComponent implements OnInit {
     this.applyFilterSort();
   }
 
-  // 📥 Import Excel
   triggerFileInput() {
     this.fileInput.nativeElement.click();
   }
@@ -142,21 +175,28 @@ export class CoaComponent implements OnInit {
 
       this.coaService.importExcel(formData).subscribe({
         next: () => {
-          alert("✅ Import berhasil");
+          this.toastr.success("Berhasil import COA!", "Sukses");
           this.loadData();
         },
-        error: () => alert("❌ Import gagal. Periksa format file."),
+        error: () =>
+          this.toastr.danger(
+            "Gagal import file COA. Periksa format file.",
+            "Error"
+          ),
       });
     }
   }
 
-  // 📤 Download Template
   downloadTemplate() {
-    this.coaService.downloadTemplate().subscribe((blob: Blob) => {
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = "template_coa.xlsx";
-      link.click();
+    this.coaService.downloadTemplate().subscribe({
+      next: (blob: Blob) => {
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = "template_coa.xlsx";
+        link.click();
+        this.toastr.success("Template COA berhasil diunduh", "Sukses");
+      },
+      error: () => this.toastr.danger("Gagal mengunduh template COA", "Error"),
     });
   }
 }

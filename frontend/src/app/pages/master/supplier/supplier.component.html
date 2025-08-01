@@ -2,6 +2,12 @@
   <nb-card-header class="header-container">
     <h4 class="title">Master Supplier</h4>
     <div class="action-buttons">
+      <button nbButton status="warning" size="small" (click)="refreshData()" [disabled]="isRefreshing">
+        <nb-icon *ngIf="!isRefreshing" icon="refresh-outline"></nb-icon>
+        <nb-spinner *ngIf="isRefreshing" size="tiny"></nb-spinner>
+        <span *ngIf="!isRefreshing">Refresh</span>
+        <span *ngIf="isRefreshing">Memuat...</span>
+      </button>
       <button nbButton status="info" size="small" (click)="downloadTemplate()">
         <nb-icon icon="cloud-download-outline"></nb-icon>
         <span>Template</span>
@@ -88,14 +94,14 @@
       <nav *ngIf="totalPages > 1">
         <ul class="pagination pagination-sm mb-0">
           <li class="page-item" [class.disabled]="currentPage === 1">
-            <a class="page-link" href="#" (click)="changePage(currentPage - 1, $event)">‹</a>
+            <a class="page-link" (click)="changePage(currentPage - 1, $event)">‹</a>
           </li>
           <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
             [class.active]="currentPage === i + 1">
-            <a class="page-link" href="#" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
+            <a class="page-link" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
           </li>
           <li class="page-item" [class.disabled]="currentPage === totalPages">
-            <a class="page-link" href="#" (click)="changePage(currentPage + 1, $event)">›</a>
+            <a class="page-link" (click)="changePage(currentPage + 1, $event)">›</a>
           </li>
         </ul>
       </nav>

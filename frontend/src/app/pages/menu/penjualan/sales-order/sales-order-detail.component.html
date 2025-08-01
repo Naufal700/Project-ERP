@@ -1,0 +1,50 @@
+<nb-card class="sales-order-detail">
+  <nb-card-header>
+    <h5>Detail Pesanan: {{ order.nomor_so }}</h5>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="info-section mb-3">
+      <p><strong>Tanggal:</strong> {{ order.tanggal | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Pelanggan:</strong> {{ order.pelanggan?.nama_pelanggan }}</p>
+      <p><strong>Status:</strong>
+        <span [ngClass]="{
+          'text-primary': order.status === 'draft',
+          'text-success': order.status === 'approved',
+          'text-danger': order.status === 'rejected'
+        }">
+          {{ order.status | titlecase }}
+        </span>
+      </p>
+    </div>
+
+    <table class="table table-sm table-bordered">
+      <thead>
+        <tr>
+          <th>Produk</th>
+          <th>Qty</th>
+          <th>Harga</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of order.details">
+          <td>{{ d.produk?.nama_produk }}</td>
+          <td>{{ d.qty }}</td>
+          <td>{{ d.harga | currency:'IDR':'symbol':'1.0-0' }}</td>
+          <td>{{ d.qty * d.harga | currency:'IDR':'symbol':'1.0-0' }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-end"><strong>Total</strong></td>
+          <td><strong>{{ getTotal() | currency:'IDR':'symbol':'1.0-0' }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </nb-card-body>
+
+  <nb-card-footer class="d-flex justify-content-end">
+    <button nbButton status="basic" (click)="close()">Tutup</button>
+  </nb-card-footer>
+</nb-card>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
 import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { HttpClient } from "@angular/common/http";
 import { KaryawanFormComponent } from "./karyawan-form.component";
@@ -9,6 +9,7 @@ import { KaryawanFormComponent } from "./karyawan-form.component";
   styleUrls: ["./karyawan.component.scss"],
 })
 export class KaryawanComponent implements OnInit {
+  @ViewChild("fileInput") fileInput!: ElementRef<HTMLInputElement>; // ✅ akses file input langsung
   data: any[] = [];
   filteredData: any[] = [];
   searchTerm = "";
@@ -27,6 +28,7 @@ export class KaryawanComponent implements OnInit {
     this.loadData();
   }
 
+  // Load data
   loadData() {
     this.loading = true;
     this.http.get<any>("/api/karyawan").subscribe({
@@ -83,27 +85,66 @@ export class KaryawanComponent implements OnInit {
     }
   }
 
-  downloadTemplate() {
-    window.open("/api/karyawan/template", "_blank");
-  }
+  // ✅ Perbaiki trigger file input
   triggerFileInput() {
-    const input = document.querySelector<HTMLInputElement>("#fileInput");
-    if (input) input.click();
+    this.fileInput.nativeElement.click();
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
+  // Import file
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
 
-    const formData = new FormData();
-    formData.append("file", file);
+      const formData = new FormData();
+      formData.append("file", file);
 
-    this.http.post("/api/karyawan/import", formData).subscribe({
-      next: () => {
-        this.toastr.success("Import berhasil");
-        this.loadData();
+      this.http.post("/api/karyawan/import", formData).subscribe({
+        next: () => {
+          this.toastr.success("Import berhasil");
+          this.loadData();
+          input.value = ""; // reset input
+        },
+        error: () => this.toastr.danger("Gagal import"),
+      });
+    }
+  }
+
+  // Download template tanpa tab baru
+  downloadTemplate() {
+    this.http
+      .get("/api/karyawan/download-template", { responseType: "blob" })
+      .subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "template_karyawan.xlsx";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+          this.toastr.success("Template berhasil diunduh");
+        },
+        error: () => this.toastr.danger("Gagal mengunduh template"),
+      });
+  }
+  refreshing = false; // state loading refresh
+
+  refreshData() {
+    this.refreshing = true;
+    this.toastr.info("Memuat ulang data...");
+    this.http.get<any>("/api/karyawan").subscribe({
+      next: (res) => {
+        this.data = res.data;
+        this.applyFilters();
+        this.refreshing = false;
+        this.toastr.success("Data berhasil diperbarui");
       },
-      error: () => this.toastr.danger("Gagal import"),
+      error: () => {
+        this.refreshing = false;
+        this.toastr.danger("Gagal memuat data");
+      },
     });
   }
 }

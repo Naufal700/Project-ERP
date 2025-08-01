@@ -15,6 +15,7 @@ export class GudangComponent implements OnInit {
   currentPage: number = 1;
   totalPages: number = 1;
   sortDirection: "asc" | "desc" = "asc";
+  loading = false;
 
   @ViewChild("fileInput") fileInputRef!: ElementRef<HTMLInputElement>;
 
@@ -54,12 +55,25 @@ export class GudangComponent implements OnInit {
   }
 
   loadData() {
-    this.gudangService.getAll().subscribe((res) => {
-      this.gudangList = res.sort((a: any, b: any) => {
-        const compare = a.kode_gudang.localeCompare(b.kode_gudang);
-        return this.sortDirection === "asc" ? compare : -compare;
-      });
+    this.loading = true;
+    this.gudangService.getAll().subscribe({
+      next: (res) => {
+        this.gudangList = res.sort((a: any, b: any) => {
+          const compare = a.kode_gudang.localeCompare(b.kode_gudang);
+          return this.sortDirection === "asc" ? compare : -compare;
+        });
+        this.loading = false;
+      },
+      error: () => {
+        this.toastr.danger("Gagal mengambil data gudang");
+        this.loading = false;
+      },
     });
+  }
+
+  refreshData() {
+    this.toastr.info("🔄 Memuat ulang data gudang...");
+    this.loadData();
   }
 
   toggleSort() {
@@ -68,36 +82,51 @@ export class GudangComponent implements OnInit {
   }
 
   triggerFileInput(): void {
-    this.fileInputRef?.nativeElement?.click();
+    if (this.fileInputRef) {
+      this.fileInputRef.nativeElement.value = ""; // Reset file input
+      this.fileInputRef.nativeElement.click();
+    }
   }
 
   onFileSelected(event: Event): void {
     const file = (event.target as HTMLInputElement)?.files?.[0];
     if (!file) return;
 
+    const validExtensions = [".xlsx", ".xls"];
+    if (!validExtensions.some((ext) => file.name.endsWith(ext))) {
+      this.toastr.warning("⚠️ Hanya file Excel (.xlsx, .xls) yang diizinkan!");
+      return;
+    }
+
+    this.loading = true;
     const formData = new FormData();
     formData.append("file", file);
 
     this.gudangService.import(formData).subscribe({
       next: () => {
-        this.toastr.success("✅ Berhasil import!");
+        this.toastr.success("✅ Berhasil import data gudang");
         this.loadData();
+        this.loading = false;
       },
-      error: (err) => {
-        console.error("❌ Gagal import:", err);
-        this.toastr.danger("Gagal import file");
+      error: () => {
+        this.toastr.danger("❌ Gagal import file gudang");
+        this.loading = false;
       },
     });
   }
 
   downloadTemplate(): void {
-    this.gudangService.downloadTemplate().subscribe((blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "template_gudang.xlsx";
-      a.click();
-      window.URL.revokeObjectURL(url);
+    this.gudangService.downloadTemplate().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template_gudang.xlsx";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        this.toastr.success("✅ Template berhasil diunduh");
+      },
+      error: () => this.toastr.danger("❌ Gagal mengunduh template gudang"),
     });
   }
 
@@ -106,7 +135,12 @@ export class GudangComponent implements OnInit {
       .open(GudangFormComponent, {
         context: { title: "Tambah Gudang" },
       })
-      .onClose.subscribe(() => this.loadData());
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.loadData();
+          this.toastr.success("✅ Gudang berhasil ditambahkan");
+        }
+      });
   }
 
   editGudang(data: any) {
@@ -114,17 +148,22 @@ export class GudangComponent implements OnInit {
       .open(GudangFormComponent, {
         context: { title: "Edit Gudang", gudang: data },
       })
-      .onClose.subscribe(() => this.loadData());
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.loadData();
+          this.toastr.success("✅ Gudang berhasil diperbarui");
+        }
+      });
   }
 
   hapusGudang(data: any) {
     if (confirm("Apakah Anda yakin ingin menghapus gudang ini?")) {
       this.gudangService.delete(data.id).subscribe({
         next: () => {
-          this.toastr.success("Gudang berhasil dihapus");
+          this.toastr.success("✅ Gudang berhasil dihapus");
           this.loadData();
         },
-        error: (err) => console.error("Gagal hapus:", err),
+        error: () => this.toastr.danger("❌ Gagal menghapus gudang"),
       });
     }
   }

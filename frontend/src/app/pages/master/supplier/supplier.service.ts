@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
   providedIn: "root",
 })
 export class SupplierService {
-  private baseUrl = "http://localhost:8000/api/suppliers";
+  private baseUrl = "http://localhost:8000/api/supplier";
 
   constructor(private http: HttpClient) {}
 
@@ -37,12 +37,12 @@ export class SupplierService {
 
   /** Import supplier dari file Excel */
   import(formData: FormData): Observable<any> {
-    return this.http.post(`${this.baseUrl}/import`, formData);
+    return this.http.post(`${this.baseUrl}/import-excel`, formData);
   }
 
-  /** Download template Excel */
+  /** Download template Excel supplier */
   downloadTemplate(): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/template`, {
+    return this.http.get(`${this.baseUrl}/template-excel`, {
       responseType: "blob",
     });
   }

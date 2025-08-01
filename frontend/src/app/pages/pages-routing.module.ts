@@ -14,7 +14,10 @@ import { ProdukComponent } from "./master/produk/produk.component";
 import { HargaJualComponent } from "./harga-jual/harga-jual.component";
 import { KaryawanComponent } from "./karyawan/karyawan.component";
 import { GudangComponent } from "./gudang/gudang.component";
-import { DivisiProyekComponent } from "./master/divisi-proyek/divisi-proyek.component";
+// import { PajakComponent } from "./master/pajak/pajak.component";
+import { MappingJurnalComponent } from "./mapping-jurnal/mapping-jurnal.component";
+import { SalesQuotationComponent } from "./menu/penjualan/penawaran/sales-quotation.component";
+import { SalesOrderComponent } from "./menu/penjualan/sales-order/sales-order.component";
 
 const routes: Routes = [
   {
@@ -111,12 +114,39 @@ const routes: Routes = [
           },
         ],
       },
+      // {
+      //   path: "master/pajak",
+      //   children: [
+      //     {
+      //       path: "",
+      //       component: PajakComponent, // Daftar Pajak
+      //     },
+      //   ],
+      // },
       {
-        path: "master/divisi-proyek",
+        path: "master/mapping-jurnal",
         children: [
           {
             path: "",
-            component: DivisiProyekComponent, // Daftar divisi dan proyek
+            component: MappingJurnalComponent, // Daftar Gudang
+          },
+        ],
+      },
+      {
+        path: "menu/penjualan/penawaran",
+        children: [
+          {
+            path: "",
+            component: SalesQuotationComponent, // Daftar Gudang
+          },
+        ],
+      },
+      {
+        path: "menu/penjualan/sales-order",
+        children: [
+          {
+            path: "",
+            component: SalesOrderComponent, // Daftar Gudang
           },
         ],
       },

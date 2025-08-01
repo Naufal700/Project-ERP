@@ -30,11 +30,13 @@ export class CoaService {
   }
   // 📤 Download template
   downloadTemplate(): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/template`, { responseType: "blob" });
+    return this.http.get(`${this.baseUrl}/export-excel`, {
+      responseType: "blob",
+    });
   }
 
   // 📥 Import dari file Excel
   importExcel(formData: FormData): Observable<any> {
-    return this.http.post(`${this.baseUrl}/import`, formData);
+    return this.http.post(`${this.baseUrl}/import-excel`, formData);
   }
 }

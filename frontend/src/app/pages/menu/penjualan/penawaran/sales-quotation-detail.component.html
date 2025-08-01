@@ -1,0 +1,63 @@
+<nb-card class="detail-card">
+  <nb-card-header>
+    <h5>📄 Detail Penawaran: <span class="highlight">{{ quotation.nomor_quotation }}</span></h5>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="quotation-info">
+      <div class="info-item">
+        <label>Tanggal</label>
+        <p>{{ quotation.tanggal | date: 'dd/MM/yyyy' }}</p>
+      </div>
+      <div class="info-item">
+        <label>Pelanggan</label>
+        <p>{{ quotation.pelanggan?.nama_pelanggan }}</p>
+      </div>
+      <div class="info-item">
+        <label>Status</label>
+        <p>
+          <span [ngClass]="{
+            'status-draft': quotation.status === 'draft',
+            'status-approved': quotation.status === 'approved',
+            'status-rejected': quotation.status === 'rejected'
+          }">
+            {{ quotation.status | titlecase }}
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th class="text-center">Qty</th>
+            <th class="text-end">Harga</th>
+            <th class="text-end">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let d of quotation.details">
+            <td>{{ d.produk?.nama_produk }}</td>
+            <td class="text-center">{{ d.qty }}</td>
+            <td class="text-end">{{ d.harga | currency:'IDR':'symbol':'1.0-0' }}</td>
+            <td class="text-end">{{ d.qty * d.harga | currency:'IDR':'symbol':'1.0-0' }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="text-end"><strong>Total</strong></td>
+            <td class="text-end total-amount">
+              <strong>{{ getTotal() | currency:'IDR':'symbol':'1.0-0' }}</strong>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="footer">
+    <button nbButton status="basic" (click)="close()">Tutup</button>
+  </nb-card-footer>
+</nb-card>

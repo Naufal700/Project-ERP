@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { LOCALE_ID } from "@angular/core";
 import { registerLocaleData } from "@angular/common";
@@ -9,6 +9,10 @@ import localeId from "@angular/common/locales/id";
 import { NbSpinnerModule, NbLayoutModule } from "@nebular/theme";
 import { NbSelectModule } from "@nebular/theme";
 import { AuthLayoutComponent } from "./auth/auth-layout.component";
+import { SalesQuotationDetailComponent } from "./pages/menu/penjualan/penawaran/sales-quotation-detail.component";
+import { AuthInterceptor } from "./@core/interceptors/auth.interceptor";
+import { SalesOrderComponent } from "./pages/menu/penjualan/sales-order/sales-order.component";
+import { SalesOrderDetailComponent } from "./pages/menu/penjualan/sales-order/sales-order-detail.component";
 
 registerLocaleData(localeId);
 
@@ -50,6 +54,9 @@ import { CustomRegisterComponent } from "./auth/custom-register/custom-register.
     CustomLoginComponent,
     CustomRegisterComponent,
     AuthLayoutComponent,
+    SalesQuotationDetailComponent,
+    SalesOrderComponent,
+    SalesOrderDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -129,8 +136,20 @@ import { CustomRegisterComponent } from "./auth/custom-register/custom-register.
     // Core
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
+    NbDialogModule.forRoot(),
   ],
-  providers: [{ provide: LOCALE_ID, useValue: "id-ID" }],
+  providers: [
+    {
+      provide: LOCALE_ID,
+      useValue: "id-ID",
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+  ],
+
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

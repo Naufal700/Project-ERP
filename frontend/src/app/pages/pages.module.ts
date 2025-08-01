@@ -46,9 +46,13 @@ import { KaryawanFormComponent } from "./karyawan/karyawan-form.component";
 
 import { GudangComponent } from "./gudang/gudang.component";
 import { GudangFormComponent } from "./gudang/gudang-form.component";
-import { DivisiProyekComponent } from "./master/divisi-proyek/divisi-proyek.component";
-import { DivisiFormComponent } from "./master/divisi-proyek/divisi-form.component";
-import { ProyekFormComponent } from "./master/divisi-proyek/proyek-form.component";
+import { MappingJurnalComponent } from "./mapping-jurnal/mapping-jurnal.component";
+import { MappingJurnalFormComponent } from "./mapping-jurnal/mapping-jurnal-form.component";
+import { SalesQuotationComponent } from "./menu/penjualan/penawaran/sales-quotation.component";
+import { SalesQuotationFormComponent } from "./menu/penjualan/penawaran/sales-quotation-form.component";
+
+// import { PajakComponent } from "./master/pajak/pajak.component";
+// import { PajakFormComponent } from "./master/pajak/pajak-form.component";
 
 @NgModule({
   imports: [
@@ -89,9 +93,14 @@ import { ProyekFormComponent } from "./master/divisi-proyek/proyek-form.componen
     KaryawanFormComponent,
     GudangComponent,
     GudangFormComponent,
-    DivisiProyekComponent,
-    DivisiFormComponent,
-    ProyekFormComponent,
+    // PajakComponent,
+    // PajakFormComponent,
+    MappingJurnalComponent,
+    MappingJurnalFormComponent,
+    SalesQuotationComponent,
+    SalesQuotationFormComponent,
+    SalesQuotationComponent,
+    SalesQuotationFormComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: LOCALE_ID, useValue: "id" }],

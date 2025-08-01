@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { SupplierService } from "./supplier.service";
-import { NbDialogService } from "@nebular/theme";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { SupplierFormComponent } from "./supplier-form.component";
 
 @Component({
@@ -20,16 +20,19 @@ export class SupplierComponent implements OnInit {
   currentPage: number = 1;
   totalPages: number = 1;
 
+  // Refresh indicator
+  isRefreshing: boolean = false;
+
   constructor(
     private supplierService: SupplierService,
-    private dialogService: NbDialogService
+    private dialogService: NbDialogService,
+    private toastrService: NbToastrService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
   }
 
-  /** Getter untuk digunakan di template */
   get sortField(): string {
     return this.sortKey;
   }
@@ -38,46 +41,76 @@ export class SupplierComponent implements OnInit {
     return this.sortAsc ? "asc" : "desc";
   }
 
-  /** Ambil semua data supplier dari backend */
+  /** Ambil semua data supplier */
   loadData(): void {
+    this.isRefreshing = true;
     this.supplierService.getAll().subscribe({
       next: (data) => {
         this.suppliers = Array.isArray(data) ? data : [];
+        this.isRefreshing = false;
         this.applyFilterSort();
       },
-      error: (err) => {
-        console.error("❌ Gagal memuat data supplier:", err);
+      error: () => {
+        this.isRefreshing = false;
+        this.toastrService.danger("Gagal memuat data supplier", "Error");
       },
     });
   }
 
-  /** Buka popup form untuk tambah/edit supplier */
+  /** Refresh data manual (sama seperti pelanggan) */
+  refreshData(): void {
+    this.isRefreshing = true;
+    this.supplierService.getAll().subscribe({
+      next: (data) => {
+        this.suppliers = Array.isArray(data) ? data : [];
+        this.currentPage = 1; // reset ke halaman pertama
+        this.searchTerm = ""; // reset pencarian jika mau sama persis dengan pelanggan
+        this.isRefreshing = false;
+        this.applyFilterSort();
+        this.toastrService.success(
+          "Data supplier berhasil diperbarui",
+          "Sukses"
+        );
+      },
+      error: () => {
+        this.isRefreshing = false;
+        this.toastrService.danger("Gagal memuat data supplier", "Error");
+      },
+    });
+  }
+
+  /** Buka form tambah/edit supplier */
   openForm(data: any = null): void {
     this.dialogService
       .open(SupplierFormComponent, {
-        context: {
-          data: data || {},
-          isEdit: !!(data && data.id),
-        },
+        context: { data: data || {}, isEdit: !!(data && data.id) },
         dialogClass: "wide-dialog",
         closeOnBackdropClick: false,
         hasScroll: false,
       })
       .onClose.subscribe((result) => {
         if (result === "success") {
+          this.toastrService.success(
+            "Data supplier berhasil disimpan",
+            "Sukses"
+          );
           this.loadData();
         }
       });
   }
 
-  /** Hapus data supplier */
+  /** Hapus supplier */
   deleteSupplier(id: number): void {
     const confirmed = confirm("Yakin hapus supplier ini?");
     if (!confirmed) return;
 
     this.supplierService.delete(id).subscribe({
-      next: () => this.loadData(),
-      error: (err) => console.error("❌ Gagal menghapus supplier:", err),
+      next: () => {
+        this.toastrService.success("Supplier berhasil dihapus", "Sukses");
+        this.loadData();
+      },
+      error: () =>
+        this.toastrService.danger("Gagal menghapus supplier", "Error"),
     });
   }
 
@@ -96,7 +129,6 @@ export class SupplierComponent implements OnInit {
   applyFilterSort(): void {
     let data = [...this.suppliers];
 
-    // Filter by nama atau kode
     if (this.searchTerm) {
       const term = this.searchTerm.toLowerCase();
       data = data.filter(
@@ -106,21 +138,18 @@ export class SupplierComponent implements OnInit {
       );
     }
 
-    // Sort by selected key
     data.sort((a, b) => {
       const valA = a[this.sortKey]?.toString().toLowerCase() || "";
       const valB = b[this.sortKey]?.toString().toLowerCase() || "";
       return this.sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
     });
 
-    // Pagination
     this.totalPages = Math.ceil(data.length / this.itemsPerPage);
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
     this.paginatedSuppliers = data.slice(start, end);
   }
 
-  /** Ubah halaman */
   changePage(page: number, event?: Event): void {
     if (event) event.preventDefault();
     if (page >= 1 && page <= this.totalPages) {
@@ -129,13 +158,13 @@ export class SupplierComponent implements OnInit {
     }
   }
 
-  /** Trigger file input (untuk import Excel) */
+  /** Trigger file input untuk import Excel */
   triggerFileInput(): void {
     const input = document.querySelector<HTMLInputElement>("input[type=file]");
     input?.click();
   }
 
-  /** Upload file Excel supplier */
+  /** Import Excel supplier */
   onFileSelected(event: Event): void {
     const file = (event.target as HTMLInputElement)?.files?.[0];
     if (file) {
@@ -144,26 +173,33 @@ export class SupplierComponent implements OnInit {
 
       this.supplierService.import(formData).subscribe({
         next: () => {
-          alert("✅ Berhasil import supplier!");
+          this.toastrService.success("Berhasil import supplier!", "Sukses");
           this.loadData();
         },
-        error: (err) => {
-          console.error("❌ Gagal import:", err);
-          alert("Gagal import file.");
-        },
+        error: () => this.toastrService.danger("Gagal import file", "Error"),
       });
     }
   }
 
-  /** Unduh template Excel supplier */
+  /** Download template Excel supplier */
   downloadTemplate(): void {
-    this.supplierService.downloadTemplate().subscribe((blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "template_supplier.xlsx";
-      a.click();
-      window.URL.revokeObjectURL(url);
+    this.supplierService.downloadTemplate().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "template_supplier.xlsx";
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+        this.toastrService.success(
+          "Template supplier berhasil diunduh",
+          "Sukses"
+        );
+      },
+      error: () => {
+        this.toastrService.danger("Gagal mengunduh template", "Error");
+      },
     });
   }
 }

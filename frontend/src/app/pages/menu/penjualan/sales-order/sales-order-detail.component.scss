@@ -1,0 +1,24 @@
+.sales-order-detail {
+    max-width: 800px;
+    width: 100%;
+}
+
+.info-section {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+
+    p {
+        margin: 0 0 5px;
+    }
+}
+
+.table thead th {
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.table tfoot td {
+    font-weight: bold;
+}

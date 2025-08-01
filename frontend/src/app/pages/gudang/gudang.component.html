@@ -2,6 +2,10 @@
   <nb-card-header class="d-flex justify-content-between align-items-center flex-wrap gap-2">
     <h4 class="title mb-0">Master Gudang</h4>
     <div class="d-flex gap-2 flex-wrap">
+      <button nbButton status="warning" size="small" (click)="refreshData()">
+        <nb-icon icon="refresh-outline"></nb-icon>
+        <span class="ml-1">Refresh</span>
+      </button>
       <button nbButton status="info" size="small" (click)="downloadTemplate()">
         <nb-icon icon="cloud-download-outline"></nb-icon>
         <span class="ml-1">Template</span>
@@ -10,7 +14,8 @@
         <nb-icon icon="cloud-upload-outline"></nb-icon>
         <span class="ml-1">Import</span>
       </button>
-      <input type="file" id="fileInput" (change)="onFileSelected($event)" style="display: none" />
+      <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none" accept=".xlsx, .xls" />
+
 
       <button nbButton status="primary" size="small" (click)="tambahGudang()">
         <nb-icon icon="plus-outline"></nb-icon>
@@ -79,14 +84,14 @@
       <nav *ngIf="totalPages > 1">
         <ul class="pagination pagination-sm mb-0">
           <li class="page-item" [class.disabled]="currentPage === 1">
-            <a class="page-link" href="#" (click)="changePage(currentPage - 1, $event)">‹</a>
+            <a class="page-link" (click)="changePage(currentPage - 1, $event)">‹</a>
           </li>
           <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
             [class.active]="currentPage === i + 1">
-            <a class="page-link" href="#" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
+            <a class="page-link" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
           </li>
           <li class="page-item" [class.disabled]="currentPage === totalPages">
-            <a class="page-link" href="#" (click)="changePage(currentPage + 1, $event)">›</a>
+            <a class="page-link" (click)="changePage(currentPage + 1, $event)">›</a>
           </li>
         </ul>
       </nav>

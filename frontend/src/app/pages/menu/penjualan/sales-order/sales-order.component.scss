@@ -1,0 +1,206 @@
+// Global styling untuk card
+nb-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+
+    nb-card-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        padding: 0.75rem 1rem;
+
+        .nav-tabs {
+            border: none;
+
+            .nav-item {
+                margin-right: 8px;
+
+                .nav-link {
+                    font-weight: 500;
+                    color: #495057;
+                    border: none;
+                    border-radius: 8px 8px 0 0;
+                    padding: 8px 16px;
+                    transition: all 0.2s ease;
+
+                    &.active {
+                        background: #007bff;
+                        color: #fff;
+                    }
+
+                    &:hover:not(.active) {
+                        background: #e9ecef;
+                        color: #007bff;
+                    }
+                }
+            }
+        }
+
+        .d-flex {
+            gap: 8px;
+
+            input[nbInput] {
+                border-radius: 6px;
+                height: 36px;
+                min-width: 180px;
+                border: 1px solid #ced4da;
+                padding: 4px 10px;
+                font-size: 14px;
+            }
+
+            button[nbButton] {
+                height: 36px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                nb-icon {
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+
+    nb-card-body {
+        padding: 1rem;
+    }
+}
+
+// Table styling
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 1rem;
+    font-size: 14px;
+
+    thead {
+        background: #f1f3f5;
+
+        th {
+            text-align: left;
+            padding: 10px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+    }
+
+    tbody {
+        tr {
+            transition: background 0.2s ease;
+
+            &:hover {
+                background: #f8f9fa;
+            }
+
+            td {
+                padding: 8px 10px;
+                vertical-align: middle;
+                border-bottom: 1px solid #e9ecef;
+
+                .btn-group {
+                    display: flex;
+                    gap: 4px;
+                }
+            }
+
+            .badge {
+                font-size: 12px;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+        }
+
+        .text-muted {
+            font-style: italic;
+        }
+    }
+}
+
+// Pagination styling
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+
+    .page-info {
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+        gap: 4px;
+
+        .page-item {
+            .page-link {
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                padding: 4px 8px;
+                font-size: 13px;
+                color: #007bff;
+                cursor: pointer;
+                transition: all 0.2s ease;
+
+                &:hover {
+                    background: #007bff;
+                    color: #fff;
+                }
+
+                &.active {
+                    background: #007bff;
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
+
+// Search bar styling
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+
+    input[nbInput] {
+        flex: 1;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        padding: 4px 10px;
+        font-size: 14px;
+    }
+
+    button[nbButton] {
+        height: 36px;
+    }
+}
+
+// Responsive
+@media (max-width: 768px) {
+    nb-card-header .d-flex {
+        flex-direction: column;
+        align-items: stretch;
+
+        input[nbInput] {
+            width: 100%;
+        }
+
+        button[nbButton] {
+            width: 100%;
+        }
+    }
+
+    .table {
+        font-size: 12px;
+
+        thead th,
+        tbody td {
+            padding: 6px;
+        }
+    }
+}

@@ -1,0 +1,88 @@
+.title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.75rem; // Jarak antar tombol refresh dan tambah
+}
+
+.filter-section {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+
+    nb-form-field {
+        min-width: 180px;
+
+        &:first-child {
+            flex: 1; // Search field lebih panjang
+        }
+    }
+}
+
+.table {
+    th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    td {
+        vertical-align: middle;
+    }
+}
+
+.sq-link {
+    color: #007bff;
+    text-decoration: underline;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+        color: #0056b3;
+    }
+}
+
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+
+    button {
+        padding: 0.35rem 0.5rem;
+    }
+}
+
+.pagination-wrapper {
+    .pagination {
+        .page-item {
+            .page-link {
+                border-radius: 4px;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #f1f1f1;
+                }
+            }
+
+            &.active .page-link {
+                background-color: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+            &.disabled .page-link {
+                cursor: not-allowed;
+                opacity: 0.6;
+            }
+        }
+    }
+}
+
+.nb-select {
+    min-width: 100px;
+}

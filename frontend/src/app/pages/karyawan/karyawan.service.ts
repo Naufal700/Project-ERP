@@ -22,27 +22,45 @@ export interface Karyawan {
   providedIn: "root",
 })
 export class KaryawanService {
-  private baseUrl = "/api/karyawan"; // sesuaikan sesuai route API kamu
+  private baseUrl = "/api/karyawan"; // sesuaikan dengan API Laravel
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Karyawan[]> {
-    return this.http.get<Karyawan[]>(this.baseUrl);
+  getAll(): Observable<any> {
+    return this.http.get<any>(this.baseUrl);
   }
 
-  getById(id: number): Observable<Karyawan> {
-    return this.http.get<Karyawan>(`${this.baseUrl}/${id}`);
+  getById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/${id}`);
   }
 
-  create(data: Karyawan): Observable<Karyawan> {
-    return this.http.post<Karyawan>(this.baseUrl, data);
+  create(data: Karyawan): Observable<any> {
+    return this.http.post<any>(this.baseUrl, data);
   }
 
-  update(id: number, data: Karyawan): Observable<Karyawan> {
-    return this.http.put<Karyawan>(`${this.baseUrl}/${id}`, data);
+  update(id: number, data: Karyawan): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/${id}`, data);
   }
 
   delete(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    return this.http.delete<any>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * Download template Excel karyawan
+   */
+  downloadTemplate(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/download-template`, {
+      responseType: "blob",
+    });
+  }
+
+  /**
+   * Import data karyawan dari file Excel
+   */
+  import(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.http.post<any>(`${this.baseUrl}/import`, formData);
   }
 }

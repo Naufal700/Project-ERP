@@ -1,75 +1,64 @@
-<nb-card>
-  <nb-card-header>
-    <h5 class="m-0">{{ isEdit ? 'Edit Produk' : 'Tambah Produk' }}</h5>
-  </nb-card-header>
-
+<nb-card class="produk-form-wrapper">
+  <nb-card-header>{{ isEdit ? 'Edit Produk' : 'Tambah Produk' }}</nb-card-header>
   <nb-card-body>
     <form [formGroup]="form" (ngSubmit)="simpan()">
-      <div class="form-container">
+      <div class="form-grid">
 
-        <!-- Kode Produk -->
-        <nb-form-field>
-          <nb-icon nbPrefix icon="pricetags-outline"></nb-icon>
-          <input nbInput fullWidth placeholder="Kode Produk" formControlName="kode_produk" readonly />
-        </nb-form-field>
-
-        <!-- Nama Produk -->
+        <!-- Baris 1 -->
         <div class="form-item">
-          <nb-form-field>
-            <nb-icon nbPrefix icon="cube-outline"></nb-icon>
-            <input nbInput placeholder="Nama Produk" formControlName="nama_produk" />
-          </nb-form-field>
+          <label>Kode Produk</label>
+          <input nbInput fullWidth formControlName="kode_produk" readonly placeholder="Otomatis" />
         </div>
 
-        <!-- Kategori -->
         <div class="form-item">
-          <nb-form-field>
-            <nb-select placeholder="Pilih Kategori" formControlName="id_kategori">
-              <nb-option *ngFor="let k of kategoriList" [value]="k.id">
-                {{ k.nama_kategori }}
-              </nb-option>
-            </nb-select>
-          </nb-form-field>
+          <label>Nama Produk</label>
+          <input nbInput fullWidth formControlName="nama_produk" placeholder="Contoh: Pulpen" />
         </div>
 
-        <!-- Satuan -->
+        <!-- Baris 2 -->
         <div class="form-item">
-          <nb-form-field>
-            <nb-select placeholder="Pilih Satuan" formControlName="id_satuan">
-              <nb-option *ngFor="let s of satuanList" [value]="s.id">
-                {{ s.nama_satuan }}
-              </nb-option>
-            </nb-select>
-          </nb-form-field>
+          <label>Kategori</label>
+          <nb-select fullWidth formControlName="id_kategori" placeholder="Pilih Kategori">
+            <nb-option *ngFor="let k of kategoriList" [value]="k.id">{{ k.nama_kategori }}</nb-option>
+          </nb-select>
         </div>
 
-        <!-- Deskripsi -->
-        <div class="form-item full">
-          <nb-form-field fullWidth>
-            <textarea nbInput rows="3" placeholder="Deskripsi" formControlName="deskripsi"></textarea>
-          </nb-form-field>
-        </div>
-
-        <!-- Status Aktif -->
         <div class="form-item">
-          <nb-form-field>
-            <nb-select fullWidth placeholder="Status" formControlName="is_aktif">
-              <nb-option [value]="true">Aktif</nb-option>
-              <nb-option [value]="false">Tidak Aktif</nb-option>
-            </nb-select>
-          </nb-form-field>
+          <label>Satuan</label>
+          <nb-select fullWidth formControlName="id_satuan" placeholder="Pilih Satuan">
+            <nb-option *ngFor="let s of satuanList" [value]="s.id">{{ s.nama_satuan }}</nb-option>
+          </nb-select>
         </div>
 
-        <!-- Tombol -->
-        <div class="d-flex justify-content-between mt-4">
-          <button nbButton status="basic" type="button" (click)="batal()">Batal</button>
-          <button nbButton status="primary" type="submit" [disabled]="form.invalid">
-            {{ isEdit ? 'Simpan Perubahan' : 'Simpan' }}
-          </button>
+        <!-- Baris 3 -->
+        <div class="form-item">
+          <label>Harga Beli</label>
+          <input nbInput fullWidth type="number" formControlName="harga_beli" placeholder="Contoh: 1000" />
+        </div>
+
+        <div class="form-item">
+          <label>Harga Jual</label>
+          <input nbInput fullWidth type="number" formControlName="harga_jual" placeholder="Contoh: 1500" />
+        </div>
+
+        <!-- Baris 4 -->
+        <div class="form-item">
+          <label>Status</label>
+          <nb-select fullWidth formControlName="is_aktif">
+            <nb-option [value]="true">Aktif</nb-option>
+            <nb-option [value]="false">Tidak Aktif</nb-option>
+          </nb-select>
         </div>
 
       </div>
-    </form>
 
+      <!-- Tombol -->
+      <div class="d-flex justify-content-end mt-4" style="gap: 1rem;">
+        <button nbButton status="primary" type="submit" [disabled]="form.invalid">
+          {{ isEdit ? 'Simpan Perubahan' : 'Simpan' }}
+        </button>
+        <button nbButton status="danger" type="button" (click)="batal()">Batal</button>
+      </div>
+    </form>
   </nb-card-body>
 </nb-card>
