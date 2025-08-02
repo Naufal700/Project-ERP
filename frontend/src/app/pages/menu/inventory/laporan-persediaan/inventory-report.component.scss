@@ -1,0 +1,134 @@
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    .title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .badge-metode {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #fff;
+        background-color: #007bff;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-left: 10px;
+    }
+
+    .actions-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        input[type="date"] {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            font-size: 0.85rem;
+        }
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+        }
+    }
+}
+
+.table-responsive {
+    margin-top: 1rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+        text-align: center;
+        vertical-align: middle;
+        font-size: 0.85rem;
+        padding: 6px;
+    }
+
+    th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        border: 1px solid #dee2e6;
+    }
+
+    td {
+        border: 1px solid #dee2e6;
+    }
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .pagination {
+        .page-item {
+            .page-link {
+                cursor: pointer;
+                color: #007bff;
+                border-radius: 4px;
+                margin: 0 2px;
+                padding: 4px 8px;
+                border: 1px solid #dee2e6;
+
+                &:hover {
+                    background-color: #e9ecef;
+                }
+            }
+
+            &.active .page-link {
+                background-color: #007bff;
+                color: white;
+            }
+
+            &.disabled .page-link {
+                pointer-events: none;
+                color: #6c757d;
+            }
+        }
+    }
+}
+
+.loading {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6c757d;
+    margin-top: 20px;
+}
+
+.actions-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .separator {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+}

@@ -6,30 +6,44 @@ import { Observable } from "rxjs";
   providedIn: "root",
 })
 export class SalesOrderService {
-  private baseUrl = "/api";
+  private baseUrl = "/api/sales";
 
   constructor(private http: HttpClient) {}
 
+  /** Ambil semua SQ draft untuk approval SO */
   getDraftQuotations(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/sales/quotations/draft`);
+    return this.http.get(`${this.baseUrl}/quotations/draft`);
   }
 
+  /** Approve SQ jadi SO */
   approveQuotation(id: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/sales/quotations/${id}/approve`, {});
+    return this.http.post(`${this.baseUrl}/quotations/${id}/approve`, {});
   }
 
+  /** Reject SQ */
   rejectQuotation(id: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/sales/quotations/${id}/reject`, {});
+    return this.http.post(`${this.baseUrl}/quotations/${id}/reject`, {});
   }
 
+  /** Ambil semua Sales Order (draft & approved) */
   getOrders(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/sales/orders`);
+    return this.http.get(`${this.baseUrl}/orders`);
   }
 
-  getOrderDetail(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/sales/orders/${id}`);
+  /** Cancel Sales Order → kembalikan SQ ke draft */
+  cancelOrder(id: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/order/${id}/cancel`, {}); // gunakan singular "order"
   }
-  cancelOrder(id: number) {
-    return this.http.post<any>(`/api/sales/order/${id}/cancel`, {});
+
+  /** Cetak PDF per Sales Order */
+  printOrder(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/order/${id}/print`, {
+      responseType: "blob",
+    });
+  }
+
+  /** Bulk verifikasi beberapa Sales Order dengan data PPN & Diskon */
+  bulkVerify(payload: { ids: number[]; products: any[] }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/order/bulk-verify`, payload);
   }
 }

@@ -18,6 +18,9 @@ import { GudangComponent } from "./gudang/gudang.component";
 import { MappingJurnalComponent } from "./mapping-jurnal/mapping-jurnal.component";
 import { SalesQuotationComponent } from "./menu/penjualan/penawaran/sales-quotation.component";
 import { SalesOrderComponent } from "./menu/penjualan/sales-order/sales-order.component";
+import { InventorySettingsComponent } from "./menu/inventory/setting/inventory-setting.component";
+import { InventoryOpeningComponent } from "./menu/inventory/saldo-awal/inventory-opening.component";
+import { InventoryReportComponent } from "./menu/inventory/laporan-persediaan/inventory-report.component";
 
 const routes: Routes = [
   {
@@ -132,6 +135,8 @@ const routes: Routes = [
           },
         ],
       },
+
+      // Modul Penjualan
       {
         path: "menu/penjualan/penawaran",
         children: [
@@ -147,6 +152,34 @@ const routes: Routes = [
           {
             path: "",
             component: SalesOrderComponent, // Daftar Gudang
+          },
+        ],
+      },
+      // Modul Persediaan
+      {
+        path: "menu/inventory/setting",
+        children: [
+          {
+            path: "",
+            component: InventorySettingsComponent, // Daftar Gudang
+          },
+        ],
+      },
+      {
+        path: "menu/inventory/saldo-awal",
+        children: [
+          {
+            path: "",
+            component: InventoryOpeningComponent, // Daftar Gudang
+          },
+        ],
+      },
+      {
+        path: "menu/inventory/laporan-persediaan",
+        children: [
+          {
+            path: "",
+            component: InventoryReportComponent, // Daftar Gudang
           },
         ],
       },

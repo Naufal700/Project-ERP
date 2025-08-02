@@ -1,0 +1,61 @@
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+
+    nb-select,
+    button,
+    .import-btn {
+      margin-left: 5px;
+    }
+
+    .import-btn {
+      background: #00d68f;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      display: inline-block;
+
+      input {
+        display: none;
+      }
+    }
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    th {
+      background: #f7f9fc;
+    }
+
+    input {
+      width: 80px;
+      text-align: right;
+      padding: 4px;
+    }
+
+    button {
+      margin: 0;
+    }
+  }
+}

@@ -69,6 +69,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
     title: "Persediaan",
     icon: "cube-outline",
     children: [
+      // { title: "Saldo Awal", link: "/pages/menu/inventory/saldo-awal" },
       { title: "Kartu Stok", link: "/pages/inventory/stock-card" },
       { title: "Stok Opname", link: "/pages/inventory/stock-opname" },
       { title: "Mutasi Gudang", link: "/pages/inventory/mutation" },
@@ -76,10 +77,15 @@ export const MENU_ITEMS: NbMenuItem[] = [
       {
         title: "Laporan Persediaan",
         children: [
-          { title: "FIFO / Average", link: "/pages/inventory/fifo" },
+          {
+            title: "FIFO / Average",
+            link: "/pages/menu/inventory/laporan-persediaan",
+          },
           { title: "Nilai Persediaan", link: "/pages/inventory/value" },
+          { title: "Laporan Mutasi", link: "/pages/inventory/mutation-report" }, // opsional
         ],
       },
+      { title: "Pengaturan", link: "/pages/menu/inventory/setting" },
     ],
   },
   {

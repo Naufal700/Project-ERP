@@ -1,0 +1,63 @@
+<nb-card>
+  <nb-card-header class="header-actions">
+    <h4>Saldo Awal Persediaan</h4>
+    <div class="actions">
+      <nb-select placeholder="Filter Produk" [(selected)]="filterProduk" (selectedChange)="filterData()">
+        <nb-option value="">Semua Produk</nb-option>
+        <nb-option *ngFor="let produk of produkList" [value]="produk.id">
+          {{ produk.nama_produk }}
+        </nb-option>
+      </nb-select>
+
+      <nb-select placeholder="Filter Gudang" [(selected)]="filterGudang" (selectedChange)="filterData()">
+        <nb-option value="">Semua Gudang</nb-option>
+        <nb-option *ngFor="let gudang of gudangList" [value]="gudang.id">
+          {{ gudang.nama_gudang }}
+        </nb-option>
+      </nb-select>
+
+      <button nbButton size="small" status="info" (click)="exportExcel()">Export</button>
+      <button nbButton size="small" status="success" (click)="downloadTemplate()">Download Template</button>
+
+      <label class="import-btn">
+        <span>Import</span>
+        <input type="file" (change)="importExcel($event)" hidden />
+      </label>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th>Gudang</th>
+            <th>Qty</th>
+            <th>Harga</th>
+            <th>Total</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of filteredList">
+            <td>{{ item.nama_produk }}</td>
+            <td>{{ item.nama_gudang }}</td>
+            <td>
+              <input type="number" min="0" [(ngModel)]="item.qty" (input)="updateTotal(item)" />
+            </td>
+            <td>
+              <input type="number" min="0" [(ngModel)]="item.harga" (input)="updateTotal(item)" />
+            </td>
+            <td>{{ item.total | currency: "IDR" }}</td>
+            <td>
+              <button nbButton size="tiny" status="success" [disabled]="!item.changed" (click)="saveItem(item)">
+                Simpan
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

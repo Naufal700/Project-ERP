@@ -1,0 +1,58 @@
+<nb-card>
+  <nb-card-header>
+    <h5>Verifikasi Sales Order</h5>
+  </nb-card-header>
+  <nb-card-body>
+    <!-- Jika bulk tampilkan daftar pelanggan -->
+    <div *ngIf="orders.length > 1" class="mb-2">
+      <strong>Pesanan dari pelanggan:</strong>
+      <ul>
+        <li *ngFor="let order of orders">
+          {{ order.pelanggan?.nama_pelanggan || order.quotation?.pelanggan?.nama_pelanggan }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th>Pelanggan</th>
+            <th>Qty</th>
+            <th>Harga</th>
+            <th>Subtotal</th>
+            <th>PPN</th>
+            <th>Diskon</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of products">
+            <td>{{ p.nama_produk }}</td>
+            <td>{{ p.pelanggan }}</td>
+            <td class="text-center">{{ p.qty }}</td>
+            <td class="text-right">{{ p.harga | currency:'IDR':'symbol':'1.0-0' }}</td>
+            <td class="text-right">{{ p.subtotal | currency:'IDR':'symbol':'1.0-0' }}</td>
+            <td class="text-center">
+              <input type="checkbox" [checked]="p.ppn > 0" (change)="togglePpn(p, $event)" />
+            </td>
+            <td>
+              <input type="number" class="form-control form-control-sm text-right" [value]="p.diskon"
+                (input)="updateDiskon(p, $event)" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Total -->
+    <div class="mt-3">
+      <p><strong>Total PPN:</strong> {{ totalPpn | currency:'IDR':'symbol':'1.0-0' }}</p>
+      <p><strong>Total Diskon:</strong> {{ totalDiskon | currency:'IDR':'symbol':'1.0-0' }}</p>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-content-end gap-2">
+    <button nbButton status="basic" (click)="cancel()">Batal</button>
+    <button nbButton status="success" (click)="confirm()">Simpan</button>
+  </nb-card-footer>
+</nb-card>

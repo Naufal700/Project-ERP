@@ -1,0 +1,34 @@
+<nb-card>
+  <nb-card-header>Tambah Saldo Awal</nb-card-header>
+  <nb-card-body>
+    <div class="form-group">
+      <label>Produk</label>
+      <nb-select [(selected)]="form.id_produk">
+        <nb-option *ngFor="let p of products" [value]="p.id">{{ p.nama_produk }}</nb-option>
+      </nb-select>
+    </div>
+
+    <div class="form-group">
+      <label>Gudang</label>
+      <nb-select [(selected)]="form.id_gudang">
+        <nb-option *ngFor="let g of warehouses" [value]="g.id">{{ g.nama_gudang }}</nb-option>
+      </nb-select>
+    </div>
+
+    <div class="form-group">
+      <label>Qty</label>
+      <input nbInput type="number" [(ngModel)]="form.qty" />
+    </div>
+
+    <div class="form-group">
+      <label>Harga</label>
+      <input nbInput type="number" [(ngModel)]="form.harga" />
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="save()" [disabled]="loading">
+      {{ loading ? "Menyimpan..." : "Simpan" }}
+    </button>
+    <button nbButton status="danger" (click)="cancel()">Batal</button>
+  </nb-card-footer>
+</nb-card>

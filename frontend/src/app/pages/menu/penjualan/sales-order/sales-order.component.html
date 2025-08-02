@@ -1,161 +1,148 @@
 <nb-card>
-  <nb-card-header>
-    <div class="d-flex justify-content-between align-items-center flex-wrap w-100">
-      <!-- Tabs -->
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="activeTab === 'draft'" (click)="setTab('draft')">
-            Draft Quotation
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [class.active]="activeTab === 'orders'" (click)="setTab('orders')">
-            Sales Order
-          </a>
-        </li>
-      </ul>
-
-      <!-- Filter Section -->
-      <div class="d-flex align-items-center gap-2">
-        <input nbInput fullWidth type="text" [(ngModel)]="searchTerm" placeholder="Cari nomor/pelanggan" />
-        <input nbInput fullWidth type="date" [(ngModel)]="filterDate" placeholder="Filter tanggal" />
-        <button nbButton status="info" size="small" (click)="refreshData()">
-          <nb-icon icon="refresh-outline"></nb-icon>
-        </button>
-      </div>
+  <nb-card-header class="d-flex justify-content-between align-items-center flex-wrap">
+    <h4 class="title">Sales Order</h4>
+    <div class="d-flex action-buttons">
+      <button nbButton status="warning" size="medium" (click)="refreshData()" [disabled]="isRefreshing">
+        <nb-icon *ngIf="!isRefreshing" icon="refresh-outline"></nb-icon>
+        <nb-spinner *ngIf="isRefreshing" size="tiny"></nb-spinner>
+        <span *ngIf="!isRefreshing">Refresh</span>
+        <span *ngIf="isRefreshing">Memuat...</span>
+      </button>
     </div>
+    <!-- Filter Status -->
   </nb-card-header>
 
   <nb-card-body>
-    <!-- TAB DRAFT QUOTATION -->
-    <div *ngIf="activeTab === 'draft'">
-      <div class="search-container"></div>
-      <table class="table table-bordered table-hover table-sm mt-3">
-        <thead class="table-light">
-          <tr>
-            <th>Nomor SQ</th>
-            <th>Tanggal</th>
-            <th>Pelanggan</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="
-              let q of getFilteredQuotations()
-                | slice: (currentPageDraft - 1) * itemsPerPage: currentPageDraft * itemsPerPage
-            ">
-            <td>{{ q.nomor_quotation }}</td>
-            <td>{{ q.tanggal | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ q.pelanggan?.nama_pelanggan }}</td>
-            <td>{{ getQuotationTotal(q.details) | currency: 'IDR':'symbol':'1.0-0' }}</td>
-            <td><span class="badge bg-primary">{{ q.status | titlecase }}</span></td>
-            <td>
-              <div class="btn-group">
-                <button nbButton size="tiny" status="success" (click)="approveQuotation(q.id)">
-                  Approve
-                </button>
-                <button nbButton size="tiny" status="danger" (click)="rejectQuotation(q.id)">
-                  Reject
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr *ngIf="getFilteredQuotations().length === 0">
-            <td colspan="6" class="text-center text-muted">Tidak ada SQ draft</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Filter -->
+    <div class="filter-section d-flex flex-wrap align-items-center mb-3 gap-2">
+      <nb-form-field class="flex-grow-1">
+        <nb-icon nbPrefix icon="search-outline"></nb-icon>
+        <input nbInput placeholder="Cari SQ, SO, atau pelanggan..." [(ngModel)]="searchTerm"
+          (ngModelChange)="getFilteredOrders()" />
+      </nb-form-field>
 
-      <!-- Pagination Draft -->
-      <div class="pagination-container" *ngIf="getFilteredQuotations().length > 0">
-        <div class="page-info">
-          Menampilkan
-          {{
-            ((currentPageDraft - 1) * itemsPerPage) + 1
-          }}
-          -
-          {{
-            Math.min(currentPageDraft * itemsPerPage, getFilteredQuotations().length)
-          }}
-          dari {{ getFilteredQuotations().length }} data
-        </div>
-        <ul class="pagination">
-          <li class="page-item" *ngFor="let p of getPages(getFilteredQuotations())">
-            <a class="page-link" [class.active]="p === currentPageDraft" (click)="currentPageDraft = p">
-              {{ p }}
-            </a>
-          </li>
-        </ul>
-      </div>
+      <!-- Filter tanggal -->
+      <nb-form-field>
+        <input nbInput placeholder="Dari Tanggal" [nbDatepicker]="fromDatePicker" [(ngModel)]="fromDate"
+          (ngModelChange)="getFilteredOrders()" />
+        <nb-datepicker #fromDatePicker></nb-datepicker>
+      </nb-form-field>
+
+      <nb-form-field>
+        <input nbInput placeholder="Sampai Tanggal" [nbDatepicker]="toDatePicker" [(ngModel)]="toDate"
+          (ngModelChange)="getFilteredOrders()" />
+        <nb-datepicker #toDatePicker></nb-datepicker>
+      </nb-form-field>
+      <nb-select size="small" placeholder="Filter Status" [(selected)]="filterStatus"
+        (selectedChange)="getFilteredOrders()">
+        <nb-option value="">Semua</nb-option>
+        <nb-option value="draft">Draft</nb-option>
+        <nb-option value="approved">Approved</nb-option>
+      </nb-select>
     </div>
 
-    <!-- TAB SALES ORDER -->
-    <div *ngIf="activeTab === 'orders'">
-      <table class="table table-bordered table-hover table-sm mt-3">
-        <thead class="table-light">
+    <!-- Table -->
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-sm">
+        <thead>
           <tr>
+            <th>
+              <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()" />
+            </th>
+            <th>#</th>
+            <th>Nomor SQ</th>
             <th>Nomor SO</th>
             <th>Tanggal</th>
             <th>Pelanggan</th>
             <th>Total</th>
             <th>Status</th>
-            <th>Aksi</th>
+            <th>Approved By</th>
+            <th class="text-center">Aksi</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="
-              let so of getFilteredOrders()
-                | slice: (currentPageOrders - 1) * itemsPerPage: currentPageOrders * itemsPerPage
-            ">
-            <td>{{ so.nomor_order }}</td>
-            <td>{{ so.tanggal | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ so.pelanggan?.nama_pelanggan }}</td>
-            <td>{{ so.total | currency: 'IDR':'symbol':'1.0-0' }}</td>
+          let data of getFilteredOrders()
+            | slice: (currentPage - 1) * itemsPerPage: currentPage * itemsPerPage;
+          let i = index
+        ">
+            <td>
+              <input type="checkbox" [(ngModel)]="data.selected" (change)="updateSelectedOrders()" />
+            </td>
+            <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+            <td>{{ data.nomor_quotation || '-' }}</td>
+            <td>{{ data.nomor_order || '-' }}</td>
+            <td>{{ data.tanggal | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ data.pelanggan?.nama_pelanggan || data.quotation?.pelanggan?.nama_pelanggan }}</td>
+            <td>{{ getQuotationTotal(data.details) | currency: 'IDR' : 'symbol' : '1.0-0' }}</td>
             <td>
               <span [ngClass]="{
-                'badge bg-success': so.status === 'approved',
-                'badge bg-danger': so.status === 'rejected',
-                'badge bg-secondary': so.status === 'draft'
-              }">
-                {{ so.status | titlecase }}
+              'text-primary': data.status === 'draft',
+              'text-success': data.status === 'approved',
+              'text-danger': data.status === 'rejected'
+            }">
+                {{ data.status | titlecase }}
               </span>
             </td>
-            <td>
-              <button nbButton size="tiny" status="warning" *ngIf="so.status === 'approved'"
-                (click)="cancelOrder(so.id)">
-                Batal
-              </button>
+            <td>{{ data.approved_by_user?.name || '-' }}</td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button nbButton size="medium" status="success" ghost *ngIf="data.status === 'draft'"
+                  (click)="openVerifyDialog([data])">
+                  <nb-icon icon="checkmark-outline"></nb-icon>
+                </button>
+                <button nbButton size="medium" status="danger" ghost *ngIf="data.status === 'draft'"
+                  (click)="rejectOrder(data.id)">
+                  <nb-icon icon="close-outline"></nb-icon>
+                </button>
+                <button nbButton size="medium" status="warning" ghost *ngIf="data.status === 'approved'"
+                  (click)="cancelOrder(data.id)">
+                  <nb-icon icon="refresh-outline"></nb-icon>
+                </button>
+                <button nbButton size="medium" status="info" ghost *ngIf="data.status === 'approved'"
+                  (click)="printPdf(data.id)">
+                  <nb-icon icon="printer-outline"></nb-icon>
+                </button>
+              </div>
             </td>
           </tr>
           <tr *ngIf="getFilteredOrders().length === 0">
-            <td colspan="6" class="text-center text-muted">Tidak ada Sales Order</td>
+            <td colspan="10" class="text-center text-muted">Tidak ada data ditemukan.</td>
           </tr>
         </tbody>
       </table>
+    </div>
 
-      <!-- Pagination Sales Orders -->
-      <div class="pagination-container" *ngIf="getFilteredOrders().length > 0">
-        <div class="page-info">
-          Menampilkan
-          {{
-            ((currentPageOrders - 1) * itemsPerPage) + 1
-          }}
-          -
-          {{
-            Math.min(currentPageOrders * itemsPerPage, getFilteredOrders().length)
-          }}
-          dari {{ getFilteredOrders().length }} data
-        </div>
-        <ul class="pagination">
-          <li class="page-item" *ngFor="let p of getPages(getFilteredOrders())">
-            <a class="page-link" [class.active]="p === currentPageOrders" (click)="currentPageOrders = p">
-              {{ p }}
-            </a>
+    <!-- Tombol verifikasi terpilih -->
+    <div *ngIf="selectedOrders.length > 0" class="mt-3">
+      <button nbButton status="success" size="medium" (click)="openVerifyDialog(selectedOrders)">
+        Verifikasi Terpilih ({{ selectedOrders.length }})
+      </button>
+    </div>
+
+
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+      <nb-select size="small" [(selected)]="itemsPerPage" (selectedChange)="itemsPerPage = $event">
+        <nb-option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }} baris</nb-option>
+      </nb-select>
+
+      <nav *ngIf="getPages(getFilteredOrders()).length > 1">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" (click)="currentPage = currentPage - 1">‹</button>
+          </li>
+          <li class="page-item" *ngFor="let page of getPages(getFilteredOrders()); let i = index"
+            [class.active]="currentPage === i + 1">
+            <button class="page-link" (click)="currentPage = i + 1">{{ i + 1 }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === getPages(getFilteredOrders()).length">
+            <button class="page-link" (click)="currentPage = currentPage + 1">›</button>
           </li>
         </ul>
-      </div>
+      </nav>
     </div>
   </nb-card-body>
 </nb-card>

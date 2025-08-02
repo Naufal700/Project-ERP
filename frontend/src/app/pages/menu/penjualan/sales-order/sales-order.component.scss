@@ -1,206 +1,218 @@
-// Global styling untuk card
-nb-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
+:host {
+    display: block;
+    width: 100%;
+}
 
-    nb-card-header {
-        background: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-        padding: 0.75rem 1rem;
+.title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--text-primary-color);
+    margin: 0;
+}
 
-        .nav-tabs {
-            border: none;
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
 
-            .nav-item {
-                margin-right: 8px;
+.filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
 
-                .nav-link {
-                    font-weight: 500;
-                    color: #495057;
-                    border: none;
-                    border-radius: 8px 8px 0 0;
-                    padding: 8px 16px;
-                    transition: all 0.2s ease;
+    nb-form-field {
+        min-width: 200px;
 
-                    &.active {
-                        background: #007bff;
-                        color: #fff;
-                    }
-
-                    &:hover:not(.active) {
-                        background: #e9ecef;
-                        color: #007bff;
-                    }
-                }
-            }
+        input[nbInput] {
+            height: 38px;
+            font-size: 0.9rem;
         }
-
-        .d-flex {
-            gap: 8px;
-
-            input[nbInput] {
-                border-radius: 6px;
-                height: 36px;
-                min-width: 180px;
-                border: 1px solid #ced4da;
-                padding: 4px 10px;
-                font-size: 14px;
-            }
-
-            button[nbButton] {
-                height: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                nb-icon {
-                    font-size: 18px;
-                }
-            }
-        }
-    }
-
-    nb-card-body {
-        padding: 1rem;
     }
 }
 
-// Table styling
+/* Table Styling */
+.table-responsive {
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+}
+
 .table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-bottom: 1rem;
-    font-size: 14px;
+    margin-bottom: 0;
+    font-size: 0.875rem;
 
     thead {
-        background: #f1f3f5;
+        background-color: #f8f9fa;
 
         th {
-            text-align: left;
-            padding: 10px;
             font-weight: 600;
-            color: #495057;
+            white-space: nowrap;
+            text-align: center;
+            padding: 0.6rem;
             border-bottom: 2px solid #dee2e6;
+
+            &:first-child {
+                width: 40px;
+            }
         }
     }
 
     tbody {
-        tr {
-            transition: background 0.2s ease;
+        td {
+            vertical-align: middle;
+            padding: 0.5rem;
+            white-space: nowrap;
+
+            &.text-center {
+                text-align: center;
+            }
+
+            &:first-child {
+                text-align: center;
+                width: 40px;
+            }
+        }
+
+        tr:hover {
+            background-color: #f1f3f5;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .sq-link {
+            color: var(--primary-color);
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: underline;
 
             &:hover {
-                background: #f8f9fa;
-            }
-
-            td {
-                padding: 8px 10px;
-                vertical-align: middle;
-                border-bottom: 1px solid #e9ecef;
-
-                .btn-group {
-                    display: flex;
-                    gap: 4px;
-                }
-            }
-
-            .badge {
-                font-size: 12px;
-                padding: 4px 8px;
-                border-radius: 4px;
+                color: var(--primary-hover-color);
             }
         }
+    }
 
-        .text-muted {
-            font-style: italic;
-        }
+    /* Checkbox Styling */
+    input[type='checkbox'] {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        cursor: pointer;
+        accent-color: var(--primary-color); // Warna checkbox
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 
-// Pagination styling
-.pagination-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
-    flex-wrap: wrap;
+/* Status Badge */
+.text-primary {
+    font-weight: 600;
+    color: #007bff !important;
+}
 
-    .page-info {
-        font-size: 13px;
-        color: #6c757d;
+.text-success {
+    font-weight: 600;
+    color: #28a745 !important;
+}
+
+.text-danger {
+    font-weight: 600;
+    color: #dc3545 !important;
+}
+
+/* Approved By */
+td:nth-child(8) {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+/* Button Group */
+.btn-group {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+
+    button[nbButton] {
+        min-width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        nb-icon {
+            font-size: 1rem;
+        }
     }
 
+    button[status='success'] {
+        color: #28a745;
+    }
+
+    button[status='danger'] {
+        color: #dc3545;
+    }
+
+    button[status='warning'] {
+        color: #ffc107;
+    }
+}
+
+/* Pagination */
+.pagination-wrapper {
     .pagination {
         display: flex;
-        list-style: none;
-        gap: 4px;
+        gap: 0.25rem;
 
         .page-item {
             .page-link {
                 border: 1px solid #dee2e6;
-                border-radius: 4px;
-                padding: 4px 8px;
-                font-size: 13px;
-                color: #007bff;
+                padding: 0.25rem 0.5rem;
+                font-size: 0.8rem;
+                color: #495057;
+                background-color: #fff;
+                border-radius: 0.25rem;
                 cursor: pointer;
-                transition: all 0.2s ease;
+                min-width: 32px;
+                text-align: center;
 
                 &:hover {
-                    background: #007bff;
-                    color: #fff;
+                    background-color: #f1f3f5;
                 }
+            }
 
-                &.active {
-                    background: #007bff;
-                    color: #fff;
-                }
+            &.active .page-link {
+                background-color: var(--primary-color);
+                color: #fff;
+                border-color: var(--primary-color);
+            }
+
+            &.disabled .page-link {
+                pointer-events: none;
+                opacity: 0.6;
             }
         }
     }
-}
 
-// Search bar styling
-.search-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-
-    input[nbInput] {
-        flex: 1;
-        border-radius: 6px;
-        border: 1px solid #ced4da;
-        padding: 4px 10px;
-        font-size: 14px;
-    }
-
-    button[nbButton] {
-        height: 36px;
+    nb-select {
+        min-width: 100px;
     }
 }
 
-// Responsive
+/* Responsive */
 @media (max-width: 768px) {
-    nb-card-header .d-flex {
+    .filter-section {
         flex-direction: column;
         align-items: stretch;
 
-        input[nbInput] {
-            width: 100%;
-        }
-
-        button[nbButton] {
+        nb-form-field {
             width: 100%;
         }
     }
 
-    .table {
-        font-size: 12px;
-
-        thead th,
-        tbody td {
-            padding: 6px;
-        }
+    .pagination-wrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }

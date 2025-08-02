@@ -1,0 +1,23 @@
+<nb-card>
+  <nb-card-header>
+    <h4>Pengaturan Persediaan</h4>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="settings-container">
+      <div class="form-group">
+        <label for="metode">Metode Persediaan:</label>
+        <nb-select [(selected)]="metode" id="metode">
+          <nb-option value="fifo">FIFO (First In First Out)</nb-option>
+          <nb-option value="average">Average (Rata-Rata)</nb-option>
+        </nb-select>
+      </div>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="footer-actions">
+    <button nbButton status="success" (click)="saveSettings()" [disabled]="loading">
+      {{ loading ? "Menyimpan..." : "Simpan" }}
+    </button>
+  </nb-card-footer>
+</nb-card>

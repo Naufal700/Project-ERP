@@ -50,6 +50,11 @@ import { MappingJurnalComponent } from "./mapping-jurnal/mapping-jurnal.componen
 import { MappingJurnalFormComponent } from "./mapping-jurnal/mapping-jurnal-form.component";
 import { SalesQuotationComponent } from "./menu/penjualan/penawaran/sales-quotation.component";
 import { SalesQuotationFormComponent } from "./menu/penjualan/penawaran/sales-quotation-form.component";
+import { VerifyDialogComponent } from "./menu/penjualan/sales-order/verify-dialog.component";
+import { InventorySettingsComponent } from "./menu/inventory/setting/inventory-setting.component";
+import { InventoryOpeningComponent } from "./menu/inventory/saldo-awal/inventory-opening.component";
+import { InventoryOpeningFormComponent } from "./menu/inventory/saldo-awal/inventory-opening-form.component";
+import { InventoryReportComponent } from "./menu/inventory/laporan-persediaan/inventory-report.component";
 
 // import { PajakComponent } from "./master/pajak/pajak.component";
 // import { PajakFormComponent } from "./master/pajak/pajak-form.component";
@@ -101,6 +106,11 @@ import { SalesQuotationFormComponent } from "./menu/penjualan/penawaran/sales-qu
     SalesQuotationFormComponent,
     SalesQuotationComponent,
     SalesQuotationFormComponent,
+    VerifyDialogComponent,
+    InventorySettingsComponent,
+    InventoryOpeningComponent,
+    InventoryOpeningFormComponent,
+    InventoryReportComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: LOCALE_ID, useValue: "id" }],
