@@ -18,8 +18,7 @@ class CoaController extends Controller
     {
         $query = Coa::query();
 
-        $query->where('is_aktif', true)
-            ->where('is_header', false);
+        $query->where('is_aktif', true); // hanya akun aktif
 
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;

@@ -35,4 +35,8 @@ class SalesOrder extends Model
     {
         return $this->belongsTo(SalesQuotation::class, 'id_quotation');
     }
+    public function approvedByUser()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
 }

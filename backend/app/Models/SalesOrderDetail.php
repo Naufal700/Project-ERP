@@ -14,11 +14,13 @@ class SalesOrderDetail extends Model
         'id_order',
         'id_produk',
         'qty',
-        'harga'
+        'harga',
+        'ppn',
+        'diskon'
     ];
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'id_produk', 'id');
     }
 }

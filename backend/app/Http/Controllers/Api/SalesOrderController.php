@@ -7,87 +7,134 @@ use App\Models\SalesQuotation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalesOrderController extends Controller
 {
     /**
-     * Menampilkan semua Sales Order yang sudah dibuat
+     * Menampilkan semua SQ draft untuk di-approve jadi SO
      */
     public function index()
     {
-        $orders = SalesOrder::with(['pelanggan', 'details.produk', 'quotation'])->get();
-        return response()->json($orders);
+        $draftQuotations = SalesQuotation::with(['pelanggan', 'details.produk'])
+            ->where('status', 'draft')
+            ->get();
+
+        return response()->json($draftQuotations);
     }
 
     /**
-     * Menampilkan detail Sales Order
-     */
-    public function show($id)
-    {
-        $order = SalesOrder::with(['pelanggan', 'details.produk', 'quotation'])->findOrFail($id);
-        return response()->json($order);
-    }
-
-    /**
-     * Approve Quotation → buat Sales Order otomatis
+     * Approve SQ menjadi SO (dipanggil dari bulkVerify)
      */
     public function approveQuotation($id)
     {
-        DB::beginTransaction();
         try {
             $quotation = SalesQuotation::with('details')->findOrFail($id);
 
-            // Generate nomor SO
-            $lastOrder = SalesOrder::orderBy('id', 'desc')->first();
-            $nomorOrder = 'SO-' . date('Ymd') . '-' . str_pad(($lastOrder ? $lastOrder->id + 1 : 1), 4, '0', STR_PAD_LEFT);
+            // Cek apakah sudah ada SO untuk SQ ini
+            $order = SalesOrder::where('id_quotation', $quotation->id)->first();
 
-            // Buat Sales Order
-            $order = SalesOrder::create([
-                'nomor_order'   => $nomorOrder,
-                'id_quotation'  => $quotation->id,
-                'id_pelanggan'  => $quotation->id_pelanggan,
-                'tanggal'       => now(),
-                'total'         => $quotation->details->sum(fn($d) => $d->qty * $d->harga),
-                'status'        => 'approved',
-            ]);
-
-            foreach ($quotation->details as $detail) {
-                $order->details()->create([
-                    'id_produk' => $detail->id_produk,
-                    'qty'       => $detail->qty,
-                    'harga'     => $detail->harga,
-                    'subtotal'  => $detail->qty * $detail->harga,
+            if ($order) {
+                // Jika sudah ada → update status & approved_by
+                $order->update([
+                    'status'      => 'approved',
+                    'approved_by' => auth()->id(),
                 ]);
+            } else {
+                // Generate nomor SO baru
+                $lastOrder  = SalesOrder::orderBy('id', 'desc')->first();
+                $nomorOrder = 'SO-' . date('Ymd') . '-' . str_pad(($lastOrder ? $lastOrder->id + 1 : 1), 4, '0', STR_PAD_LEFT);
+
+                // Buat SO baru
+                $order = SalesOrder::create([
+                    'nomor_order'   => $nomorOrder,
+                    'id_quotation'  => $quotation->id,
+                    'id_pelanggan'  => $quotation->id_pelanggan,
+                    'tanggal'       => now(),
+                    'total'         => $quotation->details->sum(fn($d) => $d->qty * $d->harga),
+                    'status'        => 'approved',
+                    'approved_by'   => auth()->id(),
+                ]);
+
+                // Buat detail SO default (ppn & diskon default 0)
+                foreach ($quotation->details as $detail) {
+                    $order->details()->create([
+                        'id_produk' => $detail->id_produk,
+                        'qty'       => $detail->qty,
+                        'harga'     => $detail->harga,
+                        'subtotal'  => $detail->qty * $detail->harga,
+                        'ppn'       => 0,
+                        'diskon'    => 0,
+                    ]);
+                }
             }
 
-            // Update status Quotation jadi approved
+            // Update SQ menjadi approved
             $quotation->update(['status' => 'approved']);
-
-            DB::commit();
-
-            return response()->json([
-                'message'       => 'Quotation berhasil di-approve & Sales Order dibuat',
-                'nomor_order'   => $nomorOrder,
-                'sales_order_id' => $order->id,
-            ]);
+            return $order;
         } catch (\Exception $e) {
-            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Reject SQ
+     */
+    public function reject($id)
+    {
+        try {
+            $quotation = SalesQuotation::findOrFail($id);
+            $quotation->update(['status' => 'rejected']);
+
+            return response()->json(['message' => 'Sales Quotation berhasil direject']);
+        } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Gagal approve quotation',
+                'message' => 'Gagal reject Sales Quotation',
                 'error'   => $e->getMessage(),
             ], 500);
         }
     }
 
     /**
-     * Reject Quotation → update status jadi rejected
+     * Cancel SO → kembalikan SQ ke draft
      */
-    public function rejectQuotation($id)
+    public function cancel($id)
     {
-        $quotation = SalesQuotation::findOrFail($id);
-        $quotation->update(['status' => 'rejected']);
+        DB::beginTransaction();
+        try {
+            $order = SalesOrder::with('quotation')->findOrFail($id);
 
-        return response()->json(['message' => 'Quotation berhasil di-reject']);
+            if ($order->quotation) {
+                $order->quotation->update(['status' => 'draft']);
+            }
+
+            $order->details()->delete();
+            $order->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Sales Order berhasil dibatalkan, SQ dikembalikan ke draft, dan SO dihapus',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Gagal membatalkan Sales Order',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Ambil semua SQ draft
+     */
+    public function draftQuotations()
+    {
+        $drafts = SalesQuotation::with(['pelanggan', 'details.produk'])
+            ->where('status', 'draft')
+            ->get();
+
+        return response()->json($drafts);
     }
 
     /**
@@ -95,39 +142,77 @@ class SalesOrderController extends Controller
      */
     public function listOrders()
     {
-        $orders = SalesOrder::with(['pelanggan', 'details.produk', 'quotation'])->get();
+        $orders = SalesOrder::with([
+            'quotation.pelanggan',
+            'pelanggan',
+            'details.produk',
+            'approvedByUser'
+        ])
+            ->orderBy('id', 'desc')
+            ->get();
+
         return response()->json($orders);
     }
 
     /**
-     * Ambil semua draft quotation untuk di-approve
+     * Cetak Sales Order PDF
      */
-    public function draftQuotations()
+    public function printPdf($id)
     {
-        $drafts = SalesQuotation::with(['pelanggan', 'details.produk'])
-            ->where('status', 'draft')
-            ->get();
-        return response()->json($drafts);
+        $order = SalesOrder::with([
+            'quotation.pelanggan',
+            'pelanggan',
+            'details.produk',
+            'approvedByUser'
+        ])->findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.sales_order', [
+            'order'   => $order,
+            'details' => $order->details
+        ]);
+
+        return $pdf->download('sales-order-' . $order->nomor_order . '.pdf');
     }
-    public function cancel($id)
+
+    /**
+     * Bulk Verify
+     */
+    public function bulkVerify(Request $request)
     {
-        $order = SalesOrder::with('quotation')->findOrFail($id);
+        $ids      = $request->ids;
+        $products = $request->products ?? [];
 
         DB::beginTransaction();
         try {
-            // Ubah status SO menjadi draft
-            $order->update(['status' => 'draft']);
+            $orderMap = []; // mapping quotation → order
 
-            // Jika ada quotation terkait, kembalikan statusnya ke draft
-            if ($order->quotation) {
-                $order->quotation->update(['status' => 'draft']);
+            // Approve semua SQ jadi SO
+            foreach ($ids as $id) {
+                $order = $this->approveQuotation($id);
+                $orderMap[$order->id_quotation] = $order->id;
+            }
+
+            // Update PPN & Diskon berdasarkan id_order + id_produk
+            foreach ($products as $product) {
+                $orderId = $orderMap[$product['order_id']] ?? $product['order_id'];
+
+                DB::table('sales_order_detail')
+                    ->where('id_order', $orderId)
+                    ->where('id_produk', $product['id_produk'])
+                    ->update([
+                        'ppn'    => $product['ppn'] ?? 0,
+                        'diskon' => $product['diskon'] ?? 0,
+                    ]);
             }
 
             DB::commit();
-            return response()->json(['message' => 'Sales Order berhasil dibatalkan dan SQ dikembalikan ke draft']);
+            return response()->json(['message' => 'Sales Order terpilih berhasil diverifikasi']);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Gagal membatalkan SO', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Gagal verifikasi bulk',
+                'error'   => $e->getMessage()
+            ], 500);
         }
     }
 }

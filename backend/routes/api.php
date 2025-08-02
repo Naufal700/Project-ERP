@@ -13,12 +13,15 @@ use App\Http\Controllers\Api\ProyekController;
 use App\Http\Controllers\API\SatuanController;
 use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PelangganController;
+use App\Http\Controllers\Api\SalesOrderController;
 use App\Http\Controllers\Api\MappingJurnalController;
 use App\Http\Controllers\API\KategoriProdukController;
 use App\Http\Controllers\Api\SalesQuotationController;
 use App\Http\Controllers\Api\HargaJualProdukController;
-use App\Http\Controllers\Api\SalesOrderController;
+use App\Http\Controllers\Api\InventoryReportController;
+use App\Http\Controllers\Api\InventoryClosingController;
 
 
 /*
@@ -132,6 +135,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('sales/order/{id}', [SalesOrderController::class, 'update']);
     Route::delete('sales/order/{id}', [SalesOrderController::class, 'destroy']);
     Route::post('sales/order/{id}/cancel', [SalesOrderController::class, 'cancel']);
+    Route::post('sales/order/bulk-verify', [SalesOrderController::class, 'bulkVerify']);
+    Route::get('sales/order/{id}/print', [SalesOrderController::class, 'printPdf']);
+
 
     // APPROVE / REJECT berdasarkan QUOTATION ID
     Route::post('sales/quotation/{id}/approve', [SalesOrderController::class, 'approveQuotation']);
@@ -143,6 +149,27 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('sales/quotations/draft', [SalesOrderController::class, 'draftQuotations']);
     Route::post('sales/quotations/{id}/approve', [SalesOrderController::class, 'approveQuotation']);
-    Route::post('sales/quotations/{id}/reject', [SalesOrderController::class, 'rejectQuotation']);
+    Route::post('sales/quotations/{id}/reject', [SalesOrderController::class, 'reject']);
     Route::get('sales/orders', [SalesOrderController::class, 'listOrders']);
+    Route::post('sales/order/{id}/cancel', [SalesOrderController::class, 'cancel']);
 });
+// Route Inventory
+Route::prefix('inventory')->group(function () {
+    Route::get('setting', [InventoryController::class, 'getSetting']);
+    Route::put('setting', [InventoryController::class, 'updateSetting']);
+
+    Route::get('opening', [InventoryController::class, 'getOpeningBalance']);
+    Route::post('opening', [InventoryController::class, 'storeOpeningBalance']);
+
+    Route::get('mutations', [InventoryController::class, 'getMutations']);
+    Route::post('mutations', [InventoryController::class, 'storeMutation']);
+
+    Route::get('adjustments', [InventoryController::class, 'getAdjustments']);
+    Route::post('adjustments', [InventoryController::class, 'storeAdjustment']);
+});
+Route::get('/inventory/stock-report', [InventoryReportController::class, 'getStockReport']);
+Route::post('/inventory/stock-report/import', [InventoryReportController::class, 'importStockReport']);
+Route::get('/inventory/stock-report/export', [InventoryReportController::class, 'exportStockReport']);
+Route::get('/inventory/stock-report/template', [InventoryReportController::class, 'downloadTemplate']);
+Route::post('/inventory/closing', [InventoryClosingController::class, 'closing']);
+Route::get('/inventory/closing/status', [InventoryClosingController::class, 'checkClosingStatus']);
