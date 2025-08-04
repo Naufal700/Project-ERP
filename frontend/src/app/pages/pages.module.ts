@@ -55,6 +55,11 @@ import { InventorySettingsComponent } from "./menu/inventory/setting/inventory-s
 import { InventoryOpeningComponent } from "./menu/inventory/saldo-awal/inventory-opening.component";
 import { InventoryOpeningFormComponent } from "./menu/inventory/saldo-awal/inventory-opening-form.component";
 import { InventoryReportComponent } from "./menu/inventory/laporan-persediaan/inventory-report.component";
+import { DeliveryOrderComponent } from "./menu/penjualan/pengiriman/delivery-order.component";
+import { DODetailDialogComponent } from "./menu/penjualan/pengiriman/do-detail-dialog.component";
+import { JurnalUmumComponent } from "./menu/keuangan/jurnal-umum/jurnal-umum.component";
+import { JurnalFormDialogComponent } from "./menu/keuangan/jurnal-umum/jurnal-form-dialog.component";
+import { JurnalDetailDialogComponent } from "./menu/keuangan/jurnal-umum/jurnal-detail-dialog.component";
 
 // import { PajakComponent } from "./master/pajak/pajak.component";
 // import { PajakFormComponent } from "./master/pajak/pajak-form.component";
@@ -111,6 +116,11 @@ import { InventoryReportComponent } from "./menu/inventory/laporan-persediaan/in
     InventoryOpeningComponent,
     InventoryOpeningFormComponent,
     InventoryReportComponent,
+    DeliveryOrderComponent,
+    DODetailDialogComponent,
+    JurnalUmumComponent,
+    JurnalFormDialogComponent,
+    JurnalDetailDialogComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: LOCALE_ID, useValue: "id" }],

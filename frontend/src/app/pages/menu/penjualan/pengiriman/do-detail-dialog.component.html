@@ -1,0 +1,35 @@
+<nb-card *ngIf="doDetail">
+  <nb-card-header>
+    Detail Delivery Order - {{ doDetail.no_do }}
+  </nb-card-header>
+  <nb-card-body>
+    <p><strong>Pelanggan:</strong> {{ doDetail.pelanggan?.nama }}</p>
+    <p><strong>Status:</strong> {{ doDetail.status }}</p>
+    <p><strong>Tanggal:</strong> {{ doDetail.tanggal | date }}</p>
+
+    <h5>Item</h5>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Produk</th>
+          <th>Qty</th>
+          <th>Harga</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of doDetail.items">
+          <td>{{ item.produk?.nama }}</td>
+          <td>{{ item.qty }}</td>
+          <td>{{ item.harga | number }}</td>
+          <td>{{ item.total | number }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+  <nb-card-footer class="d-flex justify-content-end">
+    <button nbButton status="danger" *ngIf="doDetail.status === 'draft'" (click)="cancelDO()">Cancel</button>
+    <button nbButton status="success" *ngIf="doDetail.status === 'draft'" (click)="approveDO()">Approve</button>
+    <button nbButton status="basic" (click)="close()">Tutup</button>
+  </nb-card-footer>
+</nb-card>

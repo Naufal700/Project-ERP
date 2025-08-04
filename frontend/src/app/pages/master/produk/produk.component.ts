@@ -112,7 +112,10 @@ export class ProdukComponent implements OnInit {
   openForm(data: any = null): void {
     this.dialogService
       .open(ProdukFormComponent, {
-        context: { data: data || {}, isEdit: !!data },
+        context: {
+          data: data || {},
+          isEdit: !!data,
+        },
         dialogClass: "wide-dialog",
         closeOnBackdropClick: false,
       })

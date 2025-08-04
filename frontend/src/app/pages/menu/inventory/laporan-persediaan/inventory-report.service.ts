@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
   providedIn: "root",
 })
 export class InventoryReportService {
-  private apiUrl = "http://localhost:8000/api/inventory"; // sesuaikan
+  private apiUrl = "http://localhost:8000/api/inventory"; // sesuaikan dengan backend
 
   constructor(private http: HttpClient) {}
 
@@ -23,10 +23,11 @@ export class InventoryReportService {
     return this.http.get(`${this.apiUrl}/stock-report`, { params: httpParams });
   }
 
-  // Import stock report
-  importStockReport(file: File): Observable<any> {
+  // Import stock report (dengan periode)
+  importStockReport(file: File, periode: string): Observable<any> {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("periode", periode);
     return this.http.post(`${this.apiUrl}/stock-report/import`, formData);
   }
 
@@ -53,15 +54,20 @@ export class InventoryReportService {
     });
   }
 
-  // ✅ NEW: Closing persediaan
+  // Closing persediaan
   closingStock(periode: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/closing`, { periode });
   }
 
-  // ✅ NEW: Cek status closing
+  // Cek status closing
   checkClosingStatus(periode: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/closing/status`, {
       params: { periode },
     });
+  }
+
+  // NEW: Batal closing persediaan
+  cancelClosingStock(periode: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/closing/cancel`, { periode });
   }
 }

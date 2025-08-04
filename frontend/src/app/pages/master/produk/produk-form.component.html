@@ -43,6 +43,15 @@
 
         <!-- Baris 4 -->
         <div class="form-item">
+          <label>Jenis Produk</label>
+          <nb-select fullWidth formControlName="jenis_produk" placeholder="Pilih Jenis Produk">
+            <nb-option value="persediaan">Persediaan</nb-option>
+            <nb-option value="non_persediaan">Non Persediaan</nb-option>
+            <nb-option value="service">Service</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-item">
           <label>Status</label>
           <nb-select fullWidth formControlName="is_aktif">
             <nb-option [value]="true">Aktif</nb-option>

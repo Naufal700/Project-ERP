@@ -9,44 +9,59 @@
 
     <div class="actions-container">
       <!-- Pilihan filter -->
-      <nb-select size="small" [(selected)]="filterType" (selectedChange)="onFilterTypeChange($event)">
+      <nb-select size="small" [(selected)]="filterType" (selectedChange)="onFilterTypeChange($event)"
+        [disabled]="loadingFilter">
         <nb-option value="month">Periode Bulan</nb-option>
         <nb-option value="range">Tanggal Range</nb-option>
       </nb-select>
 
       <!-- Filter bulan -->
-      <input *ngIf="filterType === 'month'" nbInput type="month" [(ngModel)]="selectedMonth" (change)="loadReport()" />
+      <div *ngIf="filterType === 'month'" class="d-flex align-items-center">
+        <input nbInput type="month" [(ngModel)]="selectedMonth" (change)="loadReport()" [disabled]="loadingFilter" />
+        <nb-spinner *ngIf="loadingFilter" size="tiny" class="ml-2"></nb-spinner>
+      </div>
 
       <!-- Filter range tanggal -->
       <div *ngIf="filterType === 'range'" class="date-range">
-        <input nbInput type="date" [(ngModel)]="startDate" (change)="loadReport()" />
+        <input nbInput type="date" [(ngModel)]="startDate" (change)="loadReport()" [disabled]="loadingFilter" />
         <span class="separator">s/d</span>
-        <input nbInput type="date" [(ngModel)]="endDate" (change)="loadReport()" />
+        <input nbInput type="date" [(ngModel)]="endDate" (change)="loadReport()" [disabled]="loadingFilter" />
       </div>
 
       <!-- Button Closing -->
-      <!-- Button Closing -->
-      <button nbButton status="danger" size="small" (click)="closingStock()" [disabled]="isClosed">
+      <button nbButton status="danger" size="small" (click)="closingStock()" [disabled]="isClosed || loadingClosing">
         <nb-icon icon="lock-outline"></nb-icon>
         <span class="ml-1">Closing</span>
+        <nb-spinner *ngIf="loadingClosing" size="tiny" class="ml-1"></nb-spinner>
+      </button>
+
+      <!-- Button Batal Closing -->
+      <button nbButton status="warning" size="small" (click)="cancelClosing()" *ngIf="isClosed"
+        [disabled]="loadingCancelClosing">
+        <nb-icon icon="unlock-outline"></nb-icon>
+        <span class="ml-1">Batal Closing</span>
+        <nb-spinner *ngIf="loadingCancelClosing" size="tiny" class="ml-1"></nb-spinner>
       </button>
 
       <!-- Export -->
-      <button nbButton status="success" size="small" (click)="exportReport()">
+      <button nbButton status="success" size="small" (click)="exportReport()" [disabled]="loadingExport">
         <nb-icon icon="cloud-download-outline"></nb-icon>
         <span class="ml-1">Export</span>
+        <nb-spinner *ngIf="loadingExport" size="tiny" class="ml-1"></nb-spinner>
       </button>
 
       <!-- Template -->
-      <button nbButton status="info" size="small" (click)="downloadTemplate()">
+      <button nbButton status="info" size="small" (click)="downloadTemplate()" [disabled]="loadingTemplate">
         <nb-icon icon="cloud-download-outline"></nb-icon>
         <span class="ml-1">Template</span>
+        <nb-spinner *ngIf="loadingTemplate" size="tiny" class="ml-1"></nb-spinner>
       </button>
 
       <!-- Import -->
-      <button nbButton status="success" size="small" (click)="fileInput.click()">
+      <button nbButton status="success" size="small" (click)="fileInput.click()" [disabled]="loadingImport">
         <nb-icon icon="cloud-upload-outline"></nb-icon>
         <span class="ml-1">Import</span>
+        <nb-spinner *ngIf="loadingImport" size="tiny" class="ml-1"></nb-spinner>
       </button>
       <input type="file" #fileInput hidden accept=".xlsx, .xls" (change)="onImport($event)" />
     </div>
@@ -92,27 +107,128 @@
             <td>{{ row.nama_produk }}</td>
             <td>{{ row.satuan }}</td>
             <td>{{ row.kategori }}</td>
-            <td>{{ row.saldo_awal.qty }}</td>
-            <td>{{ row.saldo_awal.harga | currency:'IDR' }}</td>
-            <td>{{ row.saldo_awal.total | currency:'IDR' }}</td>
-            <td>{{ row.penerimaan.qty }}</td>
-            <td>{{ row.penerimaan.harga | currency:'IDR' }}</td>
-            <td>{{ row.penerimaan.total | currency:'IDR' }}</td>
-            <td>{{ row.penerimaan.retur_supplier }}</td>
-            <td>{{ row.penerimaan.selisih_so }}</td>
-            <td>{{ row.pengeluaran.qty }}</td>
-            <td>{{ row.pengeluaran.harga | currency:'IDR' }}</td>
-            <td>{{ row.pengeluaran.total | currency:'IDR' }}</td>
-            <td>{{ row.pengeluaran.retur_pembeli }}</td>
-            <td>{{ row.pengeluaran.selisih_so }}</td>
-            <td>{{ row.sisa_stok.qty }}</td>
-            <td>{{ row.sisa_stok.harga | currency:'IDR' }}</td>
-            <td>{{ row.sisa_stok.total | currency:'IDR' }}</td>
+
+            <td>{{ row.saldo_awal.qty === 0 ? '-' : (row.saldo_awal.qty | number:'1.0-0') }}</td>
+            <td>{{ row.saldo_awal.harga === 0 ? '-' : (row.saldo_awal.harga | currency:'IDR') }}</td>
+            <td>{{ row.saldo_awal.total === 0 ? '-' : (row.saldo_awal.total | currency:'IDR') }}</td>
+
+            <td>{{ row.penerimaan.qty === 0 ? '-' : (row.penerimaan.qty | number:'1.0-0') }}</td>
+            <td>{{ row.penerimaan.harga === 0 ? '-' : (row.penerimaan.harga | currency:'IDR') }}</td>
+            <td>{{ row.penerimaan.total === 0 ? '-' : (row.penerimaan.total | currency:'IDR') }}</td>
+            <td>{{ row.penerimaan.retur_supplier === 0 ? '-' : row.penerimaan.retur_supplier }}</td>
+            <td>{{ row.penerimaan.selisih_so === 0 ? '-' : row.penerimaan.selisih_so }}</td>
+
+            <td>{{ row.pengeluaran.qty === 0 ? '-' : (row.pengeluaran.qty | number:'1.0-0') }}</td>
+            <td>{{ row.pengeluaran.harga === 0 ? '-' : (row.pengeluaran.harga | currency:'IDR') }}</td>
+            <td>{{ row.pengeluaran.total === 0 ? '-' : (row.pengeluaran.total | currency:'IDR') }}</td>
+            <td>{{ row.pengeluaran.retur_pembeli === 0 ? '-' : row.pengeluaran.retur_pembeli }}</td>
+            <td>{{ row.pengeluaran.selisih_so === 0 ? '-' : row.pengeluaran.selisih_so }}</td>
+
+            <td>{{ row.sisa_stok.qty === 0 ? '-' : (row.sisa_stok.qty | number:'1.0-0') }}</td>
+            <td>{{ row.sisa_stok.harga === 0 ? '-' : (row.sisa_stok.harga | currency:'IDR') }}</td>
+            <td>{{ row.sisa_stok.total === 0 ? '-' : (row.sisa_stok.total | currency:'IDR') }}</td>
           </tr>
           <tr *ngIf="paginatedLaporan.length === 0">
             <td colspan="19" class="text-center text-muted">Tidak ada data ditemukan.</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="4" class="text-right">Total:</th>
+
+            <th>
+              {{
+                getTotal('saldo_awal', 'qty') === 0
+                  ? '-'
+                  : (getTotal('saldo_awal', 'qty') | number:'1.0-0')
+              }}
+            </th>
+            <th></th>
+            <th>
+              {{
+                getTotal('saldo_awal', 'total') === 0
+                  ? '-'
+                  : (getTotal('saldo_awal', 'total') | currency:'IDR')
+              }}
+            </th>
+
+            <th>
+              {{
+                getTotal('penerimaan', 'qty') === 0
+                  ? '-'
+                  : (getTotal('penerimaan', 'qty') | number:'1.0-0')
+              }}
+            </th>
+            <th></th>
+            <th>
+              {{
+                getTotal('penerimaan', 'total') === 0
+                  ? '-'
+                  : (getTotal('penerimaan', 'total') | currency:'IDR')
+              }}
+            </th>
+            <th>
+              {{
+                getTotal('penerimaan', 'retur_supplier') === 0
+                  ? '-'
+                  : getTotal('penerimaan', 'retur_supplier')
+              }}
+            </th>
+            <th>
+              {{
+                getTotal('penerimaan', 'selisih_so') === 0
+                  ? '-'
+                  : getTotal('penerimaan', 'selisih_so')
+              }}
+            </th>
+
+            <th>
+              {{
+                getTotal('pengeluaran', 'qty') === 0
+                  ? '-'
+                  : (getTotal('pengeluaran', 'qty') | number:'1.0-0')
+              }}
+            </th>
+            <th></th>
+            <th>
+              {{
+                getTotal('pengeluaran', 'total') === 0
+                  ? '-'
+                  : (getTotal('pengeluaran', 'total') | currency:'IDR')
+              }}
+            </th>
+            <th>
+              {{
+                getTotal('pengeluaran', 'retur_pembeli') === 0
+                  ? '-'
+                  : getTotal('pengeluaran', 'retur_pembeli')
+              }}
+            </th>
+            <th>
+              {{
+                getTotal('pengeluaran', 'selisih_so') === 0
+                  ? '-'
+                  : getTotal('pengeluaran', 'selisih_so')
+              }}
+            </th>
+
+            <th>
+              {{
+                getTotal('sisa_stok', 'qty') === 0
+                  ? '-'
+                  : (getTotal('sisa_stok', 'qty') | number:'1.0-0')
+              }}
+            </th>
+            <th></th>
+            <th>
+              {{
+                getTotal('sisa_stok', 'total') === 0
+                  ? '-'
+                  : (getTotal('sisa_stok', 'total') | currency:'IDR')
+              }}
+            </th>
+          </tr>
+        </tfoot>
       </table>
     </div>
 
@@ -144,5 +260,4 @@
       Memuat laporan persediaan...
     </div>
   </nb-card-body>
-
 </nb-card>

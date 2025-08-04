@@ -1,0 +1,113 @@
+.jurnal-form-card {
+    max-width: 900px;
+    margin: 0 auto;
+
+    .form-header {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: nowrap; // supaya baris tetap satu dan lebar ke samping
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+
+            label {
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+            }
+
+            input[nbInput] {
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+
+                &:focus {
+                    border-color: #3366ff;
+                    box-shadow: 0 0 5px rgba(51, 102, 255, 0.5);
+                    outline: none;
+                }
+            }
+        }
+
+        .tanggal {
+            flex: 0 0 150px; // lebar fixed tanggal
+            min-width: 150px;
+        }
+
+        .keterangan {
+            flex: 1 1 auto; // sisanya untuk keterangan
+            min-width: 300px;
+        }
+    }
+
+    .entry-input {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+
+        nb-select {
+            flex: 1 1 150px;
+            min-width: 150px;
+        }
+
+        input[nbInput] {
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        button {
+            flex-shrink: 0;
+            align-self: center;
+            height: 38px;
+            padding: 0 1rem;
+        }
+    }
+
+    .table-container {
+        margin-top: 1rem;
+        overflow-x: auto;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+
+            thead {
+                background-color: #f0f0f0;
+            }
+
+            th,
+            td {
+                padding: 0.5rem;
+                border: 1px solid #ddd;
+                text-align: center;
+                vertical-align: middle;
+                cursor: pointer;
+            }
+
+            tbody tr:hover:not(.empty-row) {
+                background-color: #eef4ff;
+            }
+
+            tbody tr.empty-row td {
+                text-align: center;
+                font-style: italic;
+                color: #888;
+                cursor: default;
+            }
+
+            tfoot td {
+                font-weight: 700;
+                background-color: #f8f8f8;
+            }
+        }
+    }
+
+    .footer-actions {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+    }
+}

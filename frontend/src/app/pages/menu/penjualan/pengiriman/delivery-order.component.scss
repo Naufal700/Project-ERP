@@ -1,0 +1,75 @@
+.title {
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--text-primary-color);
+    margin: 0;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.custom-tabs {
+    border-bottom: 1px solid nb-theme(color-basic-300);
+
+    .nav-link {
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        color: nb-theme(text-hint-color);
+        font-weight: 500;
+        border-radius: 0.375rem 0.375rem 0 0;
+        transition: all 0.2s;
+
+        &.active {
+            color: nb-theme(color-primary-500);
+            border-bottom: 2px solid nb-theme(color-primary-500);
+            background-color: nb-theme(color-basic-200);
+        }
+
+        &:hover {
+            color: nb-theme(color-primary-400);
+        }
+    }
+}
+
+.table {
+    th {
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        background-color: nb-theme(color-basic-200);
+    }
+
+    td {
+        vertical-align: middle;
+    }
+
+    tbody tr:hover {
+        background-color: nb-theme(color-basic-100);
+    }
+}
+
+.pagination-wrapper {
+    .page-link {
+        border: none;
+        color: nb-theme(color-primary-500);
+
+        &:hover {
+            background: nb-theme(color-basic-200);
+        }
+    }
+
+    .active .page-link {
+        background: nb-theme(color-primary-500);
+        color: #fff;
+        border-radius: 4px;
+    }
+}

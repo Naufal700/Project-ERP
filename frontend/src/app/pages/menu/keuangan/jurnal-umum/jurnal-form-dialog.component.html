@@ -1,0 +1,93 @@
+<nb-card class="jurnal-form-card" style="width: 1500px; max-width: 200vw;">
+  <nb-card-header>Tambah Jurnal</nb-card-header>
+
+  <nb-card-body>
+    <!-- Header input -->
+    <div class="form-header">
+      <div class="form-group tanggal">
+        <label>Tanggal</label>
+        <input nbInput type="date" [(ngModel)]="tanggal" />
+      </div>
+      <div class="form-group keterangan">
+        <label>Keterangan</label>
+        <input nbInput type="text" [(ngModel)]="keterangan" placeholder="Keterangan jurnal..." />
+      </div>
+    </div>
+
+    <!-- Input baris akun baru -->
+    <div class="entry-input">
+      <nb-select fullWidth [(selected)]="selectedKodeAkun" placeholder="Cari Kode Akun..."
+        (selectedChange)="onKodeAkunChange($event)" [compareWith]="compareObjects" [searchable]="true"
+        [clearable]="true">
+        <nb-option *ngFor="let coa of coas" [value]="coa.kode_akun">
+          {{ coa.kode_akun }}
+        </nb-option>
+      </nb-select>
+
+      <nb-select fullWidth [(selected)]="selectedNamaAkun" placeholder="Cari Nama Akun..."
+        (selectedChange)="onNamaAkunChange($event)" [compareWith]="compareObjects" [searchable]="true"
+        [clearable]="true">
+        <nb-option *ngFor="let coa of coas" [value]="coa.nama_akun">
+          {{ coa.nama_akun }}
+        </nb-option>
+      </nb-select>
+
+      <input class="jurnal-form-card" style="width: 300px; max-width: 90vw;" nbInput type="number" min="0"
+        placeholder="Debit" [(ngModel)]="inputDebit" (input)="onInputDebit()" />
+
+      <input class="jurnal-form-card" style="width: 300px; max-width: 90vw;" nbInput type="number" min="0"
+        placeholder="Kredit" [(ngModel)]="inputKredit" (input)="onInputKredit()" />
+
+      <button nbButton status="info" (click)="addEntry()" [disabled]="!canAddEntry()">
+        +
+      </button>
+    </div>
+
+    <!-- Tabel daftar entries -->
+    <div class="table-container">
+      <table class="table table-bordered table-sm align-middle text-center">
+        <thead>
+          <tr>
+            <th style="width: 5%">No.</th>
+            <th style="width: 25%">Kode Akun</th>
+            <th style="width: 40%">Nama Akun</th>
+            <th style="width: 15%">Debit (Rp)</th>
+            <th style="width: 15%">Kredit (Rp)</th>
+            <th style="width: 10%">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="entries.length === 0" class="empty-row">
+            <td colspan="6">Belum ada data. Silakan tambah entry.</td>
+          </tr>
+          <tr *ngFor="let entry of entries; let i = index" (click)="editEntry(i)" tabindex="0">
+            <td>{{ i + 1 }}</td>
+            <td>{{ entry.kode_akun }}</td>
+            <td>{{ entry.nama_akun }}</td>
+            <td>{{ entry.debit | number }}</td>
+            <td>{{ entry.kredit | number }}</td>
+            <td>
+              <button nbButton size="tiny" status="danger" (click)="removeEntry(i); $event.stopPropagation()"
+                [disabled]="entries.length === 1">
+                Hapus
+              </button>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" class="text-end fw-bold">Total</td>
+            <td class="fw-bold">{{ totalDebit | number }}</td>
+            <td class="fw-bold">{{ totalKredit | number }}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="footer-actions">
+    <button nbButton status="primary" [disabled]="loading" (click)="save()">💾 Simpan</button>
+    <button nbButton status="danger" (click)="cancel()">✖ Batal</button>
+  </nb-card-footer>
+</nb-card>

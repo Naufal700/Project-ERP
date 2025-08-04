@@ -1,0 +1,119 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 1.4rem;
+    color: var(--text-primary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    button {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+}
+
+.filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+
+    nb-form-field {
+        min-width: 200px;
+    }
+
+    button {
+        height: 36px;
+    }
+}
+
+.table-responsive {
+    margin-top: 1rem;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+
+        th {
+            text-align: center;
+            background: #f7f9fc;
+            font-weight: 600;
+            padding: 0.75rem;
+        }
+
+        td {
+            vertical-align: middle;
+            padding: 0.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: center;
+        }
+
+        tr:hover {
+            background-color: #f1f7ff;
+        }
+    }
+}
+
+.pagination-wrapper {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    nb-select {
+        min-width: 100px;
+    }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        .page-item {
+            .page-link {
+                border: 1px solid #ddd;
+                background: #fff;
+                padding: 0.25rem 0.6rem;
+                cursor: pointer;
+                margin: 0 2px;
+                border-radius: 4px;
+                transition: all 0.2s ease-in-out;
+
+                &:hover {
+                    background: #f0f0f0;
+                }
+            }
+
+            &.active .page-link {
+                background: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+            &.disabled .page-link {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+        }
+    }
+}

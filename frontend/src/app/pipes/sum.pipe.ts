@@ -4,11 +4,11 @@ import { Pipe, PipeTransform } from "@angular/core";
   name: "sum",
 })
 export class SumPipe implements PipeTransform {
-  transform(items: any[], field: string): number {
-    if (!items || items.length === 0) return 0;
+  transform(items: any[], field: string): string {
+    if (!items || items.length === 0) return "-";
 
     const fields = field.split(".");
-    return items.reduce((total, item) => {
+    const total = items.reduce((total, item) => {
       let value = item;
       for (const key of fields) {
         value = value?.[key];
@@ -16,5 +16,13 @@ export class SumPipe implements PipeTransform {
       }
       return total + (parseFloat(value) || 0);
     }, 0);
+
+    if (total === 0) {
+      return "-";
+    } else if (Number.isInteger(total)) {
+      return total.toString();
+    } else {
+      return total.toFixed(2);
+    }
   }
 }

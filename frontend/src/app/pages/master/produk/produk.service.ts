@@ -14,11 +14,14 @@ export class ProdukService {
   }
 
   // Simpan produk baru
+  // data harus berisi:
+  // { kode_produk, nama_produk, id_kategori?, id_satuan?, harga_beli, harga_jual, jenis_produk, is_aktif }
   store(data: any): Observable<any> {
     return this.http.post(this.baseUrl, data);
   }
 
   // Update produk
+  // data sama seperti store()
   update(id: number, data: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/${id}`, data);
   }

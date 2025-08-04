@@ -21,6 +21,8 @@ import { SalesOrderComponent } from "./menu/penjualan/sales-order/sales-order.co
 import { InventorySettingsComponent } from "./menu/inventory/setting/inventory-setting.component";
 import { InventoryOpeningComponent } from "./menu/inventory/saldo-awal/inventory-opening.component";
 import { InventoryReportComponent } from "./menu/inventory/laporan-persediaan/inventory-report.component";
+import { DeliveryOrderComponent } from "./menu/penjualan/pengiriman/delivery-order.component";
+import { JurnalUmumComponent } from "./menu/keuangan/jurnal-umum/jurnal-umum.component";
 
 const routes: Routes = [
   {
@@ -155,6 +157,15 @@ const routes: Routes = [
           },
         ],
       },
+      {
+        path: "menu/penjualan/pengiriman",
+        children: [
+          {
+            path: "",
+            component: DeliveryOrderComponent, // Daftar Gudang
+          },
+        ],
+      },
       // Modul Persediaan
       {
         path: "menu/inventory/setting",
@@ -180,6 +191,15 @@ const routes: Routes = [
           {
             path: "",
             component: InventoryReportComponent, // Daftar Gudang
+          },
+        ],
+      },
+      {
+        path: "menu/keuangan/jurnal-umum",
+        children: [
+          {
+            path: "",
+            component: JurnalUmumComponent, // Daftar Gudang
           },
         ],
       },

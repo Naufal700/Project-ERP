@@ -45,6 +45,7 @@
             <th>Satuan</th>
             <th>Harga Beli</th>
             <th>Harga Jual</th>
+            <th>Jenis Produk</th> <!-- ✅ Tambah kolom jenis produk -->
             <th>Status</th>
             <th class="text-center">Aksi</th>
           </tr>
@@ -57,6 +58,13 @@
             <td>{{ p.satuan?.nama_satuan || '-' }}</td>
             <td>{{ p.harga_beli | currency:'IDR':'symbol':'1.0-0' }}</td>
             <td>{{ p.harga_jual | currency:'IDR':'symbol':'1.0-0' }}</td>
+            <td>
+              <!-- ✅ Tampilkan jenis produk -->
+              <span>
+                {{ p.jenis_produk === 'persediaan' ? 'Persediaan' :
+                   p.jenis_produk === 'non_persediaan' ? 'Non Persediaan' : 'Service' }}
+              </span>
+            </td>
             <td>
               <span [ngClass]="p.is_aktif ? 'text-success' : 'text-danger'">
                 {{ p.is_aktif ? 'Aktif' : 'Nonaktif' }}
@@ -72,7 +80,7 @@
             </td>
           </tr>
           <tr *ngIf="filteredProdukList.length === 0">
-            <td colspan="8" class="text-center text-muted">Tidak ada data ditemukan.</td>
+            <td colspan="9" class="text-center text-muted">Tidak ada data ditemukan.</td>
           </tr>
         </tbody>
       </table>

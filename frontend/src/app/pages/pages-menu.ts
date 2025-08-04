@@ -43,7 +43,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
     children: [
       { title: "Penawaran", link: "/pages/menu/penjualan/penawaran" },
       { title: "Pesanan", link: "/pages/menu/penjualan/sales-order" },
-      { title: "Pengiriman", link: "/pages/sales/delivery" },
+      { title: "Pengiriman", link: "/pages/menu/penjualan/pengiriman" },
       { title: "Faktur", link: "/pages/sales/invoice" },
       { title: "Pembayaran", link: "/pages/sales/payment" },
       { title: "Retur", link: "/pages/sales/return" },
@@ -136,7 +136,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
     title: "Akuntansi",
     icon: "book-outline",
     children: [
-      { title: "Jurnal Umum", link: "/pages/accounting/journal" },
+      { title: "Jurnal Umum", link: "/pages/menu/keuangan/jurnal-umum" },
       { title: "Buku Besar", link: "/pages/accounting/ledger" },
       { title: "Neraca Saldo", link: "/pages/accounting/trial-balance" },
       {

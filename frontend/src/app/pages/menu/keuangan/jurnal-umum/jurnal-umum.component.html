@@ -1,0 +1,108 @@
+<nb-card>
+  <nb-card-header class="d-flex justify-content-between align-items-center flex-wrap">
+    <h4 class="title">📒 Jurnal Umum</h4>
+    <div class="d-flex action-buttons gap-2">
+      <button nbButton status="warning" size="medium" (click)="loadData()" [disabled]="loading">
+        <nb-icon *ngIf="!loading" icon="refresh-outline"></nb-icon>
+        <nb-spinner *ngIf="loading" size="tiny"></nb-spinner>
+        <span *ngIf="!loading">Refresh</span>
+        <span *ngIf="loading">Memuat...</span>
+      </button>
+      <button nbButton status="primary" size="medium" (click)="downloadTemplate()">Template</button>
+      <button nbButton status="success" size="medium" (click)="exportExcel()">Export</button>
+      <button nbButton status="warning" size="medium" (click)="fileInput.click()">Import</button>
+      <input type="file" #fileInput hidden (change)="importExcel($event)" />
+      <button nbButton status="info" size="medium" (click)="openAddDialog()">+ Tambah</button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- Filter Section -->
+    <div class="filter-section d-flex flex-wrap align-items-center mb-3 gap-2">
+      <nb-form-field class="flex-grow-1">
+        <nb-icon nbPrefix icon="search-outline"></nb-icon>
+        <input nbInput placeholder="Cari No. Jurnal atau Keterangan..." [(ngModel)]="filter.search"
+          (ngModelChange)="applyFilter()" />
+      </nb-form-field>
+
+      <nb-form-field>
+        <input nbInput placeholder="Dari Tanggal" [nbDatepicker]="fromDatePicker" [(ngModel)]="filter.from_date"
+          (ngModelChange)="applyFilter()" />
+        <nb-datepicker #fromDatePicker></nb-datepicker>
+      </nb-form-field>
+
+      <nb-form-field>
+        <input nbInput placeholder="Sampai Tanggal" [nbDatepicker]="toDatePicker" [(ngModel)]="filter.to_date"
+          (ngModelChange)="applyFilter()" />
+        <nb-datepicker #toDatePicker></nb-datepicker>
+      </nb-form-field>
+
+      <button nbButton status="basic" (click)="resetFilter()">Reset</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered table-sm">
+        <thead>
+          <tr>
+            <!-- <th>#</th> -->
+            <th>Tanggal</th>
+            <th>No. Jurnal</th>
+            <th>Keterangan</th>
+            <th>Debit</th>
+            <th>Kredit</th>
+            <th class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let j of jurnals; let i = index">
+            <!-- <td>{{ (page - 1) * perPage + i + 1 }}</td> -->
+            <td>{{ j.tanggal | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ j.kode_jurnal }}</td>
+            <td>{{ j.keterangan }}</td>
+            <td>{{ getTotal(j.details, 'debit') | number:'1.0-0' }}</td>
+            <td>{{ getTotal(j.details, 'kredit') | number:'1.0-0' }}</td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button nbButton size="small" status="info" ghost (click)="openDetail(j)">
+                  <nb-icon icon="eye-outline"></nb-icon>
+                </button>
+                <button nbButton size="small" status="primary" ghost (click)="openEditDialog(j)">
+                  <nb-icon icon="edit-2-outline"></nb-icon>
+                </button>
+                <button nbButton size="small" status="danger" ghost (click)="deleteJurnal(j.id)">
+                  <nb-icon icon="trash-2-outline"></nb-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="jurnals.length === 0">
+            <td colspan="7" class="text-center text-muted">Tidak ada data jurnal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+      <nb-select size="small" [(selected)]="perPage" (selectedChange)="loadData(1)">
+        <nb-option *ngFor="let size of [10, 20, 50]" [value]="size">{{ size }} baris</nb-option>
+      </nb-select>
+
+      <nav *ngIf="lastPage > 1">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="page === 1">
+            <button class="page-link" (click)="loadData(page - 1)">‹</button>
+          </li>
+          <li class="page-item" *ngFor="let p of [].constructor(lastPage); let i = index"
+            [class.active]="page === i + 1">
+            <button class="page-link" (click)="loadData(i + 1)">{{ i + 1 }}</button>
+          </li>
+          <li class="page-item" [class.disabled]="page === lastPage">
+            <button class="page-link" (click)="loadData(page + 1)">›</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </nb-card-body>
+</nb-card>

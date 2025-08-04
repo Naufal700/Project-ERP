@@ -41,6 +41,10 @@ export class ProdukFormComponent implements OnInit {
         this.data.harga_jual || 0,
         [Validators.required, Validators.min(0)],
       ],
+      jenis_produk: [
+        this.data.jenis_produk || "inventory",
+        Validators.required,
+      ], // ✅ Tambah field jenis_produk
       is_aktif: [this.data.is_aktif ?? true],
     });
 
@@ -59,7 +63,9 @@ export class ProdukFormComponent implements OnInit {
         },
       });
     } else {
-      this.form.patchValue({ kode_produk: this.data.kode_produk });
+      this.form.patchValue({
+        kode_produk: this.data.kode_produk,
+      });
     }
   }
 
