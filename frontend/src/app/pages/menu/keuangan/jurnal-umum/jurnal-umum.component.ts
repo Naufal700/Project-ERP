@@ -39,7 +39,17 @@ export class JurnalUmumComponent implements OnInit {
     this.page = page;
     this.loading = true;
 
-    this.service.list(this.page, this.filter, this.perPage).subscribe({
+    const filterPayload = {
+      ...this.filter,
+      from_date: this.filter.from_date
+        ? new Date(this.filter.from_date).toISOString().split("T")[0] // konversi ke yyyy-MM-dd
+        : "",
+      to_date: this.filter.to_date
+        ? new Date(this.filter.to_date).toISOString().split("T")[0]
+        : "",
+    };
+
+    this.service.list(this.page, filterPayload, this.perPage).subscribe({
       next: (res: any) => {
         this.jurnals = res.data || [];
         this.lastPage = res.last_page || 1;
