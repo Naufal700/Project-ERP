@@ -1,0 +1,178 @@
+<nb-card>
+  <nb-card-header class="d-flex justify-content-between align-items-center flex-wrap">
+    <h4 class="title">Faktur Penjualan</h4>
+    <div class="d-flex action-buttons">
+      <button nbButton status="warning" size="medium" (click)="refreshData()" [disabled]="isRefreshing">
+        <nb-icon *ngIf="!isRefreshing" icon="refresh-outline"></nb-icon>
+        <nb-spinner *ngIf="isRefreshing" size="tiny"></nb-spinner>
+        <span *ngIf="!isRefreshing">Refresh</span>
+        <span *ngIf="isRefreshing">Memuat...</span>
+      </button>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <!-- Tabs -->
+    <ul class="nav nav-tabs custom-tabs">
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'do-ready'" (click)="activeTab = 'do-ready'">
+          DO Siap Faktur
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'invoice-list'" (click)="activeTab = 'invoice-list'">
+          Daftar Faktur
+        </a>
+      </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+      <!-- Tab DO Siap Faktur -->
+      <div *ngIf="activeTab === 'do-ready'">
+        <div class="filter-section d-flex flex-wrap align-items-center mb-3 gap-2">
+          <nb-form-field class="flex-grow-1">
+            <nb-icon nbPrefix icon="search-outline"></nb-icon>
+            <input nbInput placeholder="Cari DO atau pelanggan..." [(ngModel)]="searchTermDO" />
+          </nb-form-field>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>No DO</th>
+                <th>Pelanggan</th>
+                <th>Tanggal</th>
+                <th>Total</th>
+                <th class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let do of availableDO; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ do.no_do }}</td>
+                <td>{{ do.pelanggan?.nama_pelanggan }}</td>
+                <td>{{ do.tanggal | date:'dd/MM/yyyy' }}</td>
+                <td>
+                  {{ getTotalDO(do) | currency:'IDR':'symbol':'1.0-0' }}
+                </td>
+                <td class="text-center">
+                  <button nbButton size="tiny" status="success" (click)="createInvoice(do.id)">
+                    Buat Faktur
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="!availableDO.length">
+                <td colspan="6" class="text-center text-muted">Tidak ada DO yang siap difaktur</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab Daftar Faktur -->
+      <div *ngIf="activeTab === 'invoice-list'">
+        <!-- Filter -->
+        <div class="filter-section d-flex flex-wrap align-items-center mb-3 gap-2">
+          <nb-form-field class="flex-grow-1">
+            <nb-icon nbPrefix icon="search-outline"></nb-icon>
+            <input nbInput placeholder="Cari Invoice atau pelanggan..." [(ngModel)]="searchTermInvoice" />
+          </nb-form-field>
+
+          <nb-form-field>
+            <input nbInput placeholder="Dari Tanggal" [nbDatepicker]="fromDatePicker" [(ngModel)]="fromDate" />
+            <nb-datepicker #fromDatePicker></nb-datepicker>
+          </nb-form-field>
+
+          <nb-form-field>
+            <input nbInput placeholder="Sampai Tanggal" [nbDatepicker]="toDatePicker" [(ngModel)]="toDate" />
+            <nb-datepicker #toDatePicker></nb-datepicker>
+          </nb-form-field>
+
+          <nb-select size="small" placeholder="Filter Status" [(selected)]="filterStatus">
+            <nb-option value="">Semua</nb-option>
+            <nb-option value="draft">Draft</nb-option>
+            <nb-option value="approved">Approved</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>No Invoice</th>
+                <th>DO</th>
+                <th>Pelanggan</th>
+                <th>Status</th>
+                <th>Tanggal</th>
+                <th>Total</th>
+                <th class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let inv of getFilteredInvoices() | slice: (currentPage - 1) * itemsPerPage: currentPage * itemsPerPage; let i = index">
+                <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+                <td>{{ inv.nomor_invoice }}</td>
+                <td>{{ inv.delivery_order?.no_do }}</td>
+                <td>{{ inv.pelanggan?.nama_pelanggan }}</td>
+                <td>
+                  <span [ngClass]="{
+                    'text-warning': inv.status === 'draft',
+                    'text-success': inv.status === 'approved'
+                  }">{{ inv.status | titlecase }}</span>
+                </td>
+                <td>{{ inv.tanggal | date:'dd/MM/yyyy' }}</td>
+                <td>{{ inv.total | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td class="text-center">
+                  <div class="btn-group">
+                    <button nbButton size="small" status="success" ghost *ngIf="inv.status === 'draft'"
+                      (click)="approveInvoice(inv.id)">
+                      <nb-icon icon="checkmark-outline"></nb-icon>
+                    </button>
+                    <button nbButton size="small" status="warning" ghost *ngIf="inv.status === 'approved'"
+                      (click)="rollbackInvoice(inv.id)">
+                      <nb-icon icon="refresh-outline"></nb-icon>
+                    </button>
+                    <button nbButton size="small" status="danger" ghost (click)="cancelInvoice(inv.id)">
+                      <nb-icon icon="close-outline"></nb-icon>
+                    </button>
+                    <button nbButton size="small" status="info" ghost (click)="openDetailDialog(inv)">
+                      <nb-icon icon="eye-outline"></nb-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="getFilteredInvoices().length === 0">
+                <td colspan="8" class="text-center text-muted">Tidak ada data faktur</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrapper d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+          <nb-select size="small" [(selected)]="itemsPerPage">
+            <nb-option *ngFor="let size of [5, 10, 20, 50]" [value]="size">{{ size }} baris</nb-option>
+          </nb-select>
+          <nav *ngIf="getPages(getFilteredInvoices()).length > 1">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <button class="page-link" (click)="currentPage = currentPage - 1">‹</button>
+              </li>
+              <li class="page-item" *ngFor="let page of getPages(getFilteredInvoices()); let i = index"
+                [class.active]="currentPage === i + 1">
+                <button class="page-link" (click)="currentPage = i + 1">{{ i + 1 }}</button>
+              </li>
+              <li class="page-item" [class.disabled]="currentPage === getPages(getFilteredInvoices()).length">
+                <button class="page-link" (click)="currentPage = currentPage + 1">›</button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

@@ -44,7 +44,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       { title: "Penawaran", link: "/pages/menu/penjualan/penawaran" },
       { title: "Pesanan", link: "/pages/menu/penjualan/sales-order" },
       { title: "Pengiriman", link: "/pages/menu/penjualan/pengiriman" },
-      { title: "Faktur", link: "/pages/sales/invoice" },
+      { title: "Faktur", link: "/pages/menu/penjualan/faktur-penjualan" },
       { title: "Pembayaran", link: "/pages/sales/payment" },
       { title: "Retur", link: "/pages/sales/return" },
       { title: "Piutang", link: "/pages/sales/receivable" },

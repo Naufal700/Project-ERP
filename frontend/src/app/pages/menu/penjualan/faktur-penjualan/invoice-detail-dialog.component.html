@@ -1,0 +1,36 @@
+<nb-card>
+  <nb-card-header class="d-flex justify-content-between align-items-center">
+    <h5>Detail Faktur: {{ invoice?.nomor_invoice }}</h5>
+    <button nbButton ghost status="danger" size="small" (click)="close()">
+      <nb-icon icon="close-outline"></nb-icon>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body>
+    <p><strong>Pelanggan:</strong> {{ invoice?.pelanggan?.nama_pelanggan }}</p>
+    <p><strong>Tanggal:</strong> {{ invoice?.tanggal | date:'dd/MM/yyyy' }}</p>
+
+    <div class="table-responsive mt-3">
+      <table class="table table-sm table-bordered">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Produk</th>
+            <th>Qty</th>
+            <th>Harga</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of invoice?.details; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ item.produk?.nama_produk }}</td>
+            <td>{{ item.qty }}</td>
+            <td>{{ item.harga | currency:'IDR':'symbol':'1.0-0' }}</td>
+            <td>{{ item.subtotal | currency:'IDR':'symbol':'1.0-0' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>

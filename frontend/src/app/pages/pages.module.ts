@@ -60,6 +60,8 @@ import { DODetailDialogComponent } from "./menu/penjualan/pengiriman/do-detail-d
 import { JurnalUmumComponent } from "./menu/keuangan/jurnal-umum/jurnal-umum.component";
 import { JurnalFormDialogComponent } from "./menu/keuangan/jurnal-umum/jurnal-form-dialog.component";
 import { JurnalDetailDialogComponent } from "./menu/keuangan/jurnal-umum/jurnal-detail-dialog.component";
+import { SalesInvoiceComponent } from "./menu/penjualan/faktur-penjualan/sales-invoice.component";
+import { InvoiceDetailDialogComponent } from "./menu/penjualan/faktur-penjualan/invoice-detail-dialog.component";
 
 // import { PajakComponent } from "./master/pajak/pajak.component";
 // import { PajakFormComponent } from "./master/pajak/pajak-form.component";
@@ -121,6 +123,8 @@ import { JurnalDetailDialogComponent } from "./menu/keuangan/jurnal-umum/jurnal-
     JurnalUmumComponent,
     JurnalFormDialogComponent,
     JurnalDetailDialogComponent,
+    SalesInvoiceComponent,
+    InvoiceDetailDialogComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: LOCALE_ID, useValue: "id" }],
