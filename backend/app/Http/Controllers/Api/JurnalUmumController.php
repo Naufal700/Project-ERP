@@ -7,6 +7,7 @@ use App\Models\JurnalUmum;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class JurnalUmumController extends Controller
 {
@@ -15,13 +16,17 @@ class JurnalUmumController extends Controller
      */
     public function index(Request $request)
     {
+        $fromDate = $request->from_date ? \Carbon\Carbon::parse($request->from_date)->format('Y-m-d') : null;
+        $toDate   = $request->to_date ? \Carbon\Carbon::parse($request->to_date)->format('Y-m-d') : null;
+
         $query = JurnalUmum::with(['details.coa', 'creator'])
-            ->when($request->from_date, fn($q) => $q->whereDate('tanggal', '>=', $request->from_date))
-            ->when($request->to_date, fn($q) => $q->whereDate('tanggal', '<=', $request->to_date))
+            ->when($fromDate, fn($q) => $q->whereDate('tanggal', '>=', $fromDate))
+            ->when($toDate, fn($q) => $q->whereDate('tanggal', '<=', $toDate))
             ->when($request->search, fn($q) => $q->where('keterangan', 'like', '%' . $request->search . '%'))
             ->orderBy('tanggal', 'desc');
 
         $perPage = $request->get('per_page', 10);
+
         return response()->json($query->paginate($perPage));
     }
 
