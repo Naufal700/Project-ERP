@@ -18,6 +18,7 @@ class Produk extends Model
         'id_satuan',
         'harga_beli',
         'harga_jual',
+        'jenis_produk', // ✅ Tambahkan ini
         'is_aktif'
     ];
 
@@ -25,6 +26,7 @@ class Produk extends Model
         'is_aktif' => 'boolean',
         'harga_beli' => 'decimal:2',
         'harga_jual' => 'decimal:2',
+        'jenis_produk' => 'string', // ✅ Supaya otomatis di-cast ke string
     ];
 
     /**

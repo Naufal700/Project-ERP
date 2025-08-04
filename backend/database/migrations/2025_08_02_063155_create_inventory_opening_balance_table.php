@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_produk');
             $table->unsignedBigInteger('id_gudang');
+            $table->date('periode');
             $table->decimal('qty', 18, 2)->default(0);
             $table->decimal('harga', 18, 2)->default(0);
             $table->decimal('total', 18, 2)->default(0);

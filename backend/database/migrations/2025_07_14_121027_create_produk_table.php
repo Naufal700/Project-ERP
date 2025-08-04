@@ -16,6 +16,10 @@ class CreateProdukTable extends Migration
             $table->unsignedBigInteger('id_satuan')->nullable();
             $table->decimal('harga_beli', 15, 2)->default(0);
             $table->decimal('harga_jual', 15, 2)->default(0);
+
+            // Tambahkan kolom jenis_produk di sini
+            $table->enum('jenis_produk', ['persediaan', 'non_persediaan', 'service'])->default('inventory');
+
             $table->boolean('is_aktif')->default(true);
             $table->timestamps();
 

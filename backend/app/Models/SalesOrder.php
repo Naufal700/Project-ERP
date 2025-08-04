@@ -23,7 +23,7 @@ class SalesOrder extends Model
 
     public function pelanggan()
     {
-        return $this->belongsTo(Pelanggan::class);
+        return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
     }
 
     public function details()
@@ -38,5 +38,9 @@ class SalesOrder extends Model
     public function approvedByUser()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+    public function deliveryOrders()
+    {
+        return $this->hasMany(DeliveryOrder::class, 'sales_order_id');
     }
 }

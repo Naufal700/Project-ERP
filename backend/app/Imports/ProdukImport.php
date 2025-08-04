@@ -28,14 +28,21 @@ class ProdukImport implements ToModel, WithHeadingRow
             ['kode_satuan' => $this->generateKodeSatuan($row['satuan'] ?? 'PCS')]
         );
 
+        // Validasi jenis produk
+        $jenisProduk = strtolower($row['jenis_produk'] ?? 'persediaan');
+        if (!in_array($jenisProduk, ['persediaan', 'non_persediaan', 'service'])) {
+            $jenisProduk = 'persediaan';
+        }
+
         return new Produk([
-            'kode_produk' => $row['kode_produk'],
-            'nama_produk' => $row['nama_produk'],
-            'id_kategori' => $kategori->id,
-            'id_satuan'   => $satuan->id,
-            'harga_beli'  => $row['harga_beli'] ?? 0,
-            'harga_jual'  => $row['harga_jual'] ?? 0,
-            'is_aktif'    => strtolower($row['status'] ?? 'aktif') === 'aktif',
+            'kode_produk'  => $row['kode_produk'],
+            'nama_produk'  => $row['nama_produk'],
+            'id_kategori'  => $kategori->id,
+            'id_satuan'    => $satuan->id,
+            'harga_beli'   => $row['harga_beli'] ?? 0,
+            'harga_jual'   => $row['harga_jual'] ?? 0,
+            'jenis_produk' => $jenisProduk, // ✅ Tambahkan jenis produk
+            'is_aktif'     => strtolower($row['status'] ?? 'aktif') === 'aktif',
         ]);
     }
 

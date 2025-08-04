@@ -10,27 +10,42 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class InventorySaldoAwalExport implements FromCollection, WithHeadings, WithMapping
 {
+    protected $periode;
     protected $isTemplate;
 
-    public function __construct($isTemplate = false)
+    public function __construct($periode = null, $isTemplate = false)
     {
+        $this->periode = $periode; // contoh: 2025-07-01
         $this->isTemplate = $isTemplate;
     }
 
     public function collection()
     {
-        // Ambil semua produk
-        $produkList = Produk::select('id', 'kode_produk', 'nama_produk', 'harga_beli')->get();
+        // Ambil hanya produk persediaan
+        $produkList = Produk::where('jenis_produk', 'persediaan') // <--- tambahkan filter
+            ->select('id', 'kode_produk', 'nama_produk', 'harga_beli')
+            ->get();
 
-        // Ambil saldo awal
-        $saldoAwal = DB::table('inventory_opening_balance')
-            ->select('id_produk', DB::raw('COALESCE(SUM(qty),0) as qty'), DB::raw('COALESCE(SUM(harga),0) as harga'))
-            ->groupBy('id_produk')
-            ->pluck('qty', 'id_produk')
-            ->toArray();
+        // Ambil saldo awal sesuai periode
+        $query = DB::table('inventory_opening_balance')
+            ->select(
+                'id_produk',
+                DB::raw('COALESCE(SUM(qty),0) as qty'),
+                DB::raw('COALESCE(SUM(harga),0) as harga')
+            )
+            ->groupBy('id_produk');
+
+        if ($this->periode) {
+            $query->where('periode', $this->periode);
+        }
+
+        $saldoAwal = $query->pluck('qty', 'id_produk')->toArray();
 
         $hargaAwal = DB::table('inventory_opening_balance')
             ->select('id_produk', DB::raw('COALESCE(SUM(harga),0) as harga'))
+            ->when($this->periode, function ($q) {
+                $q->where('periode', $this->periode);
+            })
             ->groupBy('id_produk')
             ->pluck('harga', 'id_produk')
             ->toArray();
@@ -41,10 +56,11 @@ class InventorySaldoAwalExport implements FromCollection, WithHeadings, WithMapp
                 'nama_produk' => $produk->nama_produk,
                 'qty'        => $saldoAwal[$produk->id] ?? '',
                 'harga'      => $hargaAwal[$produk->id] ?? $produk->harga_beli,
-                'total'      => '', // Total tidak perlu, user akan input di Excel jika mau
+                'total'      => '',
             ];
         });
     }
+
 
     public function headings(): array
     {
@@ -58,7 +74,7 @@ class InventorySaldoAwalExport implements FromCollection, WithHeadings, WithMapp
             $row->nama_produk,
             $row->qty,
             $row->harga,
-            '' // Total kosong, hanya referensi
+            '',
         ];
     }
 }

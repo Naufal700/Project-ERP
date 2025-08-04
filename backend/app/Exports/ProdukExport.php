@@ -14,13 +14,14 @@ class ProdukExport implements FromCollection, WithHeadings
             ->get()
             ->map(function ($produk) {
                 return [
-                    'kode_produk' => $produk->kode_produk,
-                    'nama_produk' => $produk->nama_produk,
-                    'kategori'    => $produk->kategori?->nama_kategori,
-                    'satuan'      => $produk->satuan?->nama_satuan,
-                    'harga_beli'  => $produk->harga_beli,
-                    'harga_jual'  => $produk->harga_jual,
-                    'is_aktif'    => $produk->is_aktif ? 'Aktif' : 'Tidak Aktif',
+                    'kode_produk'  => $produk->kode_produk,
+                    'nama_produk'  => $produk->nama_produk,
+                    'kategori'     => $produk->kategori?->nama_kategori,
+                    'satuan'       => $produk->satuan?->nama_satuan,
+                    'harga_beli'   => $produk->harga_beli,
+                    'harga_jual'   => $produk->harga_jual,
+                    'jenis_produk' => $produk->jenis_produk, // ✅ Tambahkan jenis produk
+                    'is_aktif'     => $produk->is_aktif ? 'Aktif' : 'Tidak Aktif',
                 ];
             });
     }
@@ -34,6 +35,7 @@ class ProdukExport implements FromCollection, WithHeadings
             'Satuan',
             'Harga Beli',
             'Harga Jual',
+            'Jenis Produk', // ✅ Tambahkan heading jenis produk
             'Status',
         ];
     }

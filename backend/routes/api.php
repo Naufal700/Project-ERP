@@ -15,7 +15,9 @@ use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PelangganController;
+use App\Http\Controllers\Api\JurnalUmumController;
 use App\Http\Controllers\Api\SalesOrderController;
+use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\MappingJurnalController;
 use App\Http\Controllers\API\KategoriProdukController;
 use App\Http\Controllers\Api\SalesQuotationController;
@@ -173,3 +175,22 @@ Route::get('/inventory/stock-report/export', [InventoryReportController::class, 
 Route::get('/inventory/stock-report/template', [InventoryReportController::class, 'downloadTemplate']);
 Route::post('/inventory/closing', [InventoryClosingController::class, 'closing']);
 Route::get('/inventory/closing/status', [InventoryClosingController::class, 'checkClosingStatus']);
+
+// Route Pengiriman Barang
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/delivery-orders', [DeliveryOrderController::class, 'index']);
+    Route::get('/delivery-orders/sales-orders', [DeliveryOrderController::class, 'salesOrdersForDO']);
+    Route::post('/delivery-orders', [DeliveryOrderController::class, 'store']);
+    Route::get('/delivery-orders/{id}', [DeliveryOrderController::class, 'show']);
+    Route::post('/delivery-orders/{id}/approve', [DeliveryOrderController::class, 'approve']);
+    Route::post('/delivery-orders/{id}/cancel', [DeliveryOrderController::class, 'cancel']);
+});
+
+// Route Jurnal Umum
+Route::prefix('jurnal-umum')->group(function () {
+    Route::get('/', [JurnalUmumController::class, 'index']);        // List jurnal umum (header)
+    Route::post('/', [JurnalUmumController::class, 'store']);       // Simpan jurnal umum baru
+    Route::get('/{id}', [JurnalUmumController::class, 'show']);     // Detail jurnal umum (header + detail)
+    Route::put('/{id}', [JurnalUmumController::class, 'update']);   // Update jurnal umum
+    Route::delete('/{id}', [JurnalUmumController::class, 'destroy']); // Hapus jurnal umum
+});

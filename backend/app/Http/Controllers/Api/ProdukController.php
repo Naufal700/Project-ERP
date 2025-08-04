@@ -23,13 +23,14 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'kode_produk' => 'required|unique:produk_m',
-            'nama_produk' => 'required',
-            'id_kategori' => 'nullable|exists:kategori_produk,id',
-            'id_satuan'   => 'nullable|exists:satuan_m,id',
-            'harga_beli'  => 'required|numeric|min:0',
-            'harga_jual'  => 'required|numeric|min:0',
-            'is_aktif'    => 'boolean',
+            'kode_produk'  => 'required|unique:produk_m',
+            'nama_produk'  => 'required',
+            'id_kategori'  => 'nullable|exists:kategori_produk,id',
+            'id_satuan'    => 'nullable|exists:satuan_m,id',
+            'harga_beli'   => 'required|numeric|min:0',
+            'harga_jual'   => 'required|numeric|min:0',
+            'jenis_produk' => 'required|in:persediaan,non_persediaan,service', // ✅ Tambah validasi
+            'is_aktif'     => 'boolean',
         ]);
 
         $produk = Produk::create($validated);
@@ -49,13 +50,14 @@ class ProdukController extends Controller
         $produk = Produk::findOrFail($id);
 
         $validated = $request->validate([
-            'kode_produk' => 'required|unique:produk_m,kode_produk,' . $id,
-            'nama_produk' => 'required',
-            'id_kategori' => 'nullable|exists:kategori_produk,id',
-            'id_satuan'   => 'nullable|exists:satuan_m,id',
-            'harga_beli'  => 'required|numeric|min:0',
-            'harga_jual'  => 'required|numeric|min:0',
-            'is_aktif'    => 'boolean',
+            'kode_produk'  => 'required|unique:produk_m,kode_produk,' . $id,
+            'nama_produk'  => 'required',
+            'id_kategori'  => 'nullable|exists:kategori_produk,id',
+            'id_satuan'    => 'nullable|exists:satuan_m,id',
+            'harga_beli'   => 'required|numeric|min:0',
+            'harga_jual'   => 'required|numeric|min:0',
+            'jenis_produk' => 'required|in:persediaan,non_persediaan,service', // ✅ Tambah validasi
+            'is_aktif'     => 'boolean',
         ]);
 
         $produk->update($validated);
