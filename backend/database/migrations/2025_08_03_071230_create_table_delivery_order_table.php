@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('sales_order_id')->nullable(); // Relasi ke Sales Order
             $table->unsignedBigInteger('pelanggan_id');
             $table->date('tanggal');
-            $table->enum('status', ['draft', 'approved', 'shipped', 'completed', 'canceled'])->default('draft');
+            $table->enum('status', ['draft', 'approved', 'shipped', 'completed', 'canceled', 'invoiced'])->default('draft');
             $table->unsignedBigInteger('gudang_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('approved_by')->nullable();

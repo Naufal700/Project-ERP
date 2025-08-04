@@ -37,4 +37,8 @@ class DeliveryOrder extends Model
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+    public function salesInvoice()
+    {
+        return $this->hasOne(SalesInvoice::class, 'id_do');
+    }
 }

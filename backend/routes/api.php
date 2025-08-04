@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PelangganController;
 use App\Http\Controllers\Api\JurnalUmumController;
 use App\Http\Controllers\Api\SalesOrderController;
+use App\Http\Controllers\Api\SalesInvoiceController;
 use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\MappingJurnalController;
 use App\Http\Controllers\API\KategoriProdukController;
@@ -184,6 +185,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/delivery-orders/{id}', [DeliveryOrderController::class, 'show']);
     Route::post('/delivery-orders/{id}/approve', [DeliveryOrderController::class, 'approve']);
     Route::post('/delivery-orders/{id}/cancel', [DeliveryOrderController::class, 'cancel']);
+});
+
+// Route Faktur Penjualan
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/invoice/do', [SalesInvoiceController::class, 'getAvailableDO']);
+    Route::get('/invoice', [SalesInvoiceController::class, 'index']);
+    Route::post('/invoice', [SalesInvoiceController::class, 'store']);
+    Route::post('/invoice/{id}/approve', [SalesInvoiceController::class, 'approve']);
+    Route::post('{id}/rollback', [SalesInvoiceController::class, 'rollback']);
+    Route::delete('/invoice/{id}/cancel', [SalesInvoiceController::class, 'cancel']);
 });
 
 // Route Jurnal Umum
