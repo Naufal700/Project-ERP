@@ -3,6 +3,8 @@ import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { JurnalUmumService } from "./jurnal-umum.service";
 import { JurnalFormDialogComponent } from "./jurnal-form-dialog.component";
 import { JurnalDetailDialogComponent } from "./jurnal-detail-dialog.component";
+import { Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 @Component({
   selector: "app-jurnal-umum",
@@ -11,6 +13,7 @@ import { JurnalDetailDialogComponent } from "./jurnal-detail-dialog.component";
 })
 export class JurnalUmumComponent implements OnInit {
   jurnals: any[] = [];
+  originalJurnals: any[] = []; // Backup untuk filter frontend
   filter = {
     from_date: "",
     to_date: "",
@@ -22,6 +25,11 @@ export class JurnalUmumComponent implements OnInit {
   perPage = 10;
   loading = false;
 
+  totalDebit = 0;
+  totalKredit = 0;
+
+  public searchSubject = new Subject<string>();
+
   constructor(
     private service: JurnalUmumService,
     private dialogService: NbDialogService,
@@ -29,30 +37,56 @@ export class JurnalUmumComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.setDefaultDate();
+
+    // Debounce search hanya untuk filter frontend
+    this.searchSubject.pipe(debounceTime(300)).subscribe(() => {
+      this.filterJurnalsFrontend();
+    });
+
     this.loadData();
   }
 
   /**
-   * Ambil data jurnal dengan pagination dan filter
+   * Set tanggal default ke bulan berjalan
+   */
+  private setDefaultDate() {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    this.filter.from_date = this.formatDateLocal(firstDay);
+    this.filter.to_date = this.formatDateLocal(now);
+  }
+
+  private formatDateLocal(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Ambil data jurnal dari backend
    */
   loadData(page: number = 1) {
     this.page = page;
     this.loading = true;
 
     const filterPayload = {
-      ...this.filter,
+      search: "", // search backend di-disable, karena frontend search
       from_date: this.filter.from_date
-        ? new Date(this.filter.from_date).toISOString().split("T")[0] // konversi ke yyyy-MM-dd
+        ? this.formatDateLocal(new Date(this.filter.from_date))
         : "",
       to_date: this.filter.to_date
-        ? new Date(this.filter.to_date).toISOString().split("T")[0]
+        ? this.formatDateLocal(new Date(this.filter.to_date))
         : "",
     };
 
     this.service.list(this.page, filterPayload, this.perPage).subscribe({
       next: (res: any) => {
         this.jurnals = res.data || [];
+        this.originalJurnals = [...this.jurnals]; // Backup data original untuk filter frontend
         this.lastPage = res.last_page || 1;
+        this.calculateTotals();
         this.loading = false;
       },
       error: () => {
@@ -63,22 +97,68 @@ export class JurnalUmumComponent implements OnInit {
   }
 
   /**
-   * Terapkan filter pencarian
+   * Hitung total debit & kredit
+   */
+  private calculateTotals() {
+    this.totalDebit = this.jurnals.reduce(
+      (sum, j) => sum + this.getTotal(j.details, "debit"),
+      0
+    );
+    this.totalKredit = this.jurnals.reduce(
+      (sum, j) => sum + this.getTotal(j.details, "kredit"),
+      0
+    );
+  }
+
+  /**
+   * Event untuk search realtime (frontend)
+   */
+  onSearchChange(value: string) {
+    this.filter.search = value;
+    this.searchSubject.next(value);
+  }
+
+  /**
+   * Filter data di frontend
+   */
+  private filterJurnalsFrontend() {
+    if (!this.filter.search) {
+      this.jurnals = [...this.originalJurnals];
+    } else {
+      const term = this.filter.search.toLowerCase();
+      this.jurnals = this.originalJurnals.filter(
+        (j) =>
+          j.kode_jurnal?.toLowerCase().includes(term) ||
+          j.keterangan?.toLowerCase().includes(term) ||
+          j.details?.some(
+            (d: any) =>
+              d.coa?.nama_akun?.toLowerCase().includes(term) ||
+              d.coa?.kode_akun?.toLowerCase().includes(term)
+          )
+      );
+    }
+    this.page = 1; // reset pagination setiap kali search
+    this.calculateTotals();
+  }
+
+  /**
+   * Terapkan filter tanggal (reload API)
    */
   applyFilter() {
     this.loadData(1);
   }
 
   /**
-   * Reset filter
+   * Reset filter ke default
    */
   resetFilter() {
-    this.filter = { from_date: "", to_date: "", search: "" };
+    this.filter.search = "";
+    this.setDefaultDate();
     this.loadData(1);
   }
 
   /**
-   * Download template Excel untuk jurnal
+   * Download template Excel
    */
   downloadTemplate() {
     this.service.downloadTemplate().subscribe((res) => {
@@ -91,7 +171,7 @@ export class JurnalUmumComponent implements OnInit {
   }
 
   /**
-   * Export data jurnal ke Excel
+   * Export Excel
    */
   exportExcel() {
     this.service.exportExcel(this.filter).subscribe((res) => {
@@ -104,7 +184,7 @@ export class JurnalUmumComponent implements OnInit {
   }
 
   /**
-   * Import jurnal dari file Excel
+   * Import Excel
    */
   importExcel(event: any) {
     const file = event.target.files[0];
@@ -138,17 +218,18 @@ export class JurnalUmumComponent implements OnInit {
   /**
    * Lihat detail jurnal
    */
-
   openDetail(jurnal: any) {
     this.dialogService.open(JurnalDetailDialogComponent, {
       context: { jurnal },
     });
   }
+
+  /**
+   * Edit jurnal
+   */
   openEditDialog(jurnal: any) {
     this.dialogService
-      .open(JurnalFormDialogComponent, {
-        context: { jurnal } as any, // Casting ke any supaya tidak error
-      })
+      .open(JurnalFormDialogComponent, { context: { jurnal } as any })
       .onClose.subscribe((res) => {
         if (res === "success") this.loadData(this.page);
       });
@@ -170,10 +251,22 @@ export class JurnalUmumComponent implements OnInit {
       });
     }
   }
+
+  /**
+   * Hitung total per jurnal
+   */
   getTotal(details: any[], type: "debit" | "kredit"): number {
     if (!details || !Array.isArray(details)) return 0;
     return details
-      .filter((d) => d.jenis?.toLowerCase().trim() === type) // aman untuk perbedaan format
-      .reduce((sum, d) => sum + (parseFloat(d.nominal) || 0), 0); // pastikan nominal jadi angka
+      .filter((d) => d.jenis?.toLowerCase().trim() === type)
+      .reduce((sum, d) => sum + (parseFloat(d.nominal) || 0), 0);
+  }
+
+  /**
+   * Ambil data jurnals untuk halaman aktif (pagination frontend)
+   */
+  getPagedJurnals(): any[] {
+    const start = (this.page - 1) * this.perPage;
+    return this.jurnals.slice(start, start + this.perPage);
   }
 }

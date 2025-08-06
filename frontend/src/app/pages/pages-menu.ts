@@ -31,6 +31,8 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
       { title: "Karyawan", link: "/pages/master/karyawan" },
       { title: "Gudang / Lokasi", link: "/pages/master/gudang" },
+      { title: "Master Bank", link: "/pages/master/bank" },
+      { title: "Master Cara Bayar", link: "/pages/master/cara-bayar" },
       // { title: "Divisi / Proyek", link: "/pages/master/divisi-proyek" },
       // { title: "Cabang", link: "/pages/master/branch" },
       // { title: "Mata Uang", link: "/pages/master/currency" },
@@ -44,11 +46,31 @@ export const MENU_ITEMS: NbMenuItem[] = [
       { title: "Penawaran", link: "/pages/menu/penjualan/penawaran" },
       { title: "Pesanan", link: "/pages/menu/penjualan/sales-order" },
       { title: "Pengiriman", link: "/pages/menu/penjualan/pengiriman" },
-      { title: "Faktur", link: "/pages/menu/penjualan/faktur-penjualan" },
-      { title: "Pembayaran", link: "/pages/sales/payment" },
+      {
+        title: "Faktur Penjualan",
+        link: "/pages/menu/penjualan/faktur-penjualan",
+      },
+      {
+        title: "Pembayaran Tunai",
+        link: "/pages/menu/penjualan/pembayaran-tunai",
+      },
       { title: "Retur", link: "/pages/sales/return" },
-      { title: "Piutang", link: "/pages/sales/receivable" },
-      { title: "Laporan", link: "/pages/sales/report" },
+      { title: "Laporan Penjualan", link: "/pages/sales/report" },
+    ],
+  },
+  // PIUTANG
+  {
+    title: "Piutang Usaha",
+    icon: "credit-card-outline",
+    children: [
+      {
+        title: "Penagihan Piutang (Collection)",
+        link: "/pages/receivable/list",
+      },
+      { title: "Rekonsiliasi Piutang", link: "/pages/receivable/payment" },
+      { title: "Pelunasan Piutang", link: "/pages/receivable/payment" },
+      { title: "Aging Piutang", link: "/pages/receivable/aging" },
+      { title: "Laporan Piutang", link: "/pages/receivable/report" },
     ],
   },
   {
@@ -59,10 +81,20 @@ export const MENU_ITEMS: NbMenuItem[] = [
       { title: "Purchase Order", link: "/pages/purchase/po" },
       { title: "Penerimaan Barang", link: "/pages/purchase/receive" },
       { title: "Faktur Pembelian", link: "/pages/purchase/invoice" },
-      { title: "Pembayaran", link: "/pages/purchase/payment" },
       { title: "Retur Pembelian", link: "/pages/purchase/return" },
-      { title: "Hutang Usaha", link: "/pages/purchase/payable" },
-      { title: "Laporan", link: "/pages/purchase/report" },
+      { title: "Laporan Pembelian", link: "/pages/purchase/report" },
+    ],
+  },
+  // HUTANG
+  {
+    title: "Hutang Usaha",
+    icon: "file-text-outline",
+    children: [
+      { title: "Tukar Faktur", link: "/pages/payable/list" },
+      { title: "Kontra Bon", link: "/pages/payable/list" },
+      { title: "Pembayaran Hutang", link: "/pages/payable/payment" },
+      { title: "Aging Hutang", link: "/pages/payable/aging" },
+      { title: "Laporan Hutang", link: "/pages/payable/report" },
     ],
   },
   {

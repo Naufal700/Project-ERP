@@ -1,0 +1,22 @@
+<nb-card>
+  <nb-card-header>
+    <h5>{{ caraBayar ? 'Edit Cara Bayar' : 'Tambah Cara Bayar' }}</h5>
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-form-field>
+      <label>Kode Cara Bayar</label>
+      <input nbInput placeholder="Kode Cara Bayar" [(ngModel)]="formData.kode_cara_bayar" [readonly]="caraBayar" />
+    </nb-form-field>
+
+    <nb-form-field>
+      <label>Nama Cara Bayar</label>
+      <input nbInput placeholder="Nama Cara Bayar" [(ngModel)]="formData.nama_cara_bayar" />
+    </nb-form-field>
+  </nb-card-body>
+
+  <nb-card-footer class="d-flex justify-content-end">
+    <button nbButton status="basic" (click)="close()">Batal</button>
+    <button nbButton status="primary" (click)="save()">Simpan</button>
+  </nb-card-footer>
+</nb-card>

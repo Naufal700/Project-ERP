@@ -1,84 +1,193 @@
+:host {
+    display: block;
+}
+
 .title {
+    font-size: 1.25rem;
     font-weight: 600;
-    font-size: 1.2rem;
+    margin: 0;
 }
 
-.filter-section {
+.action-buttons {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+    align-items: center;
+    gap: 0.5rem;
 
-    nb-form-field,
-    nb-select {
-        min-width: 200px;
-    }
-}
-
-.table {
-
-    th,
-    td {
-        vertical-align: middle;
-        font-size: 0.875rem;
-    }
-
-    th {
-        background-color: #f7f9fc;
-        font-weight: 600;
-        text-align: center;
-    }
-
-    td .btn-group {
+    button {
         display: flex;
-        gap: 0.25rem;
-        justify-content: center;
+        align-items: center;
+        gap: 0.35rem;
     }
 }
 
-.nav-tabs.custom-tabs {
-    border-bottom: 2px solid #dee2e6;
+/* Tabs */
+.custom-tabs {
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 1rem;
 
     .nav-item {
+        margin-bottom: -1px;
+
         .nav-link {
             padding: 0.5rem 1rem;
-            border: none;
-            color: #6c757d;
             cursor: pointer;
+            color: #495057;
+            font-weight: 500;
+            border: 1px solid transparent;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+            transition: all 0.2s;
 
             &.active {
+                color: #222b45;
+                background: #fff;
+                border-color: #dee2e6 #dee2e6 #fff;
                 font-weight: 600;
-                color: #007bff;
-                border-bottom: 2px solid #007bff;
+            }
+
+            &:hover {
+                background: #f8f9fa;
             }
         }
     }
 }
 
+/* Filter Section */
+.filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+
+    nb-form-field {
+        min-width: 200px;
+
+        input {
+            height: 36px;
+        }
+    }
+
+    nb-select {
+        min-width: 150px;
+    }
+}
+
+/* Table */
+.table {
+    width: 100%;
+    font-size: 0.85rem;
+    border: 1px solid #dee2e6;
+    border-collapse: collapse;
+
+    thead {
+        background: #f8f9fa;
+
+        th {
+            text-align: center;
+            vertical-align: middle;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            padding: 0.5rem;
+        }
+    }
+
+    tbody {
+        td {
+            padding: 0.45rem;
+            vertical-align: middle;
+            border: 1px solid #dee2e6;
+        }
+
+        .text-muted {
+            font-size: 0.85rem;
+        }
+    }
+
+    tfoot {
+        background: #f8f9fa;
+        font-weight: bold;
+
+        td {
+            padding: 0.5rem;
+            border-top: 2px solid #dee2e6;
+        }
+    }
+}
+
+/* Pagination */
 .pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    nb-select {
+        min-width: 100px;
+    }
+
     .pagination {
         margin-bottom: 0;
 
         .page-item {
             .page-link {
+                cursor: pointer;
+                font-size: 0.85rem;
+                padding: 0.25rem 0.6rem;
+                border-radius: 0.25rem;
+                color: #495057;
                 border: 1px solid #dee2e6;
-                padding: 0.25rem 0.5rem;
-                font-size: 0.75rem;
+                margin: 0 2px;
+
+                &:hover {
+                    background: #f1f3f5;
+                }
             }
 
             &.active .page-link {
-                background-color: #007bff;
-                color: white;
+                background: #3366ff;
+                color: #fff;
+                border-color: #3366ff;
             }
 
             &.disabled .page-link {
                 opacity: 0.5;
-                cursor: not-allowed;
+                pointer-events: none;
             }
         }
     }
 }
 
-.text-muted {
-    font-style: italic;
-    font-size: 0.85rem;
+/* Buttons in table */
+.btn-group {
+    display: flex;
+    gap: 0.25rem;
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.2rem 0.4rem;
+
+        nb-icon {
+            font-size: 1rem;
+        }
+    }
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+
+        nb-form-field,
+        nb-select {
+            width: 100%;
+        }
+    }
+
+    .pagination-wrapper {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
 }

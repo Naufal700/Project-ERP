@@ -62,6 +62,13 @@ import { JurnalFormDialogComponent } from "./menu/keuangan/jurnal-umum/jurnal-fo
 import { JurnalDetailDialogComponent } from "./menu/keuangan/jurnal-umum/jurnal-detail-dialog.component";
 import { SalesInvoiceComponent } from "./menu/penjualan/faktur-penjualan/sales-invoice.component";
 import { InvoiceDetailDialogComponent } from "./menu/penjualan/faktur-penjualan/invoice-detail-dialog.component";
+import { SalesOrderFormDialogComponent } from "./menu/penjualan/sales-order/sales-order-form-dialog.component";
+import { SalesPaymentComponent } from "./menu/penjualan/pembayaran-tunai/sales-payment.component";
+import { SalesPaymentFormDialogComponent } from "./menu/penjualan/pembayaran-tunai/sales-payment-form-dialog.component";
+import { BankComponent } from "./master/bank/bank.component";
+import { BankFormDialogComponent } from "./master/bank/bank-form-dialog.component";
+import { CaraBayarComponent } from "./master/cara-bayar/cara-bayar.component";
+import { CaraBayarFormDialogComponent } from "./master/cara-bayar/cara-bayar-form-dialog.component";
 
 // import { PajakComponent } from "./master/pajak/pajak.component";
 // import { PajakFormComponent } from "./master/pajak/pajak-form.component";
@@ -125,6 +132,13 @@ import { InvoiceDetailDialogComponent } from "./menu/penjualan/faktur-penjualan/
     JurnalDetailDialogComponent,
     SalesInvoiceComponent,
     InvoiceDetailDialogComponent,
+    SalesOrderFormDialogComponent,
+    SalesPaymentComponent,
+    SalesPaymentFormDialogComponent,
+    BankComponent,
+    BankFormDialogComponent,
+    CaraBayarComponent,
+    CaraBayarFormDialogComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [{ provide: LOCALE_ID, useValue: "id" }],

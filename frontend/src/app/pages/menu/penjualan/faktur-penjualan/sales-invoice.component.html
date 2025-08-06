@@ -54,9 +54,7 @@
                 <td>{{ do.no_do }}</td>
                 <td>{{ do.pelanggan?.nama_pelanggan }}</td>
                 <td>{{ do.tanggal | date:'dd/MM/yyyy' }}</td>
-                <td>
-                  {{ getTotalDO(do) | currency:'IDR':'symbol':'1.0-0' }}
-                </td>
+                <td>{{ getTotalDO(do) | currency:'IDR':'symbol':'1.0-0' }}</td>
                 <td class="text-center">
                   <button nbButton size="tiny" status="success" (click)="createInvoice(do.id)">
                     Buat Faktur
@@ -107,7 +105,10 @@
                 <th>Pelanggan</th>
                 <th>Status</th>
                 <th>Tanggal</th>
-                <th>Total</th>
+                <th>Harga Bruto</th>
+                <th>Diskon</th>
+                <th>PPN</th>
+                <th>Harga Netto</th>
                 <th class="text-center">Aksi</th>
               </tr>
             </thead>
@@ -120,12 +121,15 @@
                 <td>{{ inv.pelanggan?.nama_pelanggan }}</td>
                 <td>
                   <span [ngClass]="{
-                    'text-warning': inv.status === 'draft',
-                    'text-success': inv.status === 'approved'
-                  }">{{ inv.status | titlecase }}</span>
+          'text-warning': inv.status === 'draft',
+          'text-success': inv.status === 'approved'
+        }">{{ inv.status | titlecase }}</span>
                 </td>
                 <td>{{ inv.tanggal | date:'dd/MM/yyyy' }}</td>
-                <td>{{ inv.total | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td>{{ inv.bruto | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td>{{ inv.diskon | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td>{{ inv.ppn | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td>{{ inv.netto | currency:'IDR':'symbol':'1.0-0' }}</td>
                 <td class="text-center">
                   <div class="btn-group">
                     <button nbButton size="small" status="success" ghost *ngIf="inv.status === 'draft'"
@@ -142,13 +146,30 @@
                     <button nbButton size="small" status="info" ghost (click)="openDetailDialog(inv)">
                       <nb-icon icon="eye-outline"></nb-icon>
                     </button>
+                    <button nbButton size="small" status="primary" ghost *ngIf="inv.status === 'approved'"
+                      (click)="printInvoice(inv.id)">
+                      <nb-icon icon="printer-outline"></nb-icon>
+                    </button>
                   </div>
                 </td>
               </tr>
+
               <tr *ngIf="getFilteredInvoices().length === 0">
-                <td colspan="8" class="text-center text-muted">Tidak ada data faktur</td>
+                <td colspan="11" class="text-center text-muted">Tidak ada data faktur</td>
               </tr>
             </tbody>
+
+            <!-- FOOTER TOTAL -->
+            <tfoot *ngIf="getFilteredInvoices().length > 0">
+              <tr>
+                <td colspan="6" class="text-end"><strong>Total:</strong></td>
+                <td>{{ getInvoiceTotals().bruto | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td>{{ getInvoiceTotals().diskon | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td>{{ getInvoiceTotals().ppn | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td>{{ getInvoiceTotals().netto | currency:'IDR':'symbol':'1.0-0' }}</td>
+                <td></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
 

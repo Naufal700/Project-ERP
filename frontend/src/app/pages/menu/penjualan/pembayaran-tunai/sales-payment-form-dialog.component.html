@@ -1,0 +1,36 @@
+<div class="dialog-container">
+  <h3>Pembayaran Tunai</h3>
+
+  <div class="form-group">
+    <label>Sales Order</label>
+    <select [(ngModel)]="paymentForm.id_order">
+      <option value="">-- Pilih SO --</option>
+      <option *ngFor="let so of salesOrders" [value]="so.id">
+        {{ so.nomor_order }} - {{ so.pelanggan?.nama_pelanggan }} (Rp
+        {{ so.total | number: "1.0-0" }})
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Jumlah Bayar</label>
+    <input type="number" [(ngModel)]="paymentForm.jumlah_bayar" />
+  </div>
+
+  <div class="form-group">
+    <label>Tanggal Bayar</label>
+    <input type="date" [(ngModel)]="paymentForm.tanggal_bayar" />
+  </div>
+
+  <div class="form-group">
+    <label>Keterangan</label>
+    <textarea [(ngModel)]="paymentForm.keterangan"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn-cancel" (click)="closeDialog()">Batal</button>
+    <button class="btn-save" [disabled]="isLoading" (click)="savePayment()">
+      {{ isLoading ? "Menyimpan..." : "Simpan" }}
+    </button>
+  </div>
+</div>

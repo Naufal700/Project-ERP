@@ -1,86 +1,71 @@
-nb-card {
-    max-width: 700px;
-    width: 100%;
-    border-radius: 8px;
-    overflow: hidden;
+.invoice-card {
+    width: 80vw;
+    max-width: 1000px;
+    margin: auto;
 
-    nb-card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #e5e5e5;
-        padding: 0.75rem 1rem;
+    .header {
+        background: #f8f9fa;
+        color: #333;
+        padding: 12px 16px;
+        border-bottom: 1px solid #dee2e6;
 
-        h5 {
-            font-size: 1.1rem;
+        .title {
             font-weight: 600;
             margin: 0;
-        }
-
-        button {
-            display: flex;
-            align-items: center;
-            padding: 0.25rem 0.5rem;
+            font-size: 16px;
         }
     }
 
-    nb-card-body {
-        padding: 1rem;
+    .body {
+        padding: 20px;
+        background: #fff;
+    }
 
-        p {
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
+    .invoice-info {
+        font-size: 14px;
+
+        .invoice-meta {
+            text-align: right;
+            min-width: 150px;
+        }
+    }
+
+    table {
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        td {
+            font-size: 13px;
+        }
+    }
+
+    .summary {
+        margin-top: 20px;
+        display: inline-block;
+        text-align: right;
+
+        .summary-item {
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            font-size: 14px;
+            margin-bottom: 4px;
 
             strong {
-                color: #495057;
-            }
-        }
-
-        .table-responsive {
-            margin-top: 1rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-
-            th {
-                background-color: #f1f3f5;
-                text-align: center;
-                font-weight: 600;
-                font-size: 0.85rem;
-                border: 1px solid #dee2e6;
-                padding: 0.4rem;
-                white-space: nowrap;
+                min-width: 120px;
+                text-align: right;
             }
 
-            td {
-                font-size: 0.85rem;
-                padding: 0.4rem;
-                border: 1px solid #dee2e6;
-                vertical-align: middle;
-
-                &:nth-child(3),
-                &:nth-child(4),
-                &:nth-child(5) {
-                    text-align: right;
-                }
-            }
-        }
-    }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    nb-card {
-        max-width: 95%;
-    }
-
-    nb-card-body {
-        table {
-            font-size: 0.8rem;
-
-            th,
-            td {
-                padding: 0.35rem;
+            &.total {
+                font-size: 15px;
+                font-weight: bold;
+                border-top: 1px solid #dee2e6;
+                padding-top: 5px;
+                margin-top: 8px;
             }
         }
     }

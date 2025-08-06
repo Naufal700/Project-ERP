@@ -20,7 +20,6 @@ export class SalesInvoiceService {
   /**
    * Ambil semua DO yang siap untuk dibuat faktur
    */
-
   getAvailableDO(): Observable<any> {
     return this.http.get(`${this.baseUrl}/do`);
   }
@@ -51,5 +50,14 @@ export class SalesInvoiceService {
    */
   cancelInvoice(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}/cancel`);
+  }
+
+  /**
+   * Cetak faktur dalam format PDF
+   */
+  printInvoice(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${id}/print`, {
+      responseType: "blob",
+    });
   }
 }

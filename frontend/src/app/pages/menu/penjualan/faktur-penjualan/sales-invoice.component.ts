@@ -23,7 +23,6 @@ export class SalesInvoiceComponent implements OnInit {
 
   currentPage = 1;
   itemsPerPage = 10;
-  selectAll = false;
 
   constructor(
     private invoiceService: SalesInvoiceService,
@@ -35,13 +34,20 @@ export class SalesInvoiceComponent implements OnInit {
     this.refreshData();
   }
 
+  /** Refresh data faktur & DO siap difaktur */
   refreshData() {
     this.isRefreshing = true;
 
     // Ambil daftar faktur
     this.invoiceService.getInvoices().subscribe({
       next: (res) => {
-        this.invoices = res;
+        this.invoices = res.map((inv: any) => ({
+          ...inv,
+          bruto: inv.bruto ?? 0,
+          diskon: inv.diskon ?? 0,
+          ppn: inv.ppn ?? 0,
+          netto: inv.netto ?? inv.bruto - (inv.diskon ?? 0) + (inv.ppn ?? 0), // fallback jika backend belum kirim netto
+        }));
         this.isRefreshing = false;
       },
       error: () => {
@@ -50,7 +56,7 @@ export class SalesInvoiceComponent implements OnInit {
       },
     });
 
-    // Ambil daftar DO yang siap difaktur
+    // Ambil daftar DO siap faktur
     this.invoiceService.getAvailableDO().subscribe({
       next: (res) => (this.availableDO = res),
       error: () => this.toastr.danger("Gagal memuat DO siap faktur"),
@@ -66,17 +72,20 @@ export class SalesInvoiceComponent implements OnInit {
     );
   }
 
+  /** Buat faktur dari DO (langsung verifikasi) */
   createInvoice(doId: number) {
     this.invoiceService.createInvoice({ id_do: doId }).subscribe({
       next: () => {
-        this.toastr.success("Faktur berhasil dibuat");
+        this.toastr.success("Faktur berhasil dibuat dari DO");
         this.refreshData();
+        this.activeTab = "invoice-list"; // langsung pindah ke daftar faktur
       },
       error: (err) =>
         this.toastr.danger(err.error?.message || "Gagal membuat faktur"),
     });
   }
 
+  /** Approve faktur */
   approveInvoice(id: number) {
     this.invoiceService.approveInvoice(id).subscribe({
       next: () => {
@@ -88,6 +97,7 @@ export class SalesInvoiceComponent implements OnInit {
     });
   }
 
+  /** Rollback faktur */
   rollbackInvoice(id: number) {
     this.invoiceService.rollbackInvoice(id).subscribe({
       next: () => {
@@ -99,6 +109,7 @@ export class SalesInvoiceComponent implements OnInit {
     });
   }
 
+  /** Batalkan faktur */
   cancelInvoice(id: number) {
     this.invoiceService.cancelInvoice(id).subscribe({
       next: () => {
@@ -110,7 +121,19 @@ export class SalesInvoiceComponent implements OnInit {
     });
   }
 
-  /** Filter daftar faktur berdasarkan pencarian, tanggal, dan status */
+  /** Cetak faktur (hanya jika approved) */
+  printInvoice(id: number) {
+    this.invoiceService.printInvoice(id).subscribe({
+      next: (res) => {
+        const blob = new Blob([res], { type: "application/pdf" });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, "_blank");
+      },
+      error: () => this.toastr.danger("Gagal mencetak faktur"),
+    });
+  }
+
+  /** Filter daftar faktur */
   getFilteredInvoices() {
     return this.invoices.filter((inv) => {
       const matchSearch =
@@ -143,5 +166,18 @@ export class SalesInvoiceComponent implements OnInit {
     this.dialogService.open(InvoiceDetailDialogComponent, {
       context: { invoice },
     });
+  }
+  /** Hitung total summary dari semua faktur yang difilter pada halaman aktif */
+  getInvoiceTotals() {
+    const filtered = this.getFilteredInvoices().slice(
+      (this.currentPage - 1) * this.itemsPerPage,
+      this.currentPage * this.itemsPerPage
+    );
+    return {
+      bruto: filtered.reduce((sum, inv) => sum + (inv.bruto || 0), 0),
+      diskon: filtered.reduce((sum, inv) => sum + (inv.diskon || 0), 0),
+      ppn: filtered.reduce((sum, inv) => sum + (inv.ppn || 0), 0),
+      netto: filtered.reduce((sum, inv) => sum + (inv.netto || 0), 0),
+    };
   }
 }

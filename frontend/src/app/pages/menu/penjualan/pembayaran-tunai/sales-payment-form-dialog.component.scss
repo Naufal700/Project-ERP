@@ -1,0 +1,73 @@
+.dialog-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 400px;
+    padding: 20px;
+
+    h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        label {
+            font-weight: 500;
+        }
+
+        select,
+        input,
+        textarea {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        textarea {
+            resize: none;
+            height: 60px;
+        }
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+
+        .btn-cancel {
+            background: #aaa;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+
+            &:hover {
+                background: #888;
+            }
+        }
+
+        .btn-save {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+
+            &:hover {
+                background: #0056b3;
+            }
+
+            &:disabled {
+                background: #aaa;
+                cursor: not-allowed;
+            }
+        }
+    }
+}

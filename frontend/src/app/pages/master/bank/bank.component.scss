@@ -1,0 +1,35 @@
+.table {
+
+    th,
+    td {
+        vertical-align: middle;
+    }
+}
+
+nb-card-header {
+    .title {
+        font-weight: bold;
+    }
+}
+
+nb-card-body {
+    nb-form-field {
+        margin-bottom: 1rem;
+        display: block;
+    }
+}
+
+.btn-group {
+    display: flex;
+    gap: 4px;
+}
+
+ul {
+    margin: 0;
+    padding-left: 1rem;
+
+    li {
+        list-style: disc;
+        font-size: 0.85rem;
+    }
+}

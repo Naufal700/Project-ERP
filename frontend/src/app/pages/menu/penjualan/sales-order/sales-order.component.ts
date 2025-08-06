@@ -3,6 +3,7 @@ import { NbToastrService, NbDialogService } from "@nebular/theme";
 import { SalesOrderService } from "./sales-order.service";
 import { forkJoin } from "rxjs";
 import { VerifyDialogComponent } from "./verify-dialog.component";
+import { SalesOrderFormDialogComponent } from "./sales-order-form-dialog.component";
 
 @Component({
   selector: "app-sales-order",
@@ -23,6 +24,8 @@ export class SalesOrderComponent implements OnInit {
 
   selectAll = false;
   selectedOrders: any[] = [];
+
+  activeTab: string = "sq"; // default tab (SO dari SQ)
 
   constructor(
     private orderService: SalesOrderService,
@@ -156,29 +159,32 @@ export class SalesOrderComponent implements OnInit {
     );
   }
 
-  /** ✅ Filter data */
-  getFilteredOrders() {
-    return this.salesOrders.filter((data) => {
-      const search = this.searchTerm.toLowerCase();
+  /** ✅ Filter data berdasarkan tab */
+  getFilteredOrders(source: string) {
+    return this.salesOrders.filter((order) => {
+      const matchSource = order.source === source; // ubah ini
 
       const matchSearch =
         !this.searchTerm ||
-        data.nomor_quotation?.toLowerCase().includes(search) ||
-        data.nomor_order?.toLowerCase().includes(search) ||
-        data.pelanggan?.nama_pelanggan?.toLowerCase().includes(search) ||
-        data.quotation?.pelanggan?.nama_pelanggan
+        order.nomor_order
           ?.toLowerCase()
-          .includes(search);
-
-      const date = data.tanggal?.substring(0, 10);
-      const matchDate =
-        (!this.fromDate || date >= this.fromDate) &&
-        (!this.toDate || date <= this.toDate);
+          .includes(this.searchTerm.toLowerCase()) ||
+        order.pelanggan?.nama_pelanggan
+          ?.toLowerCase()
+          .includes(this.searchTerm.toLowerCase()) ||
+        order.quotation?.pelanggan?.nama_pelanggan
+          ?.toLowerCase()
+          .includes(this.searchTerm.toLowerCase());
 
       const matchStatus =
-        !this.filterStatus || data.status === this.filterStatus;
+        !this.filterStatus || order.status === this.filterStatus;
 
-      return matchSearch && matchDate && matchStatus;
+      const matchDate =
+        (!this.fromDate ||
+          new Date(order.tanggal) >= new Date(this.fromDate)) &&
+        (!this.toDate || new Date(order.tanggal) <= new Date(this.toDate));
+
+      return matchSource && matchSearch && matchStatus && matchDate;
     });
   }
 
@@ -190,7 +196,7 @@ export class SalesOrderComponent implements OnInit {
   }
 
   toggleSelectAll() {
-    this.getFilteredOrders().forEach((order) => {
+    this.getFilteredOrders(this.activeTab).forEach((order) => {
       if (order.status === "draft") {
         order.selected = this.selectAll;
       }
@@ -199,6 +205,39 @@ export class SalesOrderComponent implements OnInit {
   }
 
   updateSelectedOrders() {
-    this.selectedOrders = this.getFilteredOrders().filter((o) => o.selected);
+    this.selectedOrders = this.getFilteredOrders(this.activeTab).filter(
+      (o) => o.selected
+    );
+  }
+
+  /** ✅ Buka dialog buat SO manual */
+  openCreateOrderDialog(order?: any) {
+    this.dialogService
+      .open(SalesOrderFormDialogComponent, {
+        context: order ? { order } : {},
+      })
+      .onClose.subscribe((result) => {
+        if (result) {
+          // Hanya refresh data setelah create/update sukses di dialog
+          this.toastr.success(
+            order
+              ? "Sales Order manual berhasil diperbarui"
+              : "Sales Order manual berhasil dibuat",
+            "Sukses"
+          );
+          this.refreshData();
+        }
+      });
+  }
+
+  /** ✅ Ganti tab manual */
+  switchTab(tab: string) {
+    this.activeTab = tab;
+    this.selectAll = false;
+    this.selectedOrders = [];
+    this.searchTerm = "";
+    this.filterStatus = "";
+    this.fromDate = "";
+    this.toDate = "";
   }
 }

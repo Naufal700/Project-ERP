@@ -1,0 +1,96 @@
+<nb-card class="sales-order-card">
+  <nb-card-header>
+    {{ isEdit ? 'Edit Sales Order' : 'Buat Sales Order' }}
+  </nb-card-header>
+
+  <nb-card-body>
+    <form [formGroup]="form" class="sales-order-form">
+      <!-- Pelanggan & Tanggal dalam satu baris -->
+      <div class="form-row">
+        <div class="form-group pelanggan">
+          <label>Pelanggan</label>
+          <nb-select placeholder="Pilih Pelanggan" formControlName="id_pelanggan">
+            <nb-option *ngFor="let p of pelangganList" [value]="p.id">
+              {{ p.nama_pelanggan }}
+            </nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group tanggal">
+          <label>Tanggal</label>
+          <input nbInput type="date" formControlName="tanggal" />
+        </div>
+      </div>
+
+      <!-- Produk -->
+      <div class="mt-4">
+        <h5>Detail Produk</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered mt-2 sales-order-table">
+            <thead>
+              <tr>
+                <th style="width: 25%">Produk</th>
+                <th style="width: 8%">Qty</th>
+                <th style="width: 12%">Harga Satuan</th>
+                <th style="width: 12%">Total Harga</th>
+                <th style="width: 8%">PPN (%)</th>
+                <th style="width: 8%">Diskon (%)</th>
+                <th style="width: 12%">Subtotal</th>
+                <th style="width: 8%">Aksi</th>
+              </tr>
+            </thead>
+            <tbody formArrayName="details">
+              <tr *ngFor="let detail of details.controls; let i = index" [formGroupName]="i">
+                <td>
+                  <nb-select placeholder="Pilih Produk" formControlName="id_produk"
+                    (selectedChange)="onProdukChange(i)">
+                    <nb-option *ngFor="let pr of produkList" [value]="pr.id">
+                      {{ pr.nama_produk }}
+                    </nb-option>
+                  </nb-select>
+                </td>
+                <td>
+                  <input nbInput type="number" min="1" formControlName="qty" (input)="updateSubtotal(i)" />
+                </td>
+                <td>
+                  <input nbInput type="number" min="0" formControlName="harga" (input)="updateSubtotal(i)" />
+                </td>
+                <td>
+                  <input nbInput type="text" [value]="getTotalHarga(i) | number: '1.0-2'" readonly />
+                </td>
+                <td>
+                  <input nbInput type="number" min="0" max="100" formControlName="ppn" (input)="updateSubtotal(i)" />
+                </td>
+                <td>
+                  <input nbInput type="number" min="0" max="100" formControlName="diskon" (input)="updateSubtotal(i)" />
+                </td>
+                <td>
+                  <input nbInput type="text" [value]="getSubtotal(i) | number: '1.0-2'" readonly />
+                </td>
+                <td>
+                  <button nbButton size="small" status="danger" (click)="removeDetail(i)" *ngIf="details.length > 1">
+                    Hapus
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <button nbButton status="info" size="small" (click)="addDetail()">+ Tambah Produk</button>
+      </div>
+
+      <!-- Total -->
+      <div class="mt-3 text-end total-wrapper">
+        <strong>Total: {{ getTotal() | number: '1.0-2' }}</strong>
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="d-flex justify-content-end">
+    <button nbButton status="basic" (click)="cancel()">Batal</button>
+    <button nbButton status="primary" class="ms-2" (click)="save()" [disabled]="form.invalid">
+      Simpan
+    </button>
+  </nb-card-footer>
+</nb-card>

@@ -1,0 +1,39 @@
+<nb-card>
+  <nb-card-header>
+    <h5>{{ bank ? 'Edit Bank' : 'Tambah Bank' }}</h5>
+  </nb-card-header>
+
+  <nb-card-body>
+    <nb-form-field>
+      <label>Kode Bank</label>
+      <input nbInput placeholder="Kode Bank" [(ngModel)]="formData.kode_bank" [readonly]="bank" />
+    </nb-form-field>
+
+    <nb-form-field>
+      <label>Nama Bank</label>
+      <input nbInput placeholder="Nama Bank" [(ngModel)]="formData.nama_bank" />
+    </nb-form-field>
+
+    <nb-form-field>
+      <label>No Rekening</label>
+      <input nbInput placeholder="No Rekening" [(ngModel)]="formData.no_rekening" />
+    </nb-form-field>
+
+    <nb-form-field>
+      <label>Atas Nama</label>
+      <input nbInput placeholder="Atas Nama" [(ngModel)]="formData.atas_nama" />
+    </nb-form-field>
+
+    <nb-form-field>
+      <label>Cara Bayar</label>
+      <nb-select multiple placeholder="Pilih cara bayar" [(selected)]="formData.cara_bayar_ids">
+        <nb-option *ngFor="let cb of caraBayarList" [value]="cb.id">{{ cb.nama_cara_bayar }}</nb-option>
+      </nb-select>
+    </nb-form-field>
+  </nb-card-body>
+
+  <nb-card-footer class="d-flex justify-content-end">
+    <button nbButton status="basic" (click)="close()">Batal</button>
+    <button nbButton status="primary" (click)="save()">Simpan</button>
+  </nb-card-footer>
+</nb-card>
