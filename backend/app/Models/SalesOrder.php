@@ -18,7 +18,8 @@ class SalesOrder extends Model
         'total',
         'status',
         'approved_by',
-        'tanggal_approval'
+        'tanggal_approval',
+        'source'
     ];
 
     public function pelanggan()
@@ -42,5 +43,9 @@ class SalesOrder extends Model
     public function deliveryOrders()
     {
         return $this->hasMany(DeliveryOrder::class, 'sales_order_id');
+    }
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'id_produk', 'id');
     }
 }

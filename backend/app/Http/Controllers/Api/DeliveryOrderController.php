@@ -87,11 +87,12 @@ class DeliveryOrderController extends Controller
             // Masukkan semua item dari SO ke DO
             foreach ($salesOrder->details as $item) {
                 DeliveryOrderItem::create([
-                    'delivery_order_id' => $do->id,
-                    'produk_id'         => $item->id_produk,
-                    'qty'               => $item->qty,
-                    'harga'             => $item->harga,
-                    'total'             => $item->qty * $item->harga,
+                    'delivery_order_id'     => $do->id,
+                    'produk_id'             => $item->id_produk,
+                    'qty'                   => $item->qty,
+                    'harga'                 => $item->harga,
+                    'total'                 => $item->qty * $item->harga,
+                    'id_sales_order_detail' => $item->id, // simpan relasi ke SO detail
                 ]);
             }
         });
@@ -122,7 +123,7 @@ class DeliveryOrderController extends Controller
 
             foreach ($do->items as $item) {
                 // Ambil harga beli produk (bisa dari produk langsung atau FIFO/Average)
-                $hargaBeli = $item->produk->harga_beli; // Pastikan di model produk ada field ini
+                $hargaBeli = $item->produk->harga_beli;
 
                 InventoryIssue::create([
                     'produk_id'       => $item->produk_id,
@@ -156,7 +157,7 @@ class DeliveryOrderController extends Controller
                         'tanggal'     => now(),
                         'kode_jurnal' => $this->generateKodeJurnal('DO'),
                         'keterangan'  => 'Pengeluaran Persediaan Tanggal ' . now()->format('d/m/Y'),
-                        'reference'   => 'DO-' . now()->format('Ymd'), // supaya unik per hari
+                        'reference'   => 'DO-' . now()->format('Ymd'),
                         'created_by'  => auth()->id(),
                     ]);
                 }
@@ -164,7 +165,7 @@ class DeliveryOrderController extends Controller
                 // Tambahkan detail debit & kredit per item produk di DO ini
                 foreach ($do->items as $item) {
                     $keteranganDetail = $do->no_do . ' - ' . $do->pelanggan->nama_pelanggan . ' - ' . $item->produk->nama_produk;
-                    $nominalHpp = $item->qty * $item->produk->harga_beli; // ambil harga beli
+                    $nominalHpp = $item->qty * $item->produk->harga_beli;
 
                     // Debit HPP
                     JurnalUmumDetail::create([
@@ -190,8 +191,6 @@ class DeliveryOrderController extends Controller
         return response()->json(['message' => 'Delivery Order berhasil di-approve dan jurnal diperbarui']);
     }
 
-
-
     /**
      * Detail DO.
      */
@@ -211,9 +210,7 @@ class DeliveryOrderController extends Controller
             $so = $do->salesOrder;
 
             // Cari jurnal terkait DO (berdasarkan tanggal yang sama)
-
             $jurnal = JurnalUmum::where('reference', 'DO-' . Carbon::parse($do->tanggal)->format('Ymd'))->first();
-
 
             if ($jurnal) {
                 // Hapus detail jurnal untuk DO ini

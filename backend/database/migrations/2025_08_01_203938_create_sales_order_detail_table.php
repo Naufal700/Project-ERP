@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_produk');
             $table->integer('qty');
             $table->decimal('harga', 15, 2);
-            $table->boolean('ppn')->default(false);
-            $table->decimal('diskon', 15, 2)->default(0);
+            $table->decimal('ppn', 15, 2);
+            $table->decimal('diskon', 15, 2);
             $table->timestamps();
 
             $table->foreign('id_order')->references('id')->on('sales_order')->onDelete('cascade');

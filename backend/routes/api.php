@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\CoaController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BankController;
 use App\Http\Controllers\Api\PajakController;
 use App\Http\Controllers\Api\DivisiController;
 use App\Http\Controllers\Api\GudangController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\PelangganController;
 use App\Http\Controllers\Api\JurnalUmumController;
 use App\Http\Controllers\Api\SalesOrderController;
 use App\Http\Controllers\Api\SalesInvoiceController;
+use App\Http\Controllers\Api\SalesPaymentController;
 use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\MappingJurnalController;
 use App\Http\Controllers\API\KategoriProdukController;
@@ -48,6 +50,8 @@ Route::get('/pelanggan/export-excel', [PelangganController::class, 'exportExcel'
 Route::get('/pelanggan/template-excel', [PelangganController::class, 'downloadTemplate']);
 Route::post('/pelanggan/import-excel', [PelangganController::class, 'importExcel']);
 Route::apiResource('pelanggan', PelangganController::class)->where(['pelanggan' => '[0-9]+']);
+Route::get('/pelanggan', [PelangganController::class, 'index']);
+Route::get('/produk', [ProdukController::class, 'index']);
 
 // Route COA
 Route::get('coa/export-excel', [CoaController::class, 'exportExcel']);
@@ -155,6 +159,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('sales/quotations/{id}/reject', [SalesOrderController::class, 'reject']);
     Route::get('sales/orders', [SalesOrderController::class, 'listOrders']);
     Route::post('sales/order/{id}/cancel', [SalesOrderController::class, 'cancel']);
+    Route::post('/sales-order', [SalesOrderController::class, 'store']);
+    Route::put('/sales-order/{id}', [SalesOrderController::class, 'update']);
 });
 // Route Inventory
 Route::prefix('inventory')->group(function () {
@@ -204,4 +210,12 @@ Route::prefix('jurnal-umum')->group(function () {
     Route::get('/{id}', [JurnalUmumController::class, 'show']);     // Detail jurnal umum (header + detail)
     Route::put('/{id}', [JurnalUmumController::class, 'update']);   // Update jurnal umum
     Route::delete('/{id}', [JurnalUmumController::class, 'destroy']); // Hapus jurnal umum
+});
+// Route Master data bank
+Route::prefix('bank')->group(function () {
+    Route::get('/', [BankController::class, 'index']);
+    Route::post('/', [BankController::class, 'store']);
+    Route::put('/{id}', [BankController::class, 'update']);
+    Route::delete('/{id}', [BankController::class, 'destroy']);
+    Route::get('/cara-bayar', [BankController::class, 'getCaraBayar']);
 });

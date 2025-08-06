@@ -15,7 +15,9 @@ class SalesInvoiceDetail extends Model
         'id_produk',
         'qty',
         'harga',
-        'subtotal'
+        'subtotal',
+        'diskon',
+        'ppn'
     ];
 
     public function invoice()
@@ -26,5 +28,9 @@ class SalesInvoiceDetail extends Model
     public function produk()
     {
         return $this->belongsTo(Produk::class, 'id_produk');
+    }
+    public function salesOrderDetail()
+    {
+        return $this->belongsTo(SalesOrderDetail::class, 'id_sales_order_detail', 'id');
     }
 }

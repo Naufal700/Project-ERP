@@ -24,9 +24,30 @@ class SalesInvoiceController extends Controller
 
     public function index()
     {
-        return SalesInvoice::with(['details.produk', 'deliveryOrder.items.produk', 'pelanggan'])
+        $invoices = SalesInvoice::with([
+            'details.produk',
+            'details.salesOrderDetail',
+            'deliveryOrder.items.produk',
+            'pelanggan'
+        ])
             ->orderBy('id', 'desc')
             ->get();
+
+        $invoices->transform(function ($invoice) {
+            $bruto  = $invoice->details->sum(fn($d) => $d->qty * $d->harga);
+            $diskon = $invoice->details->sum('diskon'); // ambil langsung dari detail
+            $ppn    = $invoice->details->sum('ppn');    // ambil langsung dari detail
+            $netto  = $bruto - $diskon + $ppn;
+
+            $invoice->bruto  = $bruto;
+            $invoice->diskon = $diskon;
+            $invoice->ppn    = $ppn;
+            $invoice->total  = $netto;
+
+            return $invoice;
+        });
+
+        return $invoices;
     }
 
     private function generateNoInvoice()
@@ -47,7 +68,7 @@ class SalesInvoiceController extends Controller
         }
 
         DB::transaction(function () use ($request) {
-            $do = DeliveryOrder::with(['items'])->findOrFail($request->id_do);
+            $do = DeliveryOrder::with(['items.salesOrderDetail', 'salesOrder.details'])->findOrFail($request->id_do);
 
             $invoice = SalesInvoice::create([
                 'nomor_invoice' => $this->generateNoInvoice(),
@@ -56,23 +77,45 @@ class SalesInvoiceController extends Controller
                 'id_do'         => $do->id,
                 'status'        => 'draft',
                 'total'         => 0,
+                'diskon'        => 0,
+                'ppn'           => 0,
             ]);
 
-            $total = 0;
+            $totalBruto = 0;
+            $totalDiskon = 0;
+            $totalPpn = 0;
+
             foreach ($do->items as $item) {
-                $subtotal = $item->qty * $item->harga;
-                $total += $subtotal;
+                $salesOrderDetail = $item->salesOrderDetail;
+
+                $harga  = $item->harga;
+                $qty    = $item->qty;
+                $diskon = $salesOrderDetail->diskon ?? 0;
+                $ppn    = $salesOrderDetail->ppn ?? 0;
+
+                $subtotal = ($harga - $diskon) * $qty + ($ppn * $qty);
+
+                $totalBruto  += $harga * $qty;
+                $totalDiskon += $diskon * $qty;
+                $totalPpn    += $ppn * $qty;
 
                 SalesInvoiceDetail::create([
-                    'id_invoice' => $invoice->id,
-                    'id_produk'  => $item->produk_id,
-                    'qty'        => $item->qty,
-                    'harga'      => $item->harga,
-                    'subtotal'   => $subtotal,
+                    'id_invoice'            => $invoice->id,
+                    'id_produk'             => $item->produk_id,
+                    'id_sales_order_detail' => $salesOrderDetail?->id,
+                    'qty'                   => $qty,
+                    'harga'                 => $harga,
+                    'diskon'                => $diskon,
+                    'ppn'                   => $ppn,
+                    'subtotal'              => $subtotal,
                 ]);
             }
 
-            $invoice->update(['total' => $total]);
+            $invoice->update([
+                'diskon' => $totalDiskon,
+                'ppn'    => $totalPpn,
+                'total'  => $totalBruto - $totalDiskon + $totalPpn
+            ]);
         });
 
         return response()->json(['message' => 'Faktur berhasil dibuat dengan status draft']);
@@ -81,13 +124,12 @@ class SalesInvoiceController extends Controller
     public function approve($id)
     {
         DB::transaction(function () use ($id) {
-            $invoice = SalesInvoice::with(['deliveryOrder', 'details.produk', 'pelanggan'])->findOrFail($id);
+            $invoice = SalesInvoice::with(['details', 'deliveryOrder.salesOrder.details', 'pelanggan'])->findOrFail($id);
 
             if ($invoice->status !== 'draft') {
                 abort(400, 'Hanya faktur dengan status draft yang dapat di-approve');
             }
 
-            // Cek mapping jurnal
             $mapping = MappingJurnal::where('modul', 'sales/invoice')
                 ->where('kode_transaksi', 'SI')
                 ->first();
@@ -96,49 +138,130 @@ class SalesInvoiceController extends Controller
                 abort(400, 'Mapping jurnal untuk sales invoice belum diatur');
             }
 
-            // Cari jurnal per hari
-            $jurnal = JurnalUmum::whereDate('tanggal', now())
-                ->where('kode_jurnal', 'like', 'JU-SI-' . date('Ymd') . '%')
-                ->first();
+            $bruto  = $invoice->details->sum(fn($d) => $d->qty * $d->harga);
+            $diskon = $invoice->details->sum('diskon'); // dari tabel detail
+            $ppn    = $invoice->details->sum('ppn');    // dari tabel detail
+            $netto  = $bruto - $diskon + $ppn;
 
-            if (!$jurnal) {
-                $jurnal = JurnalUmum::create([
-                    'tanggal'     => now(),
-                    'kode_jurnal' => $this->generateKodeJurnal(),
-                    'keterangan'  => 'Penjualan tanggal ' . now()->format('d/m/Y'),
-                    'reference'   => 'GROUPED-SI-' . now()->format('Ymd'),
+            $invoice->update([
+                'diskon' => $diskon,
+                'ppn'    => $ppn,
+                'total'  => $netto
+            ]);
+
+            $keterangan = $invoice->nomor_invoice . ' - ' . $invoice->pelanggan->nama_pelanggan;
+            $tanggal = now()->toDateString();
+
+            // 1. Jurnal Penjualan
+            $jurnalPenjualan = JurnalUmum::firstOrCreate(
+                [
+                    'tanggal'    => $tanggal,
+                    'reference'  => 'SALES-' . date('Ymd'),
+                ],
+                [
+                    'kode_jurnal' => $this->generateKodeJurnal('JU-SALES'),
+                    'keterangan'  => 'Jurnal Penjualan Tanggal ' . date('d-m-Y'),
                     'created_by'  => auth()->id(),
+                ]
+            );
 
-                ]);
+            // Piutang (debit) = Netto
+            JurnalUmumDetail::create([
+                'jurnal_id'  => $jurnalPenjualan->id,
+                'kode_akun'  => $mapping->kode_akun_debit,
+                'keterangan' => '(Pendapatan) ' . $keterangan,
+                'jenis'      => 'debit',
+                'nominal'    => $bruto,
+            ]);
+
+            // Pendapatan (kredit) = Bruto
+            JurnalUmumDetail::create([
+                'jurnal_id'  => $jurnalPenjualan->id,
+                'kode_akun'  => $mapping->kode_akun_kredit,
+                'keterangan' => '(Pendapatan) ' . $keterangan,
+                'jenis'      => 'kredit',
+                'nominal'    => $bruto,
+            ]);
+
+            // 2. Jurnal Diskon (jika ada)
+            if ($diskon > 0) {
+                $akunDiskon = MappingJurnal::where('modul', 'sales/invoice')
+                    ->where('kode_transaksi', 'DISKON')
+                    ->value('kode_akun_debit');
+
+                if ($akunDiskon) {
+                    $jurnalDiskon = JurnalUmum::firstOrCreate(
+                        [
+                            'tanggal'   => $tanggal,
+                            'reference' => 'DISKON-' . date('Ymd'),
+                        ],
+                        [
+                            'kode_jurnal' => $this->generateKodeJurnal('JU-DISKON'),
+                            'keterangan'  => 'Jurnal Diskon Penj. Tanggal ' . date('d-m-Y'),
+                            'created_by'  => auth()->id(),
+                        ]
+                    );
+
+                    JurnalUmumDetail::create([
+                        'jurnal_id'  => $jurnalDiskon->id,
+                        'kode_akun'  => $akunDiskon,
+                        'keterangan' => '(Diskon Penjualan) ' . $keterangan,
+                        'jenis'      => 'debit',
+                        'nominal'    => $diskon,
+                    ]);
+
+                    JurnalUmumDetail::create([
+                        'jurnal_id'  => $jurnalDiskon->id,
+                        'kode_akun'  => $mapping->kode_akun_debit,
+                        'keterangan' => '(Diskon Penjualan) ' . $keterangan,
+                        'jenis'      => 'kredit',
+                        'nominal'    => $diskon,
+                    ]);
+                }
             }
 
-            // Tambah detail jurnal (debit & kredit)
-            $keterangan = $invoice->nomor_invoice . ' - ' . $invoice->pelanggan->nama_pelanggan;
+            // 3. Jurnal PPN (jika ada)
+            if ($ppn > 0) {
+                $akunPpn = MappingJurnal::where('modul', 'sales/invoice')
+                    ->where('kode_transaksi', 'PPN')
+                    ->value('kode_akun_kredit');
 
-            JurnalUmumDetail::create([
-                'jurnal_id'  => $jurnal->id,
-                'kode_akun'  => $mapping->kode_akun_debit,
-                'keterangan' => $keterangan,
-                'jenis'      => 'debit',
-                'nominal'    => $invoice->total,
-            ]);
+                if ($akunPpn) {
+                    $jurnalPpn = JurnalUmum::firstOrCreate(
+                        [
+                            'tanggal'   => $tanggal,
+                            'reference' => 'PPN-' . date('Ymd'),
+                        ],
+                        [
+                            'kode_jurnal' => $this->generateKodeJurnal('JU-PPN'),
+                            'keterangan'  => 'Jurnal PPN Keluaran Tanggal ' . date('d-m-Y'),
+                            'created_by'  => auth()->id(),
+                        ]
+                    );
 
-            JurnalUmumDetail::create([
-                'jurnal_id'  => $jurnal->id,
-                'kode_akun'  => $mapping->kode_akun_kredit,
-                'keterangan' => $keterangan,
-                'jenis'      => 'kredit',
-                'nominal'    => $invoice->total,
-            ]);
+                    JurnalUmumDetail::create([
+                        'jurnal_id'  => $jurnalPpn->id,
+                        'kode_akun'  => $mapping->kode_akun_debit,
+                        'keterangan' => '(PPN Keluaran) ' . $keterangan,
+                        'jenis'      => 'debit',
+                        'nominal'    => $ppn,
+                    ]);
 
-            // Update status faktur
+                    JurnalUmumDetail::create([
+                        'jurnal_id'  => $jurnalPpn->id,
+                        'kode_akun'  => $akunPpn,
+                        'keterangan' => '(PPN Keluaran) ' . $keterangan,
+                        'jenis'      => 'kredit',
+                        'nominal'    => $ppn,
+                    ]);
+                }
+            }
+
             $invoice->update(['status' => 'approved']);
-
-            // Update status DO
             $invoice->deliveryOrder->update(['status' => 'invoiced']);
         });
 
-        return response()->json(['message' => 'Faktur berhasil di-approve, DO diupdate ke invoiced, jurnal ditambahkan']);
+        return response()->json(['message' => 'Faktur berhasil di-approve, jurnal penjualan/diskon/PPN dibuat']);
     }
 
     public function rollback($id)
@@ -150,103 +273,68 @@ class SalesInvoiceController extends Controller
                 abort(400, 'Hanya faktur yang sudah approved yang bisa di-rollback');
             }
 
-            $keterangan = $invoice->nomor_invoice . ' - ' . $invoice->pelanggan->nama_pelanggan;
-
-            // Hapus detail jurnal sesuai faktur
-            JurnalUmumDetail::where('keterangan', $keterangan)->delete();
-
-            // Cek semua jurnal di tanggal yang sama
-            $jurnals = JurnalUmum::whereDate('tanggal', $invoice->tanggal)
-                ->where('kode_jurnal', 'like', 'JU-SI-' . date('Ymd', strtotime($invoice->tanggal)) . '%')
-                ->get();
-
+            $jurnals = JurnalUmum::where('reference', $invoice->nomor_invoice)->get();
             foreach ($jurnals as $jurnal) {
-                if ($jurnal->details()->count() === 0) {
-                    $tanggal = $jurnal->tanggal;
-                    $jurnal->delete();
-                    $this->resequenceJurnal($tanggal);
-                }
+                $jurnal->details()->delete();
+                $jurnal->delete();
             }
 
-            $invoice->update(['status' => 'draft']);
-
-            if ($invoice->deliveryOrder) {
-                $invoice->deliveryOrder->update(['status' => 'approved']);
-            }
+            $invoice->update([
+                'status' => 'draft',
+                'diskon' => 0,
+                'ppn'    => 0,
+            ]);
+            $invoice->deliveryOrder->update(['status' => 'approved']);
         });
 
-        return response()->json(['message' => 'Faktur berhasil di-rollback ke draft, jurnal dihapus jika kosong, DO dikembalikan ke approved']);
+        return response()->json(['message' => 'Faktur berhasil di-rollback ke draft']);
     }
-
 
     public function cancel($id)
     {
         DB::transaction(function () use ($id) {
             $invoice = SalesInvoice::with(['deliveryOrder', 'pelanggan'])->findOrFail($id);
+            $tanggal = $invoice->created_at->format('Y-m-d');
 
-            if ($invoice->status === 'approved') {
-                // Cari jurnal berdasarkan reference
-                $jurnal = JurnalUmum::where('reference', 'GROUPED-SI-' . date('Ymd', strtotime($invoice->tanggal)))->first();
+            $jurnals = JurnalUmum::whereIn('reference', [
+                'SALES-' . date('Ymd', strtotime($tanggal)),
+                'DISKON-' . date('Ymd', strtotime($tanggal)),
+                'PPN-' . date('Ymd', strtotime($tanggal)),
+            ])->get();
 
-                if ($jurnal) {
-                    // Hapus detail jurnal sesuai keterangan invoice
-                    $keterangan = $invoice->nomor_invoice . ' - ' . $invoice->pelanggan->nama_pelanggan;
-                    JurnalUmumDetail::where('jurnal_id', $jurnal->id)
-                        ->where('keterangan', $keterangan)
-                        ->delete();
+            foreach ($jurnals as $jurnal) {
+                // Hapus semua detail terkait nomor invoice
+                $jurnal->details()
+                    ->where('keterangan', 'like', '%' . $invoice->nomor_invoice . '%')
+                    ->delete();
 
-                    // Jika jurnal tidak punya detail, hapus jurnalnya
-                    if (JurnalUmumDetail::where('jurnal_id', $jurnal->id)->count() === 0) {
-                        $jurnal->forceDelete();
-                    }
+                // Reload details untuk cek apakah jurnal sudah kosong
+                $jurnal->load('details');
+
+                if ($jurnal->details->count() === 0) {
+                    $jurnal->forceDelete(); // PAKAI forceDelete biar bener-bener hilang
                 }
             }
 
-            // Hapus detail invoice
             SalesInvoiceDetail::where('id_invoice', $invoice->id)->delete();
-
-            // Hapus invoice
             $invoice->delete();
-
-            // Kembalikan status DO
-            if ($invoice->deliveryOrder) {
-                $invoice->deliveryOrder->update(['status' => 'approved']);
-            }
+            $invoice->deliveryOrder->update(['status' => 'approved']);
         });
 
-        return response()->json([
-            'message' => 'Faktur berhasil dibatalkan. Jurnal umum dihapus jika tidak ada detail tersisa, DO dikembalikan ke approved'
-        ]);
+        return response()->json(['message' => 'Faktur berhasil dibatalkan']);
     }
 
 
 
-    private function resequenceJurnal($tanggal)
+    private function generateKodeJurnal($prefix)
     {
-        $jurnals = JurnalUmum::whereDate('tanggal', $tanggal)
-            ->where('kode_jurnal', 'like', 'JU-SI-' . date('Ymd', strtotime($tanggal)) . '%')
-            ->orderBy('id')
-            ->get();
-
         $counter = 1;
-        foreach ($jurnals as $jurnal) {
-            $newKode = 'JU-SI-' . date('Ymd', strtotime($tanggal)) . '-' . str_pad($counter, 4, '0', STR_PAD_LEFT);
-            $jurnal->update(['kode_jurnal' => $newKode]);
+        do {
+            $kode = $prefix . '-' . date('Ymd') . '-' . str_pad($counter, 4, '0', STR_PAD_LEFT);
+            $exists = JurnalUmum::where('kode_jurnal', $kode)->exists();
             $counter++;
-        }
-    }
+        } while ($exists);
 
-    private function generateKodeJurnal()
-    {
-        $today = date('Y-m-d');
-
-        $lastJurnal = JurnalUmum::whereDate('tanggal', $today)
-            ->where('kode_jurnal', 'like', 'JU-SI-' . date('Ymd') . '%')
-            ->orderBy('id', 'desc')
-            ->first();
-
-        $nextNumber = $lastJurnal ? ((int)substr($lastJurnal->kode_jurnal, -4) + 1) : 1;
-
-        return 'JU-SI-' . date('Ymd') . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        return $kode;
     }
 }

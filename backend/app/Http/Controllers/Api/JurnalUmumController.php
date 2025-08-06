@@ -22,8 +22,18 @@ class JurnalUmumController extends Controller
         $query = JurnalUmum::with(['details.coa', 'creator'])
             ->when($fromDate, fn($q) => $q->whereDate('tanggal', '>=', $fromDate))
             ->when($toDate, fn($q) => $q->whereDate('tanggal', '<=', $toDate))
-            ->when($request->search, fn($q) => $q->where('keterangan', 'like', '%' . $request->search . '%'))
-            ->orderBy('tanggal', 'desc');
+            ->when($request->search, function ($q) use ($request) {
+                $search = trim($request->search);
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('keterangan', 'like', "%{$search}%")
+                        ->orWhere('kode_jurnal', 'like', "%{$search}%")
+                        ->orWhereHas('details.coa', function ($coaQuery) use ($search) {
+                            $coaQuery->where('nama_akun', 'like', "%{$search}%")
+                                ->orWhere('kode_akun', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->orderBy('tanggal', 'asc');
 
         $perPage = $request->get('per_page', 10);
 
