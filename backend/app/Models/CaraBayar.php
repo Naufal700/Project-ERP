@@ -12,13 +12,14 @@ class CaraBayar extends Model
     protected $table = 'cara_bayar_m';
 
     protected $fillable = [
-        'kode_cara_bayar',
-        'nama_cara_bayar'
+        'nama_cara_bayar',
+        'tipe',
+        'kode_akun',
+        'is_default',
     ];
 
-    public function banks()
+    public function akun()
     {
-        return $this->belongsToMany(Bank::class, 'bank_cara_bayar', 'id_cara_bayar', 'id_bank')
-            ->withTimestamps();
+        return $this->belongsTo(Coa::class, 'kode_akun', 'kode_akun');
     }
 }

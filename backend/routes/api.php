@@ -1,8 +1,9 @@
 <?php
 
+use App\Models\Coa;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\CoaController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BankController;
@@ -12,14 +13,15 @@ use App\Http\Controllers\Api\GudangController;
 use App\Http\Controllers\Api\ProdukController;
 use App\Http\Controllers\Api\ProyekController;
 use App\Http\Controllers\API\SatuanController;
+use App\Http\Controllers\API\SalesTunaiController;
 use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\API\CaraBayarController;
 use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PelangganController;
 use App\Http\Controllers\Api\JurnalUmumController;
 use App\Http\Controllers\Api\SalesOrderController;
 use App\Http\Controllers\Api\SalesInvoiceController;
-use App\Http\Controllers\Api\SalesPaymentController;
 use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\MappingJurnalController;
 use App\Http\Controllers\API\KategoriProdukController;
@@ -27,7 +29,6 @@ use App\Http\Controllers\Api\SalesQuotationController;
 use App\Http\Controllers\Api\HargaJualProdukController;
 use App\Http\Controllers\Api\InventoryReportController;
 use App\Http\Controllers\Api\InventoryClosingController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,8 @@ Route::post('coa/import-excel', [CoaController::class, 'importExcel']);
 Route::get('coa/parents', [CoaController::class, 'listParents']);
 Route::get('coa/search', [CoaController::class, 'search']);
 Route::patch('coa/{id}/toggle-aktif', [CoaController::class, 'toggleAktif']);
+Route::get('/coa/kas-bank', [CoaController::class, 'kasBankOnly']);
+Route::get('/coa/{id}', [CoaController::class, 'show']); // harus di bawah!
 
 Route::apiResource('coa', CoaController::class);
 
@@ -116,8 +119,11 @@ Route::get('/mapping-jurnal/{id}', [MappingJurnalController::class, 'show']);
 Route::put('/mapping-jurnal/{id}', [MappingJurnalController::class, 'update']);
 Route::delete('/mapping-jurnal/{id}', [MappingJurnalController::class, 'destroy']);
 
-// Endpoint tambahan untuk dropdown akun COA
+// Endpoint tambahan untuk dropdown
 Route::get('/mapping-jurnal/coa/list', [MappingJurnalController::class, 'getCOA']);
+Route::get('/mapping-jurnal/cara-bayar/list', [MappingJurnalController::class, 'getCaraBayar']);
+Route::get('/mapping-jurnal/bank/list', [MappingJurnalController::class, 'getBank']);
+
 
 // Route Penawaran
 Route::middleware('auth:sanctum')->group(function () {
@@ -212,10 +218,16 @@ Route::prefix('jurnal-umum')->group(function () {
     Route::delete('/{id}', [JurnalUmumController::class, 'destroy']); // Hapus jurnal umum
 });
 // Route Master data bank
-Route::prefix('bank')->group(function () {
-    Route::get('/', [BankController::class, 'index']);
-    Route::post('/', [BankController::class, 'store']);
-    Route::put('/{id}', [BankController::class, 'update']);
-    Route::delete('/{id}', [BankController::class, 'destroy']);
-    Route::get('/cara-bayar', [BankController::class, 'getCaraBayar']);
+// routes/api.php
+Route::get('/bank', [BankController::class, 'index']);
+Route::post('/bank', [BankController::class, 'store']);
+Route::put('/bank/{id}', [BankController::class, 'update']);
+Route::delete('/bank/{id}', [BankController::class, 'destroy']);
+// Route Cara Bayar
+Route::apiResource('cara-bayar', CaraBayarController::class);
+// Route Sales Tunai
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('sales-tunai', [SalesTunaiController::class, 'index']);
+    Route::post('sales-tunai', [SalesTunaiController::class, 'store']);
+    Route::delete('sales-tunai/{id}', [SalesTunaiController::class, 'cancelPayment']);
 });

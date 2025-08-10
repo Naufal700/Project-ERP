@@ -162,4 +162,12 @@ class CoaController extends Controller
 
         return response()->json(['message' => 'Import COA berhasil']);
     }
+    /**
+     * Ambil hanya akun dengan tipe kas dan bank.
+     */
+    public function kasBankOnly()
+    {
+        $data = Coa::whereIn('tipe_akun', ['kas', 'bank'])->orderBy('kode_akun')->get();
+        return response()->json($data);
+    }
 }

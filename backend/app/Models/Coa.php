@@ -41,4 +41,8 @@ class Coa extends Model
     {
         return $this->hasMany(MappingJurnal::class, 'kode_akun_kredit', 'kode_akun');
     }
+    public function scopeKasBankOnly($query)
+    {
+        return $query->whereIn('tipe_akun', ['kas', 'bank']);
+    }
 }

@@ -15,8 +15,18 @@ class SalesInvoice extends Model
         'tanggal',
         'id_pelanggan',
         'id_do',
+        'jenis_pembayaran',      // tunai / piutang
+        'termin',                // hari (nullable)
+        'tanggal_jatuh_tempo',   // date (nullable)
         'status',
         'total',
+    ];
+
+    protected $casts = [
+        'tanggal' => 'date',
+        'tanggal_jatuh_tempo' => 'date',
+        'total' => 'decimal:2',
+        'termin' => 'integer',
     ];
 
     public function details()
@@ -33,4 +43,8 @@ class SalesInvoice extends Model
     {
         return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
     }
+    // public function salesTunai()
+    // {
+    //     return $this->hasMany(SalesTunai::class, 'sales_invoice_id');
+    // }
 }

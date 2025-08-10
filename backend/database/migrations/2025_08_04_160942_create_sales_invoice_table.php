@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -14,6 +15,12 @@ return new class extends Migration
             $table->date('tanggal')->default(DB::raw('CURRENT_DATE'));
             $table->unsignedBigInteger('id_pelanggan');
             $table->unsignedBigInteger('id_do');
+
+            // Field tambahan
+            $table->enum('jenis_pembayaran', ['tunai', 'piutang'])->default('tunai');
+            $table->integer('termin')->nullable(); // dalam hari
+            $table->date('tanggal_jatuh_tempo')->nullable();
+
             $table->enum('status', ['draft', 'approved', 'paid'])->default('draft');
             $table->decimal('total', 15, 2)->default(0);
             $table->timestamps();
