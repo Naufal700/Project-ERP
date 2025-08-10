@@ -1,4 +1,4 @@
-<nb-card class="jurnal-form-card" style="width: 1500px; max-width: 200vw;">
+<nb-card class="jurnal-form-card" style="width: 1000px; max-width: 200vw;">
   <nb-card-header>Tambah Jurnal</nb-card-header>
 
   <nb-card-body>
@@ -32,10 +32,10 @@
         </nb-option>
       </nb-select>
 
-      <input class="jurnal-form-card" style="width: 300px; max-width: 90vw;" nbInput type="number" min="0"
+      <input class="jurnal-form-card" style="width: 200px; max-width: 90vw;" nbInput type="number" min="0"
         placeholder="Debit" [(ngModel)]="inputDebit" (input)="onInputDebit()" />
 
-      <input class="jurnal-form-card" style="width: 300px; max-width: 90vw;" nbInput type="number" min="0"
+      <input class="jurnal-form-card" style="width: 200px; max-width: 90vw;" nbInput type="number" min="0"
         placeholder="Kredit" [(ngModel)]="inputKredit" (input)="onInputKredit()" />
 
       <button nbButton status="info" (click)="addEntry()" [disabled]="!canAddEntry()">

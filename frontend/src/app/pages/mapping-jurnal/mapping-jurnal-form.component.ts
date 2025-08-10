@@ -17,18 +17,26 @@ export class MappingJurnalFormComponent implements OnInit {
     nama_transaksi: "",
     kode_akun_debit: "",
     kode_akun_kredit: "",
+    bank_id: null, // opsional
+    cara_bayar_id: null, // opsional
     keterangan: "",
   };
 
   moduleList = MODULE_MAPPING;
   coaList: any[] = [];
+  bankList: any[] = [];
+  caraBayarList: any[] = [];
 
-  // Mapping kode & nama transaksi berdasarkan modul
   transactionMap: any = {
     "sales/quotation": { code: "SQ", name: "Penawaran Penjualan" },
     "sales/order": { code: "SO", name: "Pesanan Penjualan" },
     "sales/delivery": { code: "SD", name: "Pengiriman Penjualan" },
-    "sales/invoice": { code: "SI", name: "Faktur Penjualan" },
+    "sales/cash": { code: "Sales-Cash", name: "Penjualan Tunai" },
+    "sales/disc-cash": { code: "Disc-cash", name: "Diskon Penj. Tunai" },
+    "sales/ppn-cash": { code: "PPN-cash", name: "PPN Penj. Tunai" },
+    "sales/ar": { code: "Sales-AR", name: "Penjualan Tunai" },
+    "sales/disc-ar": { code: "Disc-AR", name: "Diskon Penj. AR" },
+    "sales/ppn-ar": { code: "PPN-AR", name: "PPN Penj.AR" },
     "sales/payment": { code: "SP", name: "Pembayaran Penjualan" },
     "sales/return": { code: "SR", name: "Retur Penjualan" },
 
@@ -61,7 +69,6 @@ export class MappingJurnalFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
-      // Mode edit: isi data lama
       this.formData = { ...this.data };
 
       if (this.data.akun_debit) {
@@ -72,17 +79,17 @@ export class MappingJurnalFormComponent implements OnInit {
       }
     }
 
-    // Load daftar akun COA
+    // Load COA, Bank, Cara Bayar
     this.mappingService.getCOA().subscribe((res) => (this.coaList = res));
+    this.mappingService.getBank().subscribe((res) => (this.bankList = res));
+    this.mappingService
+      .getCaraBayar()
+      .subscribe((res) => (this.caraBayarList = res));
   }
 
-  /**
-   * Auto generate kode transaksi & nama transaksi saat modul dipilih
-   */
   onModuleChange(selectedModule: string) {
     this.formData.modul = selectedModule;
 
-    // Hanya auto-set jika tambah data baru
     if (!this.data) {
       const mapping = this.transactionMap[selectedModule];
       if (mapping) {
@@ -102,6 +109,8 @@ export class MappingJurnalFormComponent implements OnInit {
       nama_transaksi: this.formData.nama_transaksi,
       kode_akun_debit: this.formData.kode_akun_debit,
       kode_akun_kredit: this.formData.kode_akun_kredit,
+      bank_id: this.formData.bank_id || null, // ✅ ganti nama
+      cara_bayar_id: this.formData.cara_bayar_id || null, // ✅ ganti nama
       keterangan: this.formData.keterangan,
     };
 

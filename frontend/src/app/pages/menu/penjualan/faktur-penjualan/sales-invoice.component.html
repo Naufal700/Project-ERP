@@ -56,7 +56,7 @@
                 <td>{{ do.tanggal | date:'dd/MM/yyyy' }}</td>
                 <td>{{ getTotalDO(do) | currency:'IDR':'symbol':'1.0-0' }}</td>
                 <td class="text-center">
-                  <button nbButton size="tiny" status="success" (click)="createInvoice(do.id)">
+                  <button nbButton size="tiny" status="success" (click)="openCreateInvoiceDialog(do.id)">
                     Buat Faktur
                   </button>
                 </td>
@@ -104,6 +104,7 @@
                 <th>DO</th>
                 <th>Pelanggan</th>
                 <th>Status</th>
+                <th>Pembayaran</th> <!-- Kolom baru -->
                 <th>Tanggal</th>
                 <th>Harga Bruto</th>
                 <th>Diskon</th>
@@ -112,6 +113,8 @@
                 <th class="text-center">Aksi</th>
               </tr>
             </thead>
+
+            <!-- Di bagian tbody -->
             <tbody>
               <tr
                 *ngFor="let inv of getFilteredInvoices() | slice: (currentPage - 1) * itemsPerPage: currentPage * itemsPerPage; let i = index">
@@ -121,9 +124,20 @@
                 <td>{{ inv.pelanggan?.nama_pelanggan }}</td>
                 <td>
                   <span [ngClass]="{
-          'text-warning': inv.status === 'draft',
-          'text-success': inv.status === 'approved'
-        }">{{ inv.status | titlecase }}</span>
+        'text-warning': inv.status === 'draft',
+        'text-success': inv.status === 'approved'
+      }">{{ inv.status | titlecase }}</span>
+                </td>
+                <td>
+                  <span [ngClass]="{
+        'text-primary': inv.jenis_pembayaran === 'piutang',
+        'text-success': inv.jenis_pembayaran === 'tunai'
+      }">
+                    {{ inv.jenis_pembayaran === 'piutang' ? 'Piutang' : 'Tunai' }}
+                    <span *ngIf="inv.jenis_pembayaran === 'piutang' && inv.termin">
+                      ({{ inv.termin }} hari)
+                    </span>
+                  </span>
                 </td>
                 <td>{{ inv.tanggal | date:'dd/MM/yyyy' }}</td>
                 <td>{{ inv.bruto | currency:'IDR':'symbol':'1.0-0' }}</td>
@@ -162,7 +176,7 @@
             <!-- FOOTER TOTAL -->
             <tfoot *ngIf="getFilteredInvoices().length > 0">
               <tr>
-                <td colspan="6" class="text-end"><strong>Total:</strong></td>
+                <td colspan="7" class="text-end"><strong>Total:</strong></td>
                 <td>{{ getInvoiceTotals().bruto | currency:'IDR':'symbol':'1.0-0' }}</td>
                 <td>{{ getInvoiceTotals().diskon | currency:'IDR':'symbol':'1.0-0' }}</td>
                 <td>{{ getInvoiceTotals().ppn | currency:'IDR':'symbol':'1.0-0' }}</td>

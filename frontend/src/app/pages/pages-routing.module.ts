@@ -24,9 +24,9 @@ import { InventorySettingsComponent } from "./menu/inventory/setting/inventory-s
 import { InventoryOpeningComponent } from "./menu/inventory/saldo-awal/inventory-opening.component";
 import { InventoryReportComponent } from "./menu/inventory/laporan-persediaan/inventory-report.component";
 import { JurnalUmumComponent } from "./menu/keuangan/jurnal-umum/jurnal-umum.component";
-import { SalesPaymentComponent } from "./menu/penjualan/pembayaran-tunai/sales-payment.component";
 import { BankComponent } from "./master/bank/bank.component";
 import { CaraBayarComponent } from "./master/cara-bayar/cara-bayar.component";
+import { SalesTunaiListComponent } from "./menu/penjualan/sales-tunai/sales-tunai-list.component";
 
 const routes: Routes = [
   {
@@ -198,11 +198,11 @@ const routes: Routes = [
         ],
       },
       {
-        path: "menu/penjualan/pembayaran-tunai",
+        path: "menu/penjualan/sales-tunai",
         children: [
           {
             path: "",
-            component: SalesPaymentComponent, // Daftar Gudang
+            component: SalesTunaiListComponent, // Daftar Gudang
           },
         ],
       },

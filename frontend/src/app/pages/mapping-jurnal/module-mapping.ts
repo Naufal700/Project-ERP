@@ -1,9 +1,12 @@
 export const MODULE_MAPPING = [
-  { label: "Penjualan - Penawaran", value: "sales/quotation" },
-  { label: "Penjualan - Pesanan", value: "sales/order" },
   { label: "Penjualan - Pengiriman", value: "sales/delivery" },
-  { label: "Penjualan - Faktur", value: "sales/invoice" },
-  { label: "Penjualan - Pembayaran", value: "sales/payment" },
+  { label: "Penjualan - Tunai", value: "sales/cash" },
+  { label: "Diskon - Tunai", value: "sales/disc-cash" },
+  { label: "PPN - Tunai", value: "sales/ppn-cash" },
+  { label: "Penjualan - Piutang", value: "sales/ar" },
+  { label: "Diskon - Piutang", value: "sales/disc-ar" },
+  { label: "PPN - Piutang", value: "sales/ppn-ar" },
+  { label: "Pembayaran - Tunai", value: "sales/payment" },
   { label: "Penjualan - Retur", value: "sales/return" },
   { label: "Penjualan - Piutang", value: "sales/receivable" },
 

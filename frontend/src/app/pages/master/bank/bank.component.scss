@@ -1,35 +1,125 @@
-.table {
+:host {
+    display: block;
+}
 
-    th,
-    td {
-        vertical-align: middle;
+nb-card {
+    border-radius: 0.5rem;
+
+    nb-card-header.header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f7f9fc;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #edf1f7;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        .title {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+
+            button {
+                font-size: 0.75rem;
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+        }
     }
-}
 
-nb-card-header {
-    .title {
-        font-weight: bold;
-    }
-}
+    nb-card-body {
+        padding: 1.25rem;
 
-nb-card-body {
-    nb-form-field {
-        margin-bottom: 1rem;
-        display: block;
-    }
-}
+        .search-box {
+            nb-form-field {
+                flex: 1;
+            }
+        }
 
-.btn-group {
-    display: flex;
-    gap: 4px;
-}
+        .table-responsive {
+            overflow-x: auto;
+        }
 
-ul {
-    margin: 0;
-    padding-left: 1rem;
+        table {
+            width: 100%;
+            font-size: 0.875rem;
+            border-collapse: collapse;
 
-    li {
-        list-style: disc;
-        font-size: 0.85rem;
+            thead {
+                background-color: #f1f1f1;
+
+                th {
+                    font-weight: 600;
+                    padding: 0.75rem;
+                    border: 1px solid #e4e9f2;
+                    white-space: nowrap;
+                    user-select: none;
+                }
+
+                .cursor-pointer {
+                    cursor: pointer;
+                }
+            }
+
+            tbody {
+                tr {
+                    &:hover {
+                        background-color: #f9fafb;
+                    }
+
+                    td {
+                        padding: 0.75rem;
+                        border: 1px solid #edf1f7;
+                        vertical-align: middle;
+                    }
+
+                    .text-center {
+                        text-align: center;
+                    }
+
+                    .text-muted {
+                        color: #8f9bb3;
+                    }
+                }
+            }
+        }
+
+        .pagination-wrapper {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+
+            .pagination {
+                margin: 0;
+
+                .page-item {
+                    &.active .page-link {
+                        background-color: #3366ff;
+                        color: white;
+                    }
+
+                    .page-link {
+                        padding: 0.25rem 0.5rem;
+                        cursor: pointer;
+                        user-select: none;
+                    }
+
+                    &.disabled .page-link {
+                        pointer-events: none;
+                        opacity: 0.6;
+                    }
+                }
+            }
+        }
     }
 }

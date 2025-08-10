@@ -52,18 +52,39 @@
           <input nbInput fullWidth placeholder="Opsional" [(ngModel)]="formData.keterangan" name="keterangan" />
         </div>
       </div>
+
+      <!-- Baris ketiga: Bank dan Cara Bayar -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cara Bayar</label>
+          <nb-select fullWidth [(selected)]="formData.cara_bayar_id" placeholder="Pilih Cara Bayar">
+            <nb-option *ngFor="let cb of caraBayarList" [value]="cb.id">
+              {{ cb.nama_cara_bayar }}
+            </nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label>Bank</label>
+          <nb-select fullWidth [(selected)]="formData.bank_id" placeholder="Pilih Bank">
+            <nb-option *ngFor="let b of bankList" [value]="b.id">
+              {{ b.nama_bank }}
+            </nb-option>
+          </nb-select>
+        </div>
+      </div>
     </form>
   </nb-card-body>
 
   <nb-card-footer class="d-flex justify-content-end gap-2">
     <button nbButton status="basic" (click)="cancel()">Batal</button>
     <button nbButton status="primary" (click)="save()" [disabled]="
-      !formData.modul ||
-      !formData.kode_transaksi ||
-      !formData.nama_transaksi ||
-      !formData.kode_akun_debit ||
-      !formData.kode_akun_kredit
-    ">
+        !formData.modul ||
+        !formData.kode_transaksi ||
+        !formData.nama_transaksi ||
+        !formData.kode_akun_debit ||
+        !formData.kode_akun_kredit
+      ">
       Simpan
     </button>
   </nb-card-footer>

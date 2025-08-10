@@ -1,32 +1,30 @@
-import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
-@Injectable({
-  providedIn: "root",
-})
+@Injectable({ providedIn: "root" })
 export class BankService {
   private baseUrl = "/api/bank";
 
   constructor(private http: HttpClient) {}
 
-  getBanks(): Observable<any> {
-    return this.http.get(`${this.baseUrl}`);
+  getAll(): Observable<any> {
+    return this.http.get(this.baseUrl);
   }
 
-  getCaraBayar(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/cara-bayar`);
+  create(data: any): Observable<any> {
+    return this.http.post(this.baseUrl, data);
   }
 
-  createBank(payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}`, payload);
+  update(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${id}`, data);
   }
 
-  updateBank(id: number, payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${id}`, payload);
-  }
-
-  deleteBank(id: number): Observable<any> {
+  delete(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`);
+  }
+
+  getAkunKasBank(): Observable<any> {
+    return this.http.get("/api/coa/kas-bank");
   }
 }

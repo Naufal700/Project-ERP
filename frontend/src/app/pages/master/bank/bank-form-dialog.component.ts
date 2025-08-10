@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NbDialogRef, NbToastrService } from "@nebular/theme";
 import { BankService } from "./bank.service";
 
@@ -9,56 +10,56 @@ import { BankService } from "./bank.service";
 })
 export class BankFormDialogComponent implements OnInit {
   @Input() bank: any;
-  formData: any = {
-    kode_bank: "",
-    nama_bank: "",
-    no_rekening: "",
-    atas_nama: "",
-    cara_bayar_ids: [],
-  };
-  caraBayarList: any[] = [];
+  form: FormGroup;
+  akunList: any[] = [];
 
   constructor(
+    private fb: FormBuilder,
     private dialogRef: NbDialogRef<BankFormDialogComponent>,
     private bankService: BankService,
-    private toastr: NbToastrService
-  ) {}
-
-  ngOnInit(): void {
-    if (this.bank) {
-      this.formData = {
-        kode_bank: this.bank.kode_bank,
-        nama_bank: this.bank.nama_bank,
-        no_rekening: this.bank.no_rekening,
-        atas_nama: this.bank.atas_nama,
-        cara_bayar_ids: this.bank.cara_bayar?.map((cb: any) => cb.id) || [],
-      };
-    }
-
-    this.bankService.getCaraBayar().subscribe({
-      next: (res) => (this.caraBayarList = res),
-      error: () => this.toastr.danger("Gagal memuat cara bayar", "Error"),
+    private toastrService: NbToastrService
+  ) {
+    this.form = this.fb.group({
+      nama_bank: ["", Validators.required],
+      no_rekening: [""],
+      nama_pemilik: [""],
+      kode_akun: ["", Validators.required],
     });
   }
 
-  save() {
+  ngOnInit(): void {
+    this.loadCOA();
+    if (this.bank) {
+      this.form.patchValue(this.bank);
+    }
+  }
+
+  loadCOA(): void {
+    this.bankService.getAkunKasBank().subscribe({
+      next: (data) => (this.akunList = data),
+      error: () => this.toastrService.danger("Gagal mengambil data akun"),
+    });
+  }
+
+  submit(): void {
+    if (this.form.invalid) return;
+
+    const data = this.form.value;
+
     const request = this.bank
-      ? this.bankService.updateBank(this.bank.id, this.formData)
-      : this.bankService.createBank(this.formData);
+      ? this.bankService.update(this.bank.id, data)
+      : this.bankService.create(data);
 
     request.subscribe({
       next: () => {
-        this.toastr.success(
-          this.bank ? "Bank berhasil diperbarui" : "Bank berhasil ditambahkan",
-          "Sukses"
-        );
-        this.dialogRef.close(true);
+        this.toastrService.success("Data berhasil disimpan");
+        this.dialogRef.close("saved");
       },
-      error: () => this.toastr.danger("Gagal menyimpan data bank", "Error"),
+      error: () => this.toastrService.danger("Gagal menyimpan data"),
     });
   }
 
-  close() {
+  cancel(): void {
     this.dialogRef.close();
   }
 }

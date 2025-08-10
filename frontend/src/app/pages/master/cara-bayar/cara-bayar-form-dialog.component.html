@@ -1,22 +1,40 @@
 <nb-card>
-  <nb-card-header>
-    <h5>{{ caraBayar ? 'Edit Cara Bayar' : 'Tambah Cara Bayar' }}</h5>
-  </nb-card-header>
+  <nb-card-header>{{ data ? 'Edit' : 'Tambah' }} Cara Bayar</nb-card-header>
 
   <nb-card-body>
-    <nb-form-field>
-      <label>Kode Cara Bayar</label>
-      <input nbInput placeholder="Kode Cara Bayar" [(ngModel)]="formData.kode_cara_bayar" [readonly]="caraBayar" />
-    </nb-form-field>
+    <form [formGroup]="form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nama Cara Bayar</label>
+          <input nbInput fullWidth formControlName="nama_cara_bayar" placeholder="Contoh: Transfer" />
+        </div>
 
-    <nb-form-field>
-      <label>Nama Cara Bayar</label>
-      <input nbInput placeholder="Nama Cara Bayar" [(ngModel)]="formData.nama_cara_bayar" />
-    </nb-form-field>
+        <div class="form-group">
+          <label>Tipe</label>
+          <nb-select fullWidth formControlName="tipe" placeholder="Pilih tipe">
+            <nb-option value="kas">Kas</nb-option>
+            <nb-option value="bank">Bank</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group">
+          <label>Akun CoA</label>
+          <nb-select fullWidth formControlName="kode_akun" placeholder="Pilih akun">
+            <nb-option *ngFor="let akun of coaOptions" [value]="akun.kode_akun">
+              {{ akun.kode_akun }} - {{ akun.nama_akun }}
+            </nb-option>
+          </nb-select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <nb-checkbox formControlName="is_default">Jadikan Default</nb-checkbox>
+        </div>
+      </div>
+    </form>
   </nb-card-body>
 
-  <nb-card-footer class="d-flex justify-content-end">
-    <button nbButton status="basic" (click)="close()">Batal</button>
-    <button nbButton status="primary" (click)="save()">Simpan</button>
+  <nb-card-footer>
+    <button nbButton status="primary" (click)="submit()" [disabled]="form.invalid">Simpan</button>
+    <button nbButton status="danger" (click)="close()">Batal</button>
   </nb-card-footer>
 </nb-card>

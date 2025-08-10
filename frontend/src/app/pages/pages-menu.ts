@@ -52,7 +52,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
       },
       {
         title: "Pembayaran Tunai",
-        link: "/pages/menu/penjualan/pembayaran-tunai",
+        link: "/pages/menu/penjualan/sales-tunai",
       },
       { title: "Retur", link: "/pages/sales/return" },
       { title: "Laporan Penjualan", link: "/pages/sales/report" },

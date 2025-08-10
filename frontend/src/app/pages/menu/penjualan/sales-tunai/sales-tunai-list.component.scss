@@ -1,0 +1,132 @@
+// sales-tunai-list.component.scss
+
+:host {
+    display: block;
+    padding: 1rem;
+
+    .title {
+        font-weight: 600;
+        font-size: 1.25rem;
+    }
+
+    .action-buttons {
+        button {
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+
+    .filter-section {
+        nb-form-field {
+            min-width: 180px;
+            max-width: 250px;
+
+            input[nbInput] {
+                min-width: 100%;
+            }
+        }
+
+        .flex-grow-1 {
+            min-width: 250px;
+        }
+    }
+
+    .invoice-link {
+        cursor: pointer;
+        color: #3366ff;
+        text-decoration: underline;
+
+        &:hover {
+            color: #254eda;
+        }
+    }
+
+    .table-responsive {
+        max-height: 480px;
+        overflow-y: auto;
+
+        table {
+            min-width: 800px;
+            font-size: 0.875rem;
+
+            thead {
+                background-color: #f5f6f7;
+
+                th {
+                    font-weight: 600;
+                    vertical-align: middle;
+                    white-space: nowrap;
+                    user-select: none;
+                }
+            }
+
+            tbody {
+                tr {
+                    transition: background-color 0.2s ease-in-out;
+
+                    &:hover {
+                        background-color: #f0f4ff;
+                    }
+                }
+
+                td {
+                    vertical-align: middle;
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+
+    .text-success {
+        color: #28a745 !important;
+        font-weight: 600;
+    }
+
+    .text-warning {
+        color: #ffc107 !important;
+        font-weight: 600;
+    }
+
+    .pagination-wrapper {
+        margin-top: 1rem;
+
+        nb-select {
+            width: 120px;
+        }
+
+        nav {
+            ul.pagination {
+                li.page-item {
+                    button.page-link {
+                        min-width: 36px;
+                        padding: 0.25rem 0.5rem;
+                        font-size: 0.875rem;
+                        border-radius: 0.25rem;
+
+                        &:hover:not(:disabled) {
+                            background-color: #e7f1ff;
+                        }
+                    }
+
+                    &.active button.page-link {
+                        background-color: #3366ff;
+                        color: white;
+                        font-weight: 600;
+                    }
+
+                    &.disabled button.page-link {
+                        cursor: not-allowed;
+                        opacity: 0.5;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Spacing for action buttons inside table */
+    .ml-1 {
+        margin-left: 0.25rem;
+    }
+}

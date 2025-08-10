@@ -41,11 +41,27 @@ export class MappingJurnalComponent implements OnInit {
   }
 
   applyFilter() {
-    this.filteredMappingList = this.mappingList.filter((m) =>
-      Object.values(m).some((val) =>
-        String(val).toLowerCase().includes(this.searchTerm.toLowerCase())
-      )
-    );
+    const term = this.searchTerm.toLowerCase();
+
+    this.filteredMappingList = this.mappingList.filter((m) => {
+      return (
+        (m.modul && m.modul.toLowerCase().includes(term)) ||
+        (m.kode_transaksi && m.kode_transaksi.toLowerCase().includes(term)) ||
+        (m.nama_transaksi && m.nama_transaksi.toLowerCase().includes(term)) ||
+        (m.akun_debit &&
+          `${m.akun_debit.kode_akun} - ${m.akun_debit.nama_akun}`
+            .toLowerCase()
+            .includes(term)) ||
+        (m.akun_kredit &&
+          `${m.akun_kredit.kode_akun} - ${m.akun_kredit.nama_akun}`
+            .toLowerCase()
+            .includes(term)) ||
+        (m.cara_bayar &&
+          m.cara_bayar.nama_cara_bayar.toLowerCase().includes(term)) ||
+        (m.bank && m.bank.nama_bank.toLowerCase().includes(term))
+      );
+    });
+
     this.calculatePagination();
   }
 

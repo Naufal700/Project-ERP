@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NbDialogService, NbToastrService } from "@nebular/theme";
 import { SalesInvoiceService } from "./sales-invoice.service";
 import { InvoiceDetailDialogComponent } from "./invoice-detail-dialog.component";
+import { SalesInvoiceCreateDialogComponent } from "./sales-invoice-create-dialog.component";
 
 @Component({
   selector: "app-sales-invoice",
@@ -74,15 +75,22 @@ export class SalesInvoiceComponent implements OnInit {
 
   /** Buat faktur dari DO (langsung verifikasi) */
   createInvoice(doId: number) {
-    this.invoiceService.createInvoice({ id_do: doId }).subscribe({
-      next: () => {
-        this.toastr.success("Faktur berhasil dibuat dari DO");
-        this.refreshData();
-        this.activeTab = "invoice-list"; // langsung pindah ke daftar faktur
-      },
-      error: (err) =>
-        this.toastr.danger(err.error?.message || "Gagal membuat faktur"),
-    });
+    this.invoiceService
+      .createInvoice({
+        id_do: doId,
+        jenis_pembayaran: "tunai", // atau "piutang"
+        termin: 0, // opsional
+        tanggal_jatuh_tempo: "", // opsional
+      })
+      .subscribe({
+        next: () => {
+          this.toastr.success("Faktur berhasil dibuat dari DO");
+          this.refreshData();
+          this.activeTab = "invoice-list"; // langsung pindah ke daftar faktur
+        },
+        error: (err) =>
+          this.toastr.danger(err.error?.message || "Gagal membuat faktur"),
+      });
   }
 
   /** Approve faktur */
@@ -179,5 +187,24 @@ export class SalesInvoiceComponent implements OnInit {
       ppn: filtered.reduce((sum, inv) => sum + (inv.ppn || 0), 0),
       netto: filtered.reduce((sum, inv) => sum + (inv.netto || 0), 0),
     };
+  }
+  openCreateInvoiceDialog(doId: number) {
+    this.dialogService
+      .open(SalesInvoiceCreateDialogComponent, {
+        context: { id_do: doId },
+      })
+      .onClose.subscribe((result) => {
+        if (result) {
+          this.invoiceService.createInvoice(result).subscribe({
+            next: () => {
+              this.toastr.success("Faktur berhasil dibuat dari DO");
+              this.refreshData();
+              this.activeTab = "invoice-list"; // langsung pindah ke daftar faktur
+            },
+            error: (err) =>
+              this.toastr.danger(err.error?.message || "Gagal membuat faktur"),
+          });
+        }
+      });
   }
 }

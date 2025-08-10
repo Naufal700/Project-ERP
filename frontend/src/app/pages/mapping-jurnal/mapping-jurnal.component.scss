@@ -1,37 +1,71 @@
-nb-card {
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
     .title {
         font-weight: 600;
-        font-size: 1.1rem;
+        margin: 0;
     }
 
-    nb-card-header {
-        padding: 0.75rem 1rem;
-        background: #f8f9fc;
-        border-bottom: 1px solid #e9ecef;
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+}
 
-        .d-flex {
-            gap: 0.75rem; // jarak antar tombol refresh dan tambah
-        }
+.search-box {
+    max-width: 350px;
+}
+
+.mapping-table {
+    th {
+        background-color: var(--nb-theme-primary-color, #f7f9fc);
+        color: var(--nb-theme-text-color, #222b45);
+        font-weight: 600;
+        text-align: center;
+        white-space: nowrap;
     }
 
-    nb-card-body {
-        padding: 1rem;
+    td {
+        vertical-align: middle;
     }
 
-    table {
-        th {
-            background-color: #f8f9fc;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
+    .text-center {
+        text-align: center;
+    }
+}
 
-        td {
-            font-size: 0.85rem;
-            vertical-align: middle;
-        }
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 
-        tr:hover {
-            background-color: #f1f5ff;
-        }
+    nb-select {
+        min-width: 120px;
+    }
+
+    .pagination {
+        margin: 0;
+    }
+
+    .page-item.active .page-link {
+        background-color: var(--nb-theme-primary-color);
+        border-color: var(--nb-theme-primary-color);
+        color: #fff;
+    }
+
+    .page-item.disabled .page-link {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+    .page-link {
+        cursor: pointer;
+        color: var(--nb-theme-text-color);
     }
 }

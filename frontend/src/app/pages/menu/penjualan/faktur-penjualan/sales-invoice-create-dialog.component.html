@@ -1,0 +1,26 @@
+<nb-card>
+  <nb-card-header>Buat Faktur dari DO</nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="mb-3">
+        <label>Metode Pembayaran</label>
+        <nb-select formControlName="jenis_pembayaran" (selectedChange)="onMetodeChange($event)">
+          <nb-option value="tunai">Tunai</nb-option>
+          <nb-option value="piutang">Piutang</nb-option>
+        </nb-select>
+      </div>
+
+      <div class="mb-3" *ngIf="form.get('jenis_pembayaran').value === 'piutang'">
+        <label>Termin (hari)</label>
+        <input nbInput type="number" formControlName="termin" min="0" />
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button nbButton status="primary" [disabled]="form.invalid || loading" type="submit">
+          Simpan
+        </button>
+        <button nbButton status="danger" (click)="dismiss()" type="button">Batal</button>
+      </div>
+    </form>
+  </nb-card-body>
+</nb-card>

@@ -27,7 +27,15 @@ export class SalesInvoiceService {
   /**
    * Buat faktur baru dari DO
    */
-  createInvoice(data: { id_do: number }): Observable<any> {
+  /**
+   * Buat faktur baru dari DO
+   */
+  createInvoice(data: {
+    id_do: number;
+    jenis_pembayaran: "tunai" | "piutang";
+    termin?: number;
+    tanggal_jatuh_tempo?: string;
+  }): Observable<any> {
     return this.http.post(`${this.baseUrl}`, data);
   }
 

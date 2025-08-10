@@ -1,25 +1,48 @@
-.table {
-
-    th,
-    td {
-        vertical-align: middle;
-    }
-}
-
-nb-card-header {
-    .title {
-        font-weight: bold;
-    }
-}
-
-nb-card-body {
-    nb-form-field {
-        margin-bottom: 1rem;
-        display: block;
-    }
-}
-
-.btn-group {
+.header-container {
     display: flex;
-    gap: 4px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .title {
+        margin: 0;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+}
+
+.search-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table thead th {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.page-link {
+    cursor: pointer;
 }
