@@ -70,6 +70,8 @@ import { CaraBayarFormDialogComponent } from "./master/cara-bayar/cara-bayar-for
 import { SalesInvoiceCreateDialogComponent } from "./menu/penjualan/faktur-penjualan/sales-invoice-create-dialog.component";
 import { SalesTunaiListComponent } from "./menu/penjualan/sales-tunai/sales-tunai-list.component";
 import { SalesTunaiFormDialogComponent } from "./menu/penjualan/sales-tunai/sales-tunai-form-dialog.component";
+import { PiutangComponent } from "./menu/piutang/daftar-piutang/piutang.component";
+import { CollectingInvoiceDialogComponent } from "./menu/piutang/daftar-piutang/collecting-invoice-dialog.component";
 
 // import { PajakComponent } from "./master/pajak/pajak.component";
 // import { PajakFormComponent } from "./master/pajak/pajak-form.component";
@@ -137,6 +139,8 @@ import { SalesTunaiFormDialogComponent } from "./menu/penjualan/sales-tunai/sale
     SalesTunaiListComponent,
     SalesTunaiFormDialogComponent,
     SalesInvoiceCreateDialogComponent,
+    PiutangComponent,
+    CollectingInvoiceDialogComponent,
     BankComponent,
     BankFormDialogComponent,
     CaraBayarComponent,

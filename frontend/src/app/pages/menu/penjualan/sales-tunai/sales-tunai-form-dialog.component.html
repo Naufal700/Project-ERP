@@ -1,16 +1,31 @@
-<nb-card>
-  <nb-card-header>Bayar Faktur: {{ invoice.nomor_invoice }}</nb-card-header>
+<nb-card class="bayar-faktur-card">
+  <nb-card-header>
+    Bayar Faktur: {{ invoice.nomor_invoice }}
+  </nb-card-header>
   <nb-card-body>
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <div class="form-group">
-        <label for="tanggal_bayar">Tanggal Bayar</label>
-        <input nbInput id="tanggal_bayar" type="date" formControlName="tanggal_bayar" class="form-control" />
+    <form [formGroup]="form" (ngSubmit)="submit()" class="bayar-faktur-form">
+
+      <!-- Total Tagihan -->
+      <div class="form-group total-tagihan" (click)="enableJumlahBayar()">
+        <label>Total Tagihan</label>
+        <div class="tagihan-box">
+          {{ invoice.total | currency:'IDR':'symbol':'1.0-0':'id' }}
+        </div>
       </div>
-      <div class="form-group">
+
+      <div class="form-group" *ngIf="showJumlahBayar">
         <label for="jumlah_bayar">Jumlah Bayar</label>
         <input nbInput id="jumlah_bayar" type="text" formControlName="jumlah_bayar" class="form-control"
           (input)="onJumlahBayarInput($event)" />
       </div>
+
+      <!-- Tanggal Bayar -->
+      <div class="form-group">
+        <label for="tanggal_bayar">Tanggal Bayar</label>
+        <input nbInput id="tanggal_bayar" type="date" formControlName="tanggal_bayar" class="form-control" />
+      </div>
+
+      <!-- Bank -->
       <div class="form-group" *ngIf="form.get('metode_bayar')?.value === 'transfer'">
         <label for="bank_id">Bank</label>
         <select nbSelect formControlName="bank_id" id="bank_id" class="form-control">
@@ -18,6 +33,8 @@
           <option *ngFor="let bank of banks" [value]="bank.id">{{ bank.nama_bank }}</option>
         </select>
       </div>
+
+      <!-- Cara Bayar -->
       <div class="form-group">
         <label for="cara_bayar_id">Cara Bayar</label>
         <select nbSelect formControlName="cara_bayar_id" id="cara_bayar_id" class="form-control">
@@ -25,12 +42,18 @@
           <option *ngFor="let cara of caraBayarList" [value]="cara.id">{{ cara.nama_cara_bayar }}</option>
         </select>
       </div>
+
+      <!-- Keterangan -->
       <div class="form-group">
         <label for="keterangan">Keterangan</label>
         <textarea nbInput id="keterangan" formControlName="keterangan" class="form-control"></textarea>
       </div>
-      <button nbButton status="primary" type="submit" [disabled]="form.invalid">Simpan</button>
-      <button nbButton status="danger" type="button" (click)="cancel()">Batal</button>
+
+      <!-- Tombol -->
+      <div class="form-actions">
+        <button nbButton status="primary" type="submit" [disabled]="form.invalid">Simpan</button>
+        <button nbButton status="danger" type="button" (click)="cancel()">Batal</button>
+      </div>
     </form>
   </nb-card-body>
 </nb-card>

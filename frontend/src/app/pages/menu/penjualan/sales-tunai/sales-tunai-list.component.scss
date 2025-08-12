@@ -1,132 +1,107 @@
-// sales-tunai-list.component.scss
-
 :host {
     display: block;
-    padding: 1rem;
 
-    .title {
-        font-weight: 600;
-        font-size: 1.25rem;
-    }
+    nb-card {
+        .title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+        }
 
-    .action-buttons {
-        button {
-            min-width: 120px;
+        .action-buttons {
+            button {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+        }
+
+        .filter-section {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-    }
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 0;
 
-    .filter-section {
-        nb-form-field {
-            min-width: 180px;
-            max-width: 250px;
+            nb-form-field {
+                min-width: 200px;
+                flex: 1 1 auto;
 
-            input[nbInput] {
-                min-width: 100%;
+                input[nbInput] {
+                    height: 36px;
+                    font-size: 0.9rem;
+                }
+            }
+
+            // Biar field tanggal lebih kecil dari search
+            nb-form-field:nth-child(2),
+            nb-form-field:nth-child(3) {
+                min-width: 160px;
+                flex: 0 0 auto;
             }
         }
 
-        .flex-grow-1 {
-            min-width: 250px;
-        }
-    }
-
-    .invoice-link {
-        cursor: pointer;
-        color: #3366ff;
-        text-decoration: underline;
-
-        &:hover {
-            color: #254eda;
-        }
-    }
-
-    .table-responsive {
-        max-height: 480px;
-        overflow-y: auto;
-
-        table {
-            min-width: 800px;
-            font-size: 0.875rem;
-
-            thead {
-                background-color: #f5f6f7;
-
-                th {
-                    font-weight: 600;
-                    vertical-align: middle;
+        .table-responsive {
+            table {
+                thead th {
+                    background: #f7f9fc;
                     white-space: nowrap;
-                    user-select: none;
-                }
-            }
-
-            tbody {
-                tr {
-                    transition: background-color 0.2s ease-in-out;
-
-                    &:hover {
-                        background-color: #f0f4ff;
-                    }
-                }
-
-                td {
                     vertical-align: middle;
-                    white-space: nowrap;
                 }
-            }
-        }
-    }
 
-    .text-success {
-        color: #28a745 !important;
-        font-weight: 600;
-    }
+                tbody td {
+                    vertical-align: middle;
 
-    .text-warning {
-        color: #ffc107 !important;
-        font-weight: 600;
-    }
+                    .invoice-link {
+                        color: var(--link-color, #3366ff);
+                        cursor: pointer;
 
-    .pagination-wrapper {
-        margin-top: 1rem;
-
-        nb-select {
-            width: 120px;
-        }
-
-        nav {
-            ul.pagination {
-                li.page-item {
-                    button.page-link {
-                        min-width: 36px;
-                        padding: 0.25rem 0.5rem;
-                        font-size: 0.875rem;
-                        border-radius: 0.25rem;
-
-                        &:hover:not(:disabled) {
-                            background-color: #e7f1ff;
+                        &:hover {
+                            text-decoration: underline;
                         }
                     }
+                }
+            }
+        }
 
-                    &.active button.page-link {
-                        background-color: #3366ff;
-                        color: white;
-                        font-weight: 600;
-                    }
+        .pagination-wrapper {
+            gap: 10px;
 
-                    &.disabled button.page-link {
-                        cursor: not-allowed;
-                        opacity: 0.5;
+            nb-select {
+                min-width: 110px;
+            }
+
+            .pagination {
+                margin-bottom: 0;
+
+                .page-item {
+                    .page-link {
+                        padding: 4px 8px;
                     }
                 }
             }
         }
     }
+}
 
-    /* Spacing for action buttons inside table */
-    .ml-1 {
-        margin-left: 0.25rem;
+// Responsive untuk layar kecil
+@media (max-width: 576px) {
+    :host {
+        nb-card {
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+
+                nb-form-field {
+                    min-width: 100% !important;
+                }
+            }
+
+            .pagination-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+        }
     }
 }

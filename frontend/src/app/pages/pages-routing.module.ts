@@ -27,6 +27,7 @@ import { JurnalUmumComponent } from "./menu/keuangan/jurnal-umum/jurnal-umum.com
 import { BankComponent } from "./master/bank/bank.component";
 import { CaraBayarComponent } from "./master/cara-bayar/cara-bayar.component";
 import { SalesTunaiListComponent } from "./menu/penjualan/sales-tunai/sales-tunai-list.component";
+import { PiutangComponent } from "./menu/piutang/daftar-piutang/piutang.component";
 
 const routes: Routes = [
   {
@@ -203,6 +204,16 @@ const routes: Routes = [
           {
             path: "",
             component: SalesTunaiListComponent, // Daftar Gudang
+          },
+        ],
+      },
+      // Modul Piutang
+      {
+        path: "menu/piutang/daftar-piutang",
+        children: [
+          {
+            path: "",
+            component: PiutangComponent, // Daftar Gudang
           },
         ],
       },

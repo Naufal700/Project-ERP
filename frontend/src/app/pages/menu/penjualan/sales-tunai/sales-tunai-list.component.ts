@@ -15,6 +15,7 @@ import {
 @Component({
   selector: "app-sales-tunai-list",
   templateUrl: "./sales-tunai-list.component.html",
+  styleUrls: ["./sales-tunai-list.component.scss"],
 })
 export class SalesTunaiListComponent implements OnInit {
   invoices: SalesInvoice[] = [];

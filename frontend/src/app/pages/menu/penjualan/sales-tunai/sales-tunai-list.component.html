@@ -38,10 +38,11 @@
         <thead>
           <tr>
             <th style="width: 40px;">#</th>
-            <th>Nomor Invoice</th>
             <th>Tanggal Invoice</th>
-            <th *ngIf="showPaymentColumns">Tanggal Pembayaran</th>
-            <th *ngIf="showPaymentColumns">Cara Bayar</th>
+            <th>Nomor Invoice</th>
+            <!-- <th>Nama Pelanggan</th> -->
+            <th>Tanggal Pembayaran</th>
+            <th>Cara Bayar</th>
             <th>Total</th>
             <th>Total Bayar</th>
             <th>Status Bayar</th>
@@ -51,21 +52,21 @@
         <tbody>
           <tr *ngFor="let inv of paginatedInvoices; let i = index">
             <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
-            <td>
-              <span class="invoice-link" (click)="openDetailDialog(inv)">{{ inv.nomor_invoice }}</span>
-            </td>
             <td>{{ inv.tanggal | date: "dd/MM/yyyy" }}</td>
-
-            <td *ngIf="showPaymentColumns">
+            <td>
+              {{ inv.nomor_invoice }}
+            </td>
+            <!-- <td>{{ inv.nama_pelanggan || '-' }}</td> -->
+            <td>
               <ng-container *ngIf="pembayaranTunai[inv.id]?.length > 0; else belumBayar">
                 {{ pembayaranTunai[inv.id][0]?.tanggal_bayar | date: "dd/MM/yyyy" }}
               </ng-container>
               <ng-template #belumBayar>-</ng-template>
             </td>
 
-            <td *ngIf="showPaymentColumns">
+            <td>
               <ng-container *ngIf="pembayaranTunai[inv.id]?.length > 0; else belumCaraBayar">
-                {{ pembayaranTunai[inv.id][0]?.cara_bayar?.nama || pembayaranTunai[inv.id][0]?.metode_bayar || "-" }}
+                {{ pembayaranTunai[inv.id][0]?.cara_bayar?.nama_cara_bayar || pembayaranTunai[inv.id][0]?.metode_bayar || "-" }}
               </ng-container>
               <ng-template #belumCaraBayar>-</ng-template>
             </td>

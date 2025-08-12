@@ -46,13 +46,17 @@ export class SalesOrderComponent implements OnInit {
     }).subscribe({
       next: ({ drafts, orders }) => {
         this.salesOrders = [
+          // SQ draft
           ...drafts.map((d: any) => ({
             ...d,
-            type: "draft",
+            source: "sq", // ✅ Biar masuk tab SQ
+            type: "draft", // status draft
             nomor_order: null,
           })),
+          // SO approved
           ...orders.map((o: any) => ({
             ...o,
+            source: o.id_quotation ? "sq" : "manual", // sq/manual sesuai asal
             type: "approved",
             nomor_quotation: o.quotation?.nomor_quotation || "-",
           })),

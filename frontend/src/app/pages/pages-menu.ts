@@ -64,6 +64,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: "credit-card-outline",
     children: [
       {
+        title: "Daftar Piutang Pelanggan",
+        link: "/pages/menu/piutang/daftar-piutang",
+      },
+      {
         title: "Penagihan Piutang (Collection)",
         link: "/pages/receivable/list",
       },

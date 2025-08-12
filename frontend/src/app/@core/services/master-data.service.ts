@@ -10,7 +10,7 @@ export interface Bank {
 
 export interface CaraBayar {
   id: number;
-  nama: string;
+  nama_cara_bayar: string;
   // field lain sesuai API
 }
 

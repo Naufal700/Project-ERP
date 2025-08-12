@@ -9,6 +9,7 @@ export interface SalesInvoice {
   total: number;
   status: string;
   jenis_pembayaran: string;
+  nama_pelanggan?: string; // tambahkan properti ini
 }
 
 export interface SalesTunai {
