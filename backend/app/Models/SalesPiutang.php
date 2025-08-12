@@ -18,6 +18,7 @@ class SalesPiutang extends Model
         'jumlah_terbayar',
         'status',
         'keterangan',
+        'nomor_collecting'
     ];
 
     // Relasi ke SalesInvoice

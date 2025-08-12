@@ -43,8 +43,16 @@ class SalesInvoice extends Model
     {
         return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
     }
-    // public function salesTunai()
-    // {
-    //     return $this->hasMany(SalesTunai::class, 'sales_invoice_id');
-    // }
+    public function salesTunai()
+    {
+        return $this->hasMany(SalesTunai::class);
+    }
+    public function salesPiutang()
+    {
+        return $this->hasMany(SalesPiutang::class, 'sales_invoice_id');
+    }
+    public function salesOrder()
+    {
+        return $this->belongsTo(SalesOrder::class, 'sales_order_id');
+    }
 }

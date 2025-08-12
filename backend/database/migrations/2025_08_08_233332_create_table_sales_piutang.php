@@ -16,6 +16,7 @@ return new class extends Migration
             $table->decimal('jumlah_terbayar', 15, 2)->default(0);
             $table->string('status')->default('belum lunas'); // belum lunas / lunas
             $table->text('keterangan')->nullable();
+            $table->string('nomor_collecting')->nullable();
             $table->timestamps();
 
             $table->foreign('sales_invoice_id')->references('id')->on('sales_invoice')->onDelete('cascade');

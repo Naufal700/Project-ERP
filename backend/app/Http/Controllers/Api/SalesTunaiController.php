@@ -15,7 +15,7 @@ class SalesTunaiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = SalesTunai::with(['salesInvoice', 'bank', 'caraBayar'])
+        $query = SalesTunai::with(['salesInvoice', 'bank', 'caraBayar', 'pelanggan'])
             ->whereHas('salesInvoice', function ($q) {
                 $q->where('jenis_pembayaran', 'tunai')
                     ->whereIn('status', ['approved', 'lunas', 'belum lunas']);
@@ -27,19 +27,24 @@ class SalesTunaiController extends Controller
 
         $salesTunaiList = $query->orderBy('tanggal_bayar', 'asc')->get();
 
-        // Hitung total bayar per sales_invoice_id
-        $totalBayar = SalesTunai::select('sales_invoice_id', DB::raw('SUM(jumlah_bayar) as total_bayar'))
-            ->groupBy('sales_invoice_id')
-            ->pluck('total_bayar', 'sales_invoice_id'); // key = sales_invoice_id
+        // Kelompokkan data berdasarkan invoice untuk menghitung total
+        $grouped = $salesTunaiList->groupBy('sales_invoice_id');
 
-        // Tambahkan total_bayar ke masing-masing item hasil query
-        $salesTunaiList->each(function ($item) use ($totalBayar) {
-            $item->total_bayar = $totalBayar->get($item->sales_invoice_id) ?? 0;
+        // Modifikasi setiap item
+        $salesTunaiList->each(function ($item) use ($grouped) {
+            // Jika status belum lunas, set total_bayar ke 0
+            if ($item->salesInvoice->status === 'belum lunas') {
+                $item->total_bayar = 0;
+                $item->salesInvoice->status = 'belum lunas'; // Pastikan status benar
+            } else {
+                // Hitung total bayar untuk invoice ini
+                $item->total_bayar = $grouped->get($item->sales_invoice_id)
+                    ->sum('jumlah_bayar');
+            }
         });
 
         return response()->json($salesTunaiList);
     }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -149,10 +154,10 @@ class SalesTunaiController extends Controller
         $jurnal = JurnalUmum::where('reference', $reference)->first();
         if (!$jurnal) {
             $jurnal = JurnalUmum::create([
-                'tanggal'     => $payment->tanggal_bayar,
+                'tanggal'     => now(),
                 'reference'   => $reference,
                 'kode_jurnal' => $this->generateKodeJurnal('JU-CASH'),
-                'keterangan'  => 'Penerimaan Penjualan Tunai Tanggal ' . $payment->tanggal_bayar,
+                'keterangan'  => 'Penerimaan Penjualan Tunai Tanggal ' .  now()->format('d/m/Y'),
                 'created_by'  => auth()->id() ?? 1,
             ]);
         }
@@ -161,7 +166,7 @@ class SalesTunaiController extends Controller
         JurnalUmumDetail::create([
             'jurnal_id'  => $jurnal->id,
             'kode_akun'  => $mapping->kode_akun_debit,
-            'keterangan' => 'Kas/Bank dari faktur ' . $invoice->nomor_invoice,
+            'keterangan' => 'Penerimaan Tunai dari faktur ' . $invoice->nomor_invoice,
             'jenis'      => 'debit',
             'nominal'    => $payment->jumlah_bayar,
         ]);
@@ -170,7 +175,7 @@ class SalesTunaiController extends Controller
         JurnalUmumDetail::create([
             'jurnal_id'  => $jurnal->id,
             'kode_akun'  => $mapping->kode_akun_kredit,
-            'keterangan' => 'Pendapatan dari faktur ' . $invoice->nomor_invoice,
+            'keterangan' => 'Penerimaan Tunai dari faktur ' . $invoice->nomor_invoice,
             'jenis'      => 'kredit',
             'nominal'    => $payment->jumlah_bayar,
         ]);
@@ -186,5 +191,23 @@ class SalesTunaiController extends Controller
         } while ($exists);
 
         return $kode;
+    }
+    public function verifyBatch(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:sales_invoice,id',
+        ]);
+
+        foreach ($validated['ids'] as $id) {
+            $invoice = SalesInvoice::find($id);
+            if ($invoice) {
+                // contoh update status jadi verified atau approved
+                $invoice->status = 'approved';
+                $invoice->save();
+            }
+        }
+
+        return response()->json(['message' => 'Batch verification sukses']);
     }
 }

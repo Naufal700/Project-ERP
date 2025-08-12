@@ -60,4 +60,8 @@ class SalesTunai extends Model
     {
         return $this->belongsTo(CaraBayar::class, 'cara_bayar_id');
     }
+    public function pelanggan()
+    {
+        return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
+    }
 }

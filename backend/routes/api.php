@@ -13,7 +13,6 @@ use App\Http\Controllers\Api\GudangController;
 use App\Http\Controllers\Api\ProdukController;
 use App\Http\Controllers\Api\ProyekController;
 use App\Http\Controllers\API\SatuanController;
-use App\Http\Controllers\API\SalesTunaiController;
 use App\Http\Controllers\Api\KaryawanController;
 use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\API\CaraBayarController;
@@ -21,7 +20,9 @@ use App\Http\Controllers\Api\InventoryController;
 use App\Http\Controllers\Api\PelangganController;
 use App\Http\Controllers\Api\JurnalUmumController;
 use App\Http\Controllers\Api\SalesOrderController;
+use App\Http\Controllers\API\SalesTunaiController;
 use App\Http\Controllers\Api\SalesInvoiceController;
+use App\Http\Controllers\Api\SalesPiutangController;
 use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\MappingJurnalController;
 use App\Http\Controllers\API\KategoriProdukController;
@@ -167,6 +168,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('sales/order/{id}/cancel', [SalesOrderController::class, 'cancel']);
     Route::post('/sales-order', [SalesOrderController::class, 'store']);
     Route::put('/sales-order/{id}', [SalesOrderController::class, 'update']);
+    Route::get('sales/orders/{id}/print', [SalesOrderController::class, 'printPdf']);
 });
 // Route Inventory
 Route::prefix('inventory')->group(function () {
@@ -230,4 +232,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sales-tunai', [SalesTunaiController::class, 'index']);
     Route::post('sales-tunai', [SalesTunaiController::class, 'store']);
     Route::delete('sales-tunai/{id}', [SalesTunaiController::class, 'cancelPayment']);
+
+    // Tambah route ini jika ingin ambil invoice
+    Route::get('sales-tunai/invoice', [SalesTunaiController::class, 'getInvoice']);
+});
+// Route Sales Piutang
+Route::prefix('sales-piutang')->group(function () {
+    Route::get('/invoice', [SalesPiutangController::class, 'listInvoicePiutang']);
+    Route::post('/invoice/{id}/approve', [SalesPiutangController::class, 'approveInvoicePiutang']);
+    Route::post('/collecting', [SalesPiutangController::class, 'collecting']);  // hapus "sales-piutang" di sini
+
+    Route::get('/', [SalesPiutangController::class, 'index']);
+    Route::post('/', [SalesPiutangController::class, 'store']);
+    Route::get('/{id}', [SalesPiutangController::class, 'show'])->where('id', '[0-9]+');
+    Route::put('/{id}', [SalesPiutangController::class, 'update'])->where('id', '[0-9]+');
+    Route::delete('/{id}', [SalesPiutangController::class, 'destroy'])->where('id', '[0-9]+');
+
+    Route::post('/{id}/cancel', [SalesPiutangController::class, 'cancel']);
+    Route::post('/verify-batch', [SalesPiutangController::class, 'verifyBatch']); // perbaiki path cancel
 });
